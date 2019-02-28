@@ -1,3 +1,6 @@
+# Práctica 0
+# Autor: Luis Balderas Ruiz
+
 # -*- coding: utf-8 -*-
 
 from sklearn.datasets import load_iris
