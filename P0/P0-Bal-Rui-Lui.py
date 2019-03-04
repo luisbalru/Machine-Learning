@@ -107,16 +107,19 @@ input("Pulsa enter para seguir")
 
 # Parte 3
 
+# Función para equiespaciar un número determinado de valores entre un límite inferior y otro superior
 equiespaciados = np.linspace(0, 2*math.pi,num=100)
 cosins = []
 sins = []
 sum = []
+
 
 for i in range(0, len(equiespaciados)):
     cosins.append(math.cos(equiespaciados[i]))
     sins.append(math.sin(equiespaciados[i]))
     sum.append(cosins[i]+sins[i])
 
+# Establezco el máximo valor en la variable independiente como 2pi
 max_val = 2*math.pi
 plt.plot(equiespaciados,cosins,'k--',label="coseno")
 plt.plot(equiespaciados,sins,'b--',label="seno")
