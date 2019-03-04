@@ -43,11 +43,39 @@ plt.xlabel(fn[-2])
 plt.ylabel(fn[-1])
 plt.show()
 
-# Parte 2
+# Parte 2: Lo hago de dos formas distintas
 
 # Para hacerlo automáticamente con scikit-learn
 #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
+# De forma manual, a través de la función random, genero una permutación
+# (asumiendo que se utiliza una distribución uniforme) y me quedo con el 80% de
+# los primeros datos para el training y el resto para el test
+np.random.seed()
+iris_l = list(zip(X,y))
+iris_un = np.random.permutation(iris_l)
+train = iris_un[0:int(0.8*len(iris_un))]
+test = iris_un[int(0.8*len(iris_un)):]
+
+# COMPROBACIÓN
+print('Número de instancias en training:', len(train))
+print('Número de instancias en test:', len(test))
+
+s=0
+v=0
+vir=0
+for i in range(0,len(train)):
+    if(train[i][1] == 0):
+        s=s+1
+    elif train[i][1] == 1:
+        v = v+1
+    else:
+        vir = vir+1
+# Por problemas de redondeo, no sale exactamente 33% en cada clase pero está realmente cerca:
+# Entorno a 33%, 32%, 35%
+print('Training. Setosa: ',s/len(train))
+print('Training. Versicolor: ',v/len(train))
+print('Training. Virginica: ',vir/len(train))
 
 # Parte 3
 
@@ -66,7 +94,7 @@ sins = np.array(sins)
 sum = np.array(sum)
 
 max_val = 2*math.pi
-plt.plot(equiespaciados,cosins,'g--',label="coseno")
+plt.plot(equiespaciados,cosins,'k--',label="coseno")
 plt.plot(equiespaciados,sins,'b--',label="seno")
 plt.plot(equiespaciados,sum,'r--',label="seno+coseno")
 plt.xlabel("Variable independiente")
