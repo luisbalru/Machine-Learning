@@ -34,17 +34,19 @@ setosa = np.array(setosa)
 versicolor = np.array(versicolor)
 virginica = np.array(virginica)
 
-
-
+plt.scatter(setosa[:,0],setosa[:,1],c='b',label="Setosa")
+plt.scatter(versicolor[:,0],versicolor[:,1],c='r', label="Versicolor")
+plt.scatter(virginica[:,0], virginica[:,1],c='g', label="Virginica")
 #plt.scatter(last_2features[:,0], last_2features[:,1], c = y)
-#plt.legend()
-#plt.xlabel(fn[-2])
-#plt.ylabel(fn[-1])
-#plt.show()
+plt.legend()
+plt.xlabel(fn[-2])
+plt.ylabel(fn[-1])
+plt.show()
 
 # Parte 2
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+# Para hacerlo automáticamente con scikit-learn
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 
 # Parte 3
