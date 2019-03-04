@@ -43,6 +43,8 @@ plt.xlabel(fn[-2])
 plt.ylabel(fn[-1])
 plt.show()
 
+input("Pulsa enter para seguir")
+
 # Parte 2: Lo hago de dos formas distintas
 
 # Para hacerlo automáticamente con scikit-learn
@@ -51,13 +53,15 @@ plt.show()
 # De forma manual, a través de la función random, genero una permutación
 # (asumiendo que se utiliza una distribución uniforme) y me quedo con el 80% de
 # los primeros datos para el training y el resto para el test
-np.random.seed()
+
+np.random.seed(77145416)
 iris_l = list(zip(X,y))
 iris_un = np.random.permutation(iris_l)
 train = iris_un[0:int(0.8*len(iris_un))]
 test = iris_un[int(0.8*len(iris_un)):]
 
 # COMPROBACIÓN
+print("Separación en training y test")
 print('Número de instancias en training:', len(train))
 print('Número de instancias en test:', len(test))
 
@@ -73,9 +77,33 @@ for i in range(0,len(train)):
         vir = vir+1
 # Por problemas de redondeo, no sale exactamente 33% en cada clase pero está realmente cerca:
 # Entorno a 33%, 32%, 35%
+print("#--------------------------#")
+print("Distribución de clases en training")
 print('Training. Setosa: ',s/len(train))
 print('Training. Versicolor: ',v/len(train))
 print('Training. Virginica: ',vir/len(train))
+
+s=0
+v=0
+vir=0
+for i in range(0,len(test)):
+    if(test[i][1] == 0):
+        s=s+1
+    elif test[i][1] == 1:
+        v = v+1
+    else:
+        vir = vir+1
+
+# En test se exacerba el problema del redondeo al haber una proporción de datos mucho menor.
+# De estos resultados se deduce que es mucho mejor utilizar funciones ya definidas como
+# train_test_split de sklearn
+print("#--------------------------#")
+print("Distribución de clases en test")
+print('Training. Setosa: ',s/len(test))
+print('Training. Versicolor: ',v/len(test))
+print('Training. Virginica: ',vir/len(test))
+
+input("Pulsa enter para seguir")
 
 # Parte 3
 
@@ -88,10 +116,6 @@ for i in range(0, len(equiespaciados)):
     cosins.append(math.cos(equiespaciados[i]))
     sins.append(math.sin(equiespaciados[i]))
     sum.append(cosins[i]+sins[i])
-
-cosins = np.array(cosins)
-sins = np.array(sins)
-sum = np.array(sum)
 
 max_val = 2*math.pi
 plt.plot(equiespaciados,cosins,'k--',label="coseno")
