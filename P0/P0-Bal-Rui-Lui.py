@@ -69,7 +69,7 @@ s=0
 v=0
 vir=0
 for i in range(0,len(train)):
-    if(train[i][1] == 0):
+    if train[i][1] == 0:
         s=s+1
     elif train[i][1] == 1:
         v = v+1
@@ -128,5 +128,6 @@ plt.xlabel("Variable independiente")
 plt.ylabel("Variable dependiente")
 plt.title("Parte 3")
 plt.legend()
+# Rango de X: 0,2*pi. Rango de Y: -3 a 3
 plt.axis([0,max_val,-3,3])
 plt.show()
