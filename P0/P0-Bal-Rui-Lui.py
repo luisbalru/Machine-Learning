@@ -1,5 +1,7 @@
 # Práctica 0
 # Autor: Luis Balderas Ruiz
+# Aprendizaje Automático 2019
+# Doble Grado en Ingeniería Informática y Matemáticas
 
 # -*- coding: utf-8 -*-
 
@@ -10,6 +12,8 @@ from sklearn.model_selection import train_test_split
 import math
 
 # Parte 1
+print("PARTE 1")
+
 
 iris = load_iris()
 X = iris.data
@@ -30,6 +34,7 @@ for i in range(0,len(y)):
     else:
         virginica.append(last_2features[i])
 
+# Doy estructura de array a los distintos contenedores
 setosa = np.array(setosa)
 versicolor = np.array(versicolor)
 virginica = np.array(virginica)
@@ -46,6 +51,7 @@ plt.show()
 input("Pulsa enter para seguir")
 
 # Parte 2: Lo hago de dos formas distintas
+print("PARTE 2")
 
 # Para hacerlo automáticamente con scikit-learn
 #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
@@ -65,47 +71,30 @@ print("Separación en training y test")
 print('Número de instancias en training:', len(train))
 print('Número de instancias en test:', len(test))
 
-s=0
-v=0
-vir=0
-for i in range(0,len(train)):
-    if train[i][1] == 0:
-        s=s+1
-    elif train[i][1] == 1:
-        v = v+1
-    else:
-        vir = vir+1
+# Hago un conteo de los elementos únicos en la columna de la etiqueta de clase (es decir, las distintas clases que hay)
+# y el número de repeticiones de cada una. Para la representación por pantalla utilizo names (nombre de las clases)
+unique_elements, count_elements = np.unique(train[:,1],return_counts=True)
+
 # Por problemas de redondeo, no sale exactamente 33% en cada clase pero está realmente cerca:
 # Entorno a 33%, 32%, 35%
 print("#--------------------------#")
 print("Distribución de clases en training")
-print('Training. Setosa: ',s/len(train))
-print('Training. Versicolor: ',v/len(train))
-print('Training. Virginica: ',vir/len(train))
+print(dict(zip(names,count_elements)))
 
-s=0
-v=0
-vir=0
-for i in range(0,len(test)):
-    if(test[i][1] == 0):
-        s=s+1
-    elif test[i][1] == 1:
-        v = v+1
-    else:
-        vir = vir+1
+unique_elements, count_elements = np.unique(test[:,1],return_counts=True)
 
 # En test se exacerba el problema del redondeo al haber una proporción de datos mucho menor.
 # De estos resultados se deduce que es mucho mejor utilizar funciones ya definidas como
 # train_test_split de sklearn
 print("#--------------------------#")
 print("Distribución de clases en test")
-print('Training. Setosa: ',s/len(test))
-print('Training. Versicolor: ',v/len(test))
-print('Training. Virginica: ',vir/len(test))
+print(dict(zip(names,count_elements)))
 
 input("Pulsa enter para seguir")
 
 # Parte 3
+
+print("PARTE 3")
 
 # Función para equiespaciar un número determinado de valores entre un límite inferior y otro superior
 equiespaciados = np.linspace(0, 2*math.pi,num=100)
