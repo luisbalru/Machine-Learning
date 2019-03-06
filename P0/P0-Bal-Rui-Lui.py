@@ -57,35 +57,63 @@ print("PARTE 2")
 #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 # De forma manual, a través de la función random, genero una permutación
-# (asumiendo que se utiliza una distribución uniforme) y me quedo con el 80% de
-# los primeros datos para el training y el resto para el test
+# (asumiendo que se utiliza una distribución uniforme) y clasifico los elementos
+# de dicha permutación. Mientras que haya menos de 40 instancias para cada clase en training,
+# las instancias se almacenan en train. Si no, irá a test.
 
+#Fijo semilla para poder reproducir los casos
 np.random.seed(77145416)
+
+# Unión de datos y etiquetas
 iris_l = list(zip(X,y))
+# Permutación del dataset para conseguir la aleatoriedad en la partición
 iris_un = np.random.permutation(iris_l)
-train = iris_un[0:int(0.8*len(iris_un))]
-test = iris_un[int(0.8*len(iris_un)):]
+train = []
+test = []
+v_tr=0
+s_tr=0
+vir_tr=0
+
+for i in range(0, len(iris_un)):
+    if iris_un[i][1] == 0:
+        if s_tr < 40:
+            train.append(iris_un[i])
+            s_tr = s_tr + 1
+        else:
+            test.append(iris_un[i])
+    elif iris_un[i][1] == 1:
+        if v_tr < 40:
+            train.append(iris_un[i])
+            v_tr = v_tr + 1
+        else:
+            test.append(iris_un[i])
+    elif iris_un[i][1] == 2:
+        if vir_tr < 40:
+            train.append(iris_un[i])
+            vir_tr = vir_tr + 1
+        else:
+            test.append(iris_un[i])
 
 # COMPROBACIÓN
 print("Separación en training y test")
 print('Número de instancias en training:', len(train))
 print('Número de instancias en test:', len(test))
 
+train = np.array(train)
+test = np.array(test)
+
 # Hago un conteo de los elementos únicos en la columna de la etiqueta de clase (es decir, las distintas clases que hay)
 # y el número de repeticiones de cada una. Para la representación por pantalla utilizo names (nombre de las clases)
 unique_elements, count_elements = np.unique(train[:,1],return_counts=True)
 
-# Por problemas de redondeo, no sale exactamente 33% en cada clase pero está realmente cerca:
-# Entorno a 33%, 32%, 35%
+# Resultados en training
 print("#--------------------------#")
 print("Distribución de clases en training")
 print(dict(zip(names,count_elements)))
 
 unique_elements, count_elements = np.unique(test[:,1],return_counts=True)
 
-# En test se exacerba el problema del redondeo al haber una proporción de datos mucho menor.
-# De estos resultados se deduce que es mucho mejor utilizar funciones ya definidas como
-# train_test_split de sklearn
+# Resultados en test
 print("#--------------------------#")
 print("Distribución de clases en test")
 print(dict(zip(names,count_elements)))
