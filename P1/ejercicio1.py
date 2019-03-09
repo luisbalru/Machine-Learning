@@ -13,7 +13,8 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from sympy import symbols, diff
-from sympy.functions import exp
+from sympy.functions import exp, sin
+
 
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
 np.random.seed(77145416)
@@ -49,8 +50,9 @@ def gradientE(w):
     der_v = diff(E,v)
     return np.array([der_u.subs([(u,w[0]),(v,w[1])]),der_v.subs([(u,w[0]),(v,w[1])])])
 
-def f(w):
+def evalE(w):
     return E.subs([(u,w[0]),(v,w[1])])
+
 print("#################################################")
 print("EJERCICIO 1.2")
 # Apartado a)
@@ -60,7 +62,7 @@ input("\nPulse enter para continuar")
 
 # Apartado b)
 print("Apartado b)")
-w,k = GD(E,np.array([1.0,1.0]),0.01,gradientE,f,10**(-14))
+w,k = GD(E,np.array([1.0,1.0]),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
 input("\nPulse enter para continuar")
 
@@ -70,3 +72,23 @@ print("COORDENADAS:")
 print("Coordenada X: ", w[0])
 print("Coordenada Y: ", w[1])
 input("\nPulse enter para continuar")
+
+
+################## Ejercicio 1.3 #################################
+
+x, y = symbols('x y', real=True)
+f = x**2 + 2*y**2 + 2*sin(2*math.pi*x)*sin(2*math.pi*y)
+
+def gradientf(w):
+    der_x = diff(f,x)
+    der_y = diff(f,y)
+    return np.array([der_x.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])])])
+
+def evalf(w):
+    return f.subs([(x,w[0]),(y,w[1])])
+
+print("#################################################")
+print("EJERCICIO 1.3")
+# Apartado a)
+print("Apartado a)")
+w,k =
