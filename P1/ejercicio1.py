@@ -91,4 +91,3 @@ print("#################################################")
 print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
-w,k =
