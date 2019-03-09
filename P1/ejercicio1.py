@@ -18,6 +18,29 @@ from sympy.functions import exp
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
 np.random.seed(77145416)
 
+# ALGORITMO DE GRADIENTE DESCENDENTE
+# - El parámetro E se refiere a una empresión de la librería de cálculo simbólico
+#   sympy para calcular las derivadas parciales y generalizar la función lo máximo posible.
+# - gradient es una función que calcula el gradiente. Es necesario definir esa función
+#   para cada caso que queramos considerar, puesto que depende directamente del nombre
+#   y número de variables del caso en cuestión.
+# - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
+#   definirla en cada caso.
+
+def GD(E,w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
+    num_iter = 0
+    while num_iter <= max_iters and (f(w) - epsilon).is_positive:
+        w = w - learning_rate * gradient(w)
+        num_iter = num_iter + 1
+
+    return w, num_iter
+
+
+################## Ejercicio 1.2 #################################
+
+# Definición de la función matemática a considerar en el 1.2. Asociada a ella,
+# las correspondientes que calculan el gradiente y evalúa.
+
 u, v = symbols('u v', real=True)
 E = (u**2*exp(v)-2*v**2*exp(-u))**2
 
@@ -26,19 +49,24 @@ def gradientE(w):
     der_v = diff(E,v)
     return np.array([der_u.subs([(u,w[0]),(v,w[1])]),der_v.subs([(u,w[0]),(v,w[1])])])
 
+def f(w):
+    return E.subs([(u,w[0]),(v,w[1])])
+print("#################################################")
+print("EJERCICIO 1.2")
+# Apartado a)
+print("Apartado a)")
+print("El gradiente de E es: ", diff(E,u),",",diff(E,v))
+input("\nPulse enter para continuar")
 
-def f(expr,w):
-    return expr.subs([(u,w[0]),(v,w[1])])
-
-
-def GD(E,w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
-    num_iter = 0
-    while num_iter <= max_iters and (f(E,w) - epsilon).is_positive:
-        w = w - learning_rate * gradient(w)
-        num_iter = num_iter + 1
-
-    return w, num_iter
-
+# Apartado b)
+print("Apartado b)")
 w,k = GD(E,np.array([1.0,1.0]),0.01,gradientE,f,10**(-14))
-print(w)
-print(k)
+print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
+input("\nPulse enter para continuar")
+
+# Apartado c)
+print("Apartado c)")
+print("COORDENADAS:")
+print("Coordenada X: ", w[0])
+print("Coordenada Y: ", w[1])
+input("\nPulse enter para continuar")
