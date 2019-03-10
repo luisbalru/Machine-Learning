@@ -98,7 +98,15 @@ print("EJERCICIO 1.3")
 print("Apartado a)")
 
 w,k,data = GD(f,np.array([0.1,0.1]),0.01,gradientf,evalf,10**(-14),50)
-print(w)
+plt.plot(range(0,k+1),data,'bo')
+plt.xlabel('Número de iteraciones')
+plt.ylabel('f(x,y)')
+plt.show()
+input("\nPulse enter para continuar")
+
+## para learning_rate = 0.1
+print("Learning rate 0.1")
+w,k,data = GD(f,np.array([0.1,0.1]),0.1,gradientf,evalf,10**(-14),50)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
