@@ -30,11 +30,16 @@ np.random.seed(77145416)
 
 def GD(E,w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
     num_iter = 0
-    while num_iter <= max_iters and (f(w) - epsilon).is_positive:
-        w = w - learning_rate * gradient(w)
+    diferencia = 1
+    medidas = [f(w)]
+    while num_iter <= max_iters and diferencia > epsilon:
+        last_w = w
+        w = w - learning_rate * gradient(last_w)
+        diferencia = abs(f(w) - f(last_w))
         num_iter = num_iter + 1
+        medidas.insert(len(medidas),f(w))
 
-    return w, num_iter
+    return w, num_iter, medidas
 
 
 ################## Ejercicio 1.2 #################################
@@ -62,7 +67,7 @@ input("\nPulse enter para continuar")
 
 # Apartado b)
 print("Apartado b)")
-w,k = GD(E,np.array([1.0,1.0]),0.01,gradientE,evalE,10**(-14))
+w,k,data = GD(E,np.array([1.0,1.0]),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
 input("\nPulse enter para continuar")
 
@@ -91,3 +96,10 @@ print("#################################################")
 print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
+
+w,k,data = GD(f,np.array([0.1,0.1]),0.01,gradientf,evalf,10**(-14),50)
+print(w)
+plt.plot(range(0,k+1),data,'bo')
+plt.xlabel('Número de iteraciones')
+plt.ylabel('f(x,y)')
+plt.show()
