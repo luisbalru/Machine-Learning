@@ -116,3 +116,12 @@ input("\nPulse enter para continuar")
 # Apartado b)
 
 print("Apartado b)")
+
+datos = []
+
+for n in np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)]):
+    w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-14),50)
+    datos.append([w,evalf(w)])
+
+datos = np.array(datos)
+print(datos)
