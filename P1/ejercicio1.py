@@ -111,3 +111,8 @@ plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
+input("\nPulse enter para continuar")
+
+# Apartado b)
+
+print("Apartado b)")
