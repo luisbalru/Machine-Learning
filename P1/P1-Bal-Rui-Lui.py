@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos. Práctica 1.
-Aprendizaje Automático
+Práctica 1. Aprendizaje Automático
 Doble Grado en Ingeniería Informática y Matemáticas. Universidad de Granada
 
 @author: Luis Balderas Ruiz
@@ -18,6 +17,11 @@ from sympy.functions import exp, sin
 
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
 np.random.seed(77145416)
+
+"""
+Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
+"""
+
 
 # ALGORITMO DE GRADIENTE DESCENDENTE
 # - El parámetro E se refiere a una empresión de la librería de cálculo simbólico
@@ -97,7 +101,8 @@ print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
 
-w,k,data = GD(f,np.array([0.1,0.1]),0.01,gradientf,evalf,10**(-14),50)
+w,k,data = GD(f,np.array([0.1,0.1]),0.01,gradientf,evalf,10**(-20),50)
+print("Coordenadas del mínimo: ", w)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
@@ -106,7 +111,7 @@ input("\nPulse enter para continuar")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
-w,k,data = GD(f,np.array([0.1,0.1]),0.1,gradientf,evalf,10**(-14),50)
+w,k,data = GD(f,np.array([0.1,0.1]),0.1,gradientf,evalf,10**(-20),50)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
@@ -120,8 +125,56 @@ print("Apartado b)")
 datos = []
 
 for n in np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)]):
-    w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-14),50)
+    w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-20),50)
     datos.append([w,evalf(w)])
 
 datos = np.array(datos)
 print(datos)
+
+"""
+Ejercicio 2. Regresión lineal
+"""
+"""
+################# Ejercicio 1 ##########################
+
+print('EJERCICIO SOBRE REGRESION LINEAL\n')
+print('Ejercicio 1\n')
+
+label5 = 1
+label1 = -1
+
+# Funcion para leer los datos
+def readData(file_x, file_y):
+	# Leemos los ficheros
+	datax = np.load(file_x)
+	datay = np.load(file_y)
+	y = []
+	x = []
+	# Solo guardamos los datos cuya clase sea la 1 o la 5
+	for i in range(0,datay.size):
+		if datay[i] == 5 or datay[i] == 1:
+			if datay[i] == 5:
+				y.append(label5)
+			else:
+				y.append(label1)
+			x.append(np.array([1, datax[i][0], datax[i][1]]))
+
+	x = np.array(x, np.float64)
+	y = np.array(y, np.float64)
+
+	return x, y
+
+# Funcion para calcular el error
+def Err(x,y,w):
+    return
+
+# Gradiente Descendente Estocastico
+def sgd(?):
+    #
+    return w
+
+# Pseudoinversa
+def pseudoinverse(?):
+    #
+    return w
+"""
