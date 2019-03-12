@@ -71,7 +71,7 @@ input("\nPulse enter para continuar")
 
 # Apartado b)
 print("Apartado b)")
-w,k,data = GD(E,np.array([1.0,1.0]),0.01,gradientE,evalE,10**(-14))
+w,k,data = GD(E,np.array([1.0,1.0],np.float64),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
 input("\nPulse enter para continuar")
 
@@ -101,7 +101,7 @@ print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
 
-w,k,data = GD(f,np.array([0.1,0.1]),0.01,gradientf,evalf,10**(-20),50)
+w,k,data = GD(f,np.array([0.1,0.1],np.float64),0.01,gradientf,evalf,10**(-20),50)
 print("Coordenadas del mínimo: ", w)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
@@ -111,7 +111,7 @@ input("\nPulse enter para continuar")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
-w,k,data = GD(f,np.array([0.1,0.1]),0.1,gradientf,evalf,10**(-20),50)
+w,k,data = GD(f,np.array([0.1,0.1],np.float64),0.1,gradientf,evalf,10**(-20),50)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
@@ -166,7 +166,7 @@ def readData(file_x, file_y):
 
 # Funcion para calcular el error
 def Err(x,y,w):
-    return
+    return (1/y.size)*np.linalg.norm(x.dot(w)-y)**2
 
 # Gradiente Descendente Estocastico
 def sgd(?):
