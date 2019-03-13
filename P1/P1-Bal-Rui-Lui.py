@@ -67,20 +67,20 @@ print("EJERCICIO 1.2")
 # Apartado a)
 print("Apartado a)")
 print("El gradiente de E es: ", diff(E,u),",",diff(E,v))
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado b)
 print("Apartado b)")
 w,k,data = GD(E,np.array([1.0,1.0],np.float64),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado c)
 print("Apartado c)")
 print("COORDENADAS:")
 print("Coordenada X: ", w[0])
 print("Coordenada Y: ", w[1])
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 
 ################## Ejercicio 1.3 #################################
@@ -107,7 +107,7 @@ plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
@@ -116,7 +116,7 @@ plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado b)
 
@@ -225,4 +225,4 @@ print ('Bondad del resultado para grad. descendente estocastico:\n')
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
-input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsa una tecla para continuar ---\n")
