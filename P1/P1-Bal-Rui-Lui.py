@@ -216,10 +216,9 @@ def pseudoinverse(?):
 
 # Lectura de los datos de entrenamiento
 x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
-print("Ya he leído los datos de training!\n")
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
-print("Ya he leído los datos de test!\n")
+
 w = sgd(x, y, 0.01, 500, 64,10**(-3))
 
 print ('Bondad del resultado para grad. descendente estocastico:\n')
