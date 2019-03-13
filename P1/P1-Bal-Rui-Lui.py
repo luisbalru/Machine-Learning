@@ -123,13 +123,20 @@ input("\nPulse enter para continuar")
 print("Apartado b)")
 
 datos = []
-
-for n in np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)]):
+array = np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)])
+for n in array:
     w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-20),50)
     datos.append([w,evalf(w)])
 
 datos = np.array(datos)
-print(datos)
+
+for i in range(0,len(datos)):
+    print("Punto de inicio: ", array[i])
+    print('(x,y) = ', datos[i][0])
+    print('Valor mínimo: ',datos[i][1])
+
+
+#print(datos)
 
 """
 Ejercicio 2. Regresión lineal
