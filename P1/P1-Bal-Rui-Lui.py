@@ -198,7 +198,7 @@ def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
             np.random.shuffle(indices)
             suma = (np.sum(x[indices[0:minibatch_size:1],i] * (x[indices[0:minibatch_size:1]].dot(last_w)-y[indices[0:minibatch_size:1]])))
             w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
-
+        iter = iter + 1
     return w
 """
 # Pseudoinversa
@@ -206,3 +206,17 @@ def pseudoinverse(?):
     #
     return w
 """
+
+# Lectura de los datos de entrenamiento
+x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
+print("Ya he leído los datos de training!\n")
+# Lectura de los datos para el test
+x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
+print("Ya he leído los datos de test!\n")
+w = sgd(x, y, 0.01, 500, 64,10**(-3))
+
+print ('Bondad del resultado para grad. descendente estocastico:\n')
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
