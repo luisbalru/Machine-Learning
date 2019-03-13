@@ -134,7 +134,7 @@ print(datos)
 """
 Ejercicio 2. Regresión lineal
 """
-"""
+
 ################# Ejercicio 1 ##########################
 
 print('EJERCICIO SOBRE REGRESION LINEAL\n')
@@ -164,15 +164,43 @@ def readData(file_x, file_y):
 
 	return x, y
 
-# Funcion para calcular el error
+# FUNCIÓN PARA CALCULAR EL ERROR
+# Efectúa el producto escalar de x y w, lo que genera la salida
+# de la función lineal que hemos interpolado. Después, calcula la
+# norma al cuadrado de la diferencia entre la salida estimada y la real.
+# Finalmente, divide por el número de datos
 def Err(x,y,w):
     return (1/y.size)*np.linalg.norm(x.dot(w)-y)**2
 
-# Gradiente Descendente Estocastico
-def sgd(?):
-    #
-    return w
+# GRADIENTE DESCENDENTE ESTOCÁSTICO
+# Parámetros:
+#       - x: Conjunto de datos a evaluar
+#       - y: Verdaderos valores de la etiqueta asociada a cada tupla
+#       - learning_rate
+#       - max_iters: Número máximo de iteraciones
+#       - minibatch_size: Tamaño del minibatch
+#       - epsilon: Cota del error
+# Aclaraciones:
+#       - Para garantizar la aleatoriedad de las muestras cogidas en el SGD,
+#         declaro un array de índices desde el 0 hasta la longitud de una tupla
+#         que será permutado (shuffle) cada vez. El conjunto de índices permutado, sujeto
+#         al tamaño del minibatch, definirá los elementos del dataset que se evalúan
+#         en el algoritmo.
 
+def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
+    w = np.zeros(len(x[0]),np.float64)
+    indices = np.array(range(0,x.shape[0]))
+    iter = 0
+    while Err(x,y,w) > epsilon and iter < max_iters:
+        last_w = w
+        for i in range(0,w.size):
+            sum = 0
+            np.random.shuffle(indices)
+            suma = (np.sum(x[indices[0:minibatch_size:1],i] * (x[indices[0:minibatch_size:1]].dot(last_w)-y[indices[0:minibatch_size:1]])))
+            w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
+
+    return w
+"""
 # Pseudoinversa
 def pseudoinverse(?):
     #
