@@ -67,20 +67,20 @@ print("EJERCICIO 1.2")
 # Apartado a)
 print("Apartado a)")
 print("El gradiente de E es: ", diff(E,u),",",diff(E,v))
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado b)
 print("Apartado b)")
 w,k,data = GD(E,np.array([1.0,1.0],np.float64),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado c)
 print("Apartado c)")
 print("COORDENADAS:")
 print("Coordenada X: ", w[0])
 print("Coordenada Y: ", w[1])
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 
 ################## Ejercicio 1.3 #################################
@@ -107,7 +107,7 @@ plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
@@ -116,20 +116,27 @@ plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
-input("\nPulse enter para continuar")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado b)
 
 print("Apartado b)")
 
 datos = []
-
-for n in np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)]):
+array = np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)])
+for n in array:
     w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-20),50)
     datos.append([w,evalf(w)])
 
 datos = np.array(datos)
-print(datos)
+
+for i in range(0,len(datos)):
+    print("Punto de inicio: ", array[i])
+    print('(x,y) = ', datos[i][0])
+    print('Valor mínimo: ',datos[i][1])
+
+
+#print(datos)
 
 """
 Ejercicio 2. Regresión lineal
@@ -164,16 +171,58 @@ def readData(file_x, file_y):
 
 	return x, y
 
-# Funcion para calcular el error
+# FUNCIÓN PARA CALCULAR EL ERROR
+# Efectúa el producto escalar de x y w, lo que genera la salida
+# de la función lineal que hemos interpolado. Después, calcula la
+# norma al cuadrado de la diferencia entre la salida estimada y la real.
+# Finalmente, divide por el número de datos
 def Err(x,y,w):
     return (1/y.size)*np.linalg.norm(x.dot(w)-y)**2
 
-# Gradiente Descendente Estocastico
-def sgd(?):
-    #
-    return w
+# GRADIENTE DESCENDENTE ESTOCÁSTICO
+# Parámetros:
+#       - x: Conjunto de datos a evaluar
+#       - y: Verdaderos valores de la etiqueta asociada a cada tupla
+#       - learning_rate
+#       - max_iters: Número máximo de iteraciones
+#       - minibatch_size: Tamaño del minibatch
+#       - epsilon: Cota del error
+# Aclaraciones:
+#       - Para garantizar la aleatoriedad de las muestras cogidas en el SGD,
+#         declaro un array de índices desde el 0 hasta la longitud de una tupla
+#         que será permutado (shuffle) cada vez. El conjunto de índices permutado, sujeto
+#         al tamaño del minibatch, definirá los elementos del dataset que se evalúan
+#         en el algoritmo.
 
+def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
+    w = np.zeros(len(x[0]),np.float64)
+    indices = np.array(range(0,x.shape[0]))
+    iter = 0
+    while Err(x,y,w) > epsilon and iter < max_iters:
+        last_w = w
+        for i in range(0,w.size):
+            sum = 0
+            np.random.shuffle(indices)
+            suma = (np.sum(x[indices[0:minibatch_size:1],i] * (x[indices[0:minibatch_size:1]].dot(last_w)-y[indices[0:minibatch_size:1]])))
+            w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
+        iter = iter + 1
+    return w
+"""
 # Pseudoinversa
 def pseudoinverse(?):
     #
     return w
+"""
+
+# Lectura de los datos de entrenamiento
+x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
+# Lectura de los datos para el test
+x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
+
+w = sgd(x, y, 0.01, 500, 64,10**(-3))
+
+print ('Bondad del resultado para grad. descendente estocastico:\n')
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
