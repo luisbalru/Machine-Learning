@@ -134,7 +134,7 @@ print(datos)
 """
 Ejercicio 2. Regresión lineal
 """
-"""
+
 ################# Ejercicio 1 ##########################
 
 print('EJERCICIO SOBRE REGRESION LINEAL\n')
@@ -177,4 +177,3 @@ def sgd(?):
 def pseudoinverse(?):
     #
     return w
-"""
