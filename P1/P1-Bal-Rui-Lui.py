@@ -218,6 +218,8 @@ def pseudoinverse(x,y):
     U,D,V_t = np.linalg.svd(x)
     inverse_D = np.linalg.inv(np.diag(D))
     V = V_t.transpose()
+    inverse_X = V.dot(inverse_D).dot(inverse_D).dot(V.transpose())
+    w = inverse_X.dot(y)
     return w
 
 
