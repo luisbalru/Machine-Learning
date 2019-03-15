@@ -240,6 +240,22 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
+
+# CALCULANDO EL MEJOR LEARNING RATE PARA SGD
+
+rates = np.linspace(0.01,1,num=100)
+datos = []
+for i in rates:
+    print("Iteración ",i)
+    w = sgd(x,y,i,500,64,10**(-3))
+    e = Err(x,y,w)
+    datos.append([i,e])
+
+datos = np.array(datos)
+print(datos)
+plt.scatter(datos[:,0],datos[:,1])
+plt.show()
+"""
 w = sgd(x, y, 0.01, 500, 64,10**(-3))
 
 print("Resultados del error en el Gradiente Descendente Estocástico")
@@ -267,3 +283,4 @@ plt.ylabel('Simetria')
 plt.legend()
 plt.title('SGD')
 plt.show()
+"""
