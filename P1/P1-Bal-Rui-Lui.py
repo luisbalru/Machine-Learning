@@ -22,7 +22,7 @@ np.random.seed(77145416)
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
 
-
+"""
 # ALGORITMO DE GRADIENTE DESCENDENTE
 # - El parámetro E se refiere a una empresión de la librería de cálculo simbólico
 #   sympy para calcular las derivadas parciales y generalizar la función lo máximo posible.
@@ -134,7 +134,7 @@ for i in range(0,len(datos)):
     print("Punto de inicio: ", array[i])
     print('(x,y) = ', datos[i][0])
     print('Valor mínimo: ',datos[i][1])
-
+"""
 
 #print(datos)
 
@@ -207,12 +207,19 @@ def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
             w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
         iter = iter + 1
     return w
-"""
-# Pseudoinversa
-def pseudoinverse(?):
-    #
+
+
+# PSEUDOINVERSA
+# Calcula la pseudoinversa (Moore-Penrose) de una matriz. Se basa en la utilización
+# de la descomposición en valores singulares (SVD) vista en teoría.
+
+
+def pseudoinverse(x,y):
+    U,D,V_t = np.linalg.svd(x)
+    inverse_D = np.linalg.inv(np.diag(D))
+    V = V_t.transpose()
     return w
-"""
+
 
 # Lectura de los datos de entrenamiento
 x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
@@ -226,3 +233,13 @@ print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
+
+# Para el grafico tomamos las columnas 1 y 2 de x que corresponden
+# la la intensidad y simetria, y distiguimos las coordenadas por
+# su valor en y, es decir por la clase a la que pertenezcan ({-1,1})
+plt.scatter(x[:,1],x[:,2], c=y)
+plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+plt.xlabel('Intensidad')
+plt.ylabel('Simetria')
+plt.title('SGD')
+plt.show()
