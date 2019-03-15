@@ -242,18 +242,28 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
 w = sgd(x, y, 0.01, 500, 64,10**(-3))
 
-print ('Bondad del resultado para grad. descendente estocastico:\n')
+print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-# Para el grafico tomamos las columnas 1 y 2 de x que corresponden
-# la la intensidad y simetria, y distiguimos las coordenadas por
-# su valor en y, es decir por la clase a la que pertenezcan ({-1,1})
-plt.scatter(x[:,1],x[:,2], c=y)
+label1 = []
+label5 = []
+for i in range(0,len(y)):
+    if y[i] == 1:
+        label5.append(x[i])
+    else:
+        label1.append(x[i])
+
+label5 = np.array(label5)
+label1 = np.array(label1)
+
+plt.scatter(label5[:,1],label5[:,2],c='b',label="5")
+plt.scatter(label1[:,1],label1[:,2],c='r',label="1")
 plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 plt.xlabel('Intensidad')
 plt.ylabel('Simetria')
+plt.legend()
 plt.title('SGD')
 plt.show()
