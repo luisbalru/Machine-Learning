@@ -276,3 +276,22 @@ plt.title('Pseudoinversa')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
+
+# Utilizando el algoritmo de pseudoinversa para comprobar los resultados
+
+w = pseudoinverse(x, y)
+
+print ('\nBondad del resultado para el algoritmo de la pseudoinversa:\n')
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+plt.scatter(x[:,1],x[:,2], c=y)
+plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+plt.xlabel('Intensidad')
+plt.ylabel('Simetria')
+plt.title('Pseudoinversa')
+plt.show()
+
+input("\n--- Pulsar tecla para continuar ---\n")
