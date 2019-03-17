@@ -326,3 +326,11 @@ plt.scatter(muestra[:,0],muestra[:,1])
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
+
+# b) Definir la función f(x_1,x_2) = sign((x_1-0.2)^2 + x_2^2 -0.6) y asignar etiquetas
+#    Introducir ruido
+
+def sign(x):
+    if x>=0:
+        return 1
+    return -1
