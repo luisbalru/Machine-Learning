@@ -260,38 +260,31 @@ print(datos)
 plt.scatter(datos[:,0],datos[:,1])
 plt.show()
 """
-w = sgd(x, y, 0.01, 500, 64,10**(-3))
+# Utilización del Gradiente descendente estocástico para nuestro dataset
 
+w = sgd(x, y, 0.01, 500, 64,10**(-3))
 print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
-input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsa una tecla para continuar ---\n")
 
-plt.scatter(x[:,1],x[:,2], c=y)
+# Separando etiquetas para poder escribir leyenda en el plot 
+label1 = []
+label5 = []
+for i in range(0,len(y)):
+    if y[i] == 1:
+        label5.append(x[i])
+    else:
+        label1.append(x[i])
+label5 = np.array(label5)
+label1 = np.array(label1)
+
+plt.scatter(label5[:,1],label5[:,2],c='b',label="5")
+plt.scatter(label1[:,1],label1[:,2],c='r',label="1")
 plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 plt.xlabel('Intensidad')
 plt.ylabel('Simetria')
-plt.title('Pseudoinversa')
+plt.legend()
+plt.title('SGD')
 plt.show()
-
-input("\n--- Pulsar tecla para continuar ---\n")
-
-# Utilizando el algoritmo de pseudoinversa para comprobar los resultados
-
-w = pseudoinverse(x, y)
-
-print ('\nBondad del resultado para el algoritmo de la pseudoinversa:\n')
-print ("Ein: ", Err(x,y,w))
-print ("Eout: ", Err(x_test, y_test, w))
-
-input("\n--- Pulsar tecla para continuar ---\n")
-
-plt.scatter(x[:,1],x[:,2], c=y)
-plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
-plt.xlabel('Intensidad')
-plt.ylabel('Simetria')
-plt.title('Pseudoinversa')
-plt.show()
-
-input("\n--- Pulsar tecla para continuar ---\n")
