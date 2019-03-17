@@ -212,12 +212,26 @@ def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
 # PSEUDOINVERSA
 # Calcula la pseudoinversa (Moore-Penrose) de una matriz. Se basa en la utilización
 # de la descomposición en valores singulares (SVD) vista en teoría.
-
+# En general, la descomposición en valores singulares de una matriz devuelve una expresióm
+# del tipo X=UDV^t, siendo U, V matrices ortogonales y D una matriz (no necesariamente cuadrada)
+# que contiene en la diagonal los valores singulares de X. En el intento de calcular
+# (X^tX)^(-1) = VD^tDV^t, por lo que se compatibiliza el producto de las "matrices diagonales"
+# En el caso de Python, np.linalg.svd devuelve la matriz U (array2D), D (array1D con los valores singulares)
+# y V_t (array2D).
+# Parámetros: x --> Dataset (matriz)
+#             y --> valores reales para la clasificación
+# Return: Coeficientes calculados
 
 def pseudoinverse(x,y):
     U,D,V_t = np.linalg.svd(x)
+    # D es un array1D con los valores singulares (distinto de 0), luego es posible
+    # calcular la inversa. En este caso, el inverso de cada elemento de la diagonal
     inverse_D = np.linalg.inv(np.diag(D))
     V = V_t.transpose()
+    # El producto D^t D teórico genera una matriz cuadrada que coincide con el producto
+    # matricial de dos matrices iguales cuya diagonal contiene a los valores singulares
+    inverse_X = V.dot(inverse_D).dot(inverse_D).dot(V.transpose())
+    w = inverse_X.dot(y)
     return w
 
 
@@ -227,9 +241,24 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
 
-w = pseudoinverse(x, y)
+# CALCULANDO EL MEJOR LEARNING RATE PARA SGD
 
-print ('\nBondad del resultado para el algoritmo de la pseudoinversa:\n')
+rates = np.linspace(0.01,1,num=100)
+datos = []
+for i in rates:
+    print("Iteración ",i)
+    w = sgd(x,y,i,500,64,10**(-3))
+    e = Err(x,y,w)
+    datos.append([i,e])
+
+datos = np.array(datos)
+print(datos)
+plt.scatter(datos[:,0],datos[:,1])
+plt.show()
+"""
+w = sgd(x, y, 0.01, 500, 64,10**(-3))
+
+print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
