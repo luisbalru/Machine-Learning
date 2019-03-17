@@ -230,7 +230,7 @@ def pseudoinverse(x,y):
     V = V_t.transpose()
     # El producto D^t D teórico genera una matriz cuadrada que coincide con el producto
     # matricial de dos matrices iguales cuya diagonal contiene a los valores singulares
-    inverse_X = V.dot(inverse_D).dot(inverse_D).dot(V.transpose())
+    inverse_X = V.dot(inverse_D).dot(inverse_D).dot(V.transpose()).dot(x.transpose())
     w = inverse_X.dot(y)
     return w
 
@@ -269,7 +269,7 @@ print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-# Separando etiquetas para poder escribir leyenda en el plot 
+# Separando etiquetas para poder escribir leyenda en el plot
 label1 = []
 label5 = []
 for i in range(0,len(y)):
@@ -280,11 +280,33 @@ for i in range(0,len(y)):
 label5 = np.array(label5)
 label1 = np.array(label1)
 
-plt.scatter(label5[:,1],label5[:,2],c='b',label="5")
+# Plot de la separación de datos SGD
+
+plt.scatter(label5[:,1],label5[:,2],c='g',label="5")
 plt.scatter(label1[:,1],label1[:,2],c='r',label="1")
 plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 plt.xlabel('Intensidad')
 plt.ylabel('Simetria')
 plt.legend()
 plt.title('SGD')
+plt.show()
+
+# Aplicación del algoritmo de la pseudoinversa
+
+w = pseudoinverse(x,y)
+print("Resultados del error en el algoritmo de pseudoinversa")
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+# Plot de la separación de datos pseudoinversa
+
+plt.scatter(label5[:,1],label5[:,2],c='g',label="5")
+plt.scatter(label1[:,1],label1[:,2],c='r',label="1")
+plt.plot([0, 1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+plt.xlabel('Intensidad')
+plt.ylabel('Simetria')
+plt.legend()
+plt.title('Pseudoinversa')
 plt.show()
