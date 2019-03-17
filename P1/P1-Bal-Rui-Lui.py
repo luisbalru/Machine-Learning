@@ -310,3 +310,19 @@ plt.ylabel('Simetria')
 plt.legend()
 plt.title('Pseudoinversa')
 plt.show()
+
+################### EJERCICIO 2 ###################################
+
+# Función que genera datos en el cuadrado [-size,size]x[-size,size]
+def simula_unif(N,2,size):
+    return np.random.uniform(-size,size,(N,d))
+
+#### EXPERIMENTO
+
+# a) Generar una muestra de entrenamiento de 1000 puntos en [-1,1]x[-1,1]
+
+muestra = simula_unif(1000,2,1)
+plt.scatter(x[:,0],x[:,1])
+plt.show()
+
+input("\n--- Pulsar tecla para continuar ---\n")
