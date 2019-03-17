@@ -261,7 +261,7 @@ plt.scatter(datos[:,0],datos[:,1])
 plt.show()
 """
 # Utilización del Gradiente descendente estocástico para nuestro dataset
-
+"""
 w = sgd(x, y, 0.01, 500, 64,10**(-3))
 print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
@@ -310,11 +310,11 @@ plt.ylabel('Simetria')
 plt.legend()
 plt.title('Pseudoinversa')
 plt.show()
-
+"""
 ################### EJERCICIO 2 ###################################
 
 # Función que genera datos en el cuadrado [-size,size]x[-size,size]
-def simula_unif(N,2,size):
+def simula_unif(N,d,size):
     return np.random.uniform(-size,size,(N,d))
 
 #### EXPERIMENTO
@@ -322,7 +322,7 @@ def simula_unif(N,2,size):
 # a) Generar una muestra de entrenamiento de 1000 puntos en [-1,1]x[-1,1]
 
 muestra = simula_unif(1000,2,1)
-plt.scatter(x[:,0],x[:,1])
+plt.scatter(muestra[:,0],muestra[:,1])
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
