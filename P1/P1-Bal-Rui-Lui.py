@@ -240,13 +240,17 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
-
+"""
 # CALCULANDO EL MEJOR LEARNING RATE PARA SGD
+# Miro entre 0.01 y 0.1 100 iteraciones.
+# Miro entre 0.01 y 0.12 100 iteraciones
+# Miro entre 0.01 y 0.04 --> Mejores resultados con error 0.081...
+# Miro entre 0.55 y 0.65 200 iters
 
-rates = np.linspace(0.01,1,num=100)
+
+rates = np.linspace(0.01,0.04,num=200)
 datos = []
 for i in rates:
-    print("Iteración ",i)
     w = sgd(x,y,i,500,64,10**(-3))
     e = Err(x,y,w)
     datos.append([i,e])
