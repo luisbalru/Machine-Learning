@@ -314,7 +314,7 @@ plt.ylabel('Simetria')
 plt.legend()
 plt.title('Pseudoinversa')
 plt.show()
-"""
+
 ################### EJERCICIO 2 ###################################
 
 # Función que genera datos en el cuadrado [-size,size]x[-size,size]
@@ -434,3 +434,20 @@ print("Error interior medio: ",error_in)
 print("Error exterior medio: ",error_out)
 
 input("\n--- Pulsar tecla para continuar ---\n")
+"""
+################# BONUS #################
+
+# Definiendo f de nuevo
+print("Calculando f y su hessiana")
+
+x, y = symbols('x y', real=True)
+f = x**2 + 2*y**2 + 2*sin(2*math.pi*x)*sin(2*math.pi*y)
+
+def hessianaf(w):
+    der_x = diff(diff(f,x),x)
+    der_y = diff(diff(f,y),y)
+    der_xy = diff(der_x,y)
+    return np.array([np.array(der_x.subs([(x,w[0]),(y,w[1])]),der_xy.subs([(x,w[0]),(y,w[1])])),np.array(der_xy.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])]))])
+
+def evalf(w):
+    return f.subs([(x,w[0]),(y,w[1])])
