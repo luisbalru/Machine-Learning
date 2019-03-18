@@ -16,7 +16,7 @@ from sympy.functions import exp, sin
 
 
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
-np.random.seed(77145416)
+#np.random.seed(77145416)
 """
 
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
@@ -172,7 +172,7 @@ def readData(file_x, file_y):
 	y = np.array(y, np.float64)
 
 	return x, y
-
+"""
 # FUNCIÓN PARA CALCULAR EL ERROR
 # Efectúa el producto escalar de x y w, lo que genera la salida
 # de la función lineal que hemos interpolado. Después, calcula la
@@ -210,7 +210,7 @@ def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
         iter = iter + 1
     return w
 
-
+"""
 # PSEUDOINVERSA
 # Calcula la pseudoinversa (Moore-Penrose) de una matriz. Se basa en la utilización
 # de la descomposición en valores singulares (SVD) vista en teoría.
@@ -357,7 +357,6 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 
 # Definiendo dataset --> matriz con la muestra generada y con la nueva columna asociada a cada tupla según su signo
-column = np.array(column)
 muestra = np.array(muestra)
 
 print("Evaluando los elementos de la muestra en f e introduciendo ruido... Creando dataset")
@@ -377,4 +376,40 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
+# Generado dataset uniendo los datos generados a una columna de 1, tal y como
+# se define en teoría
+print("Aplicando SGD sobre el nuevo dataset")
 dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
+w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
+print("W",w)
+print("Resultados del error en el Gradiente Descendente Estocástico sobre el nuevo dataset")
+print("Ein: ", Err(dataset,column,w))
+print("Modelo de regresión lineal")
+
+plt.scatter(muestra[:,0],muestra[:,1],c=column)
+plt.plot([-1, 1], [-w[0]/w[2]+w[1]/w[2], -w[0]/w[2]-w[1]/w[2]])
+plt.xlabel("x_1")
+plt.ylabel("x_2")
+plt.title("Modelo de regresión lineal")
+plt.axis([-1,1,-1,1])
+plt.show()
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+# d) Ejecutar los apartados anteriores 1000 veces
+
+error_in = 0
+error_out = 0
+
+for i in range(0,1000):
+    np.random.seed()
+    muestra = simula_unif(1000,2,1)
+    for i in range(0,len(muestra)):
+        column.append(f_1(muestra[i][0],muestra[i][1]))
+
+    column = np.array(column)
+    muestra = np.array(muestra)
+    indices = np.random.choice(len(column),int(0.1*len(column)),replace=False)
+    column[indices] = -column[indices]
+    dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
+    w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
