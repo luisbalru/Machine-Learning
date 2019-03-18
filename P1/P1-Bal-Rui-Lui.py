@@ -17,12 +17,13 @@ from sympy.functions import exp, sin
 
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
 np.random.seed(77145416)
-
 """
+
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
-
 """
+
+
 # ALGORITMO DE GRADIENTE DESCENDENTE
 # - El parámetro E se refiere a una empresión de la librería de cálculo simbólico
 #   sympy para calcular las derivadas parciales y generalizar la función lo máximo posible.
@@ -134,14 +135,15 @@ for i in range(0,len(datos)):
     print("Punto de inicio: ", array[i])
     print('(x,y) = ', datos[i][0])
     print('Valor mínimo: ',datos[i][1])
-"""
+
 
 #print(datos)
 
-"""
-Ejercicio 2. Regresión lineal
-"""
 
+"""
+#Ejercicio 2. Regresión lineal
+
+"""
 ################# Ejercicio 1 ##########################
 
 print('EJERCICIO SOBRE REGRESION LINEAL\n')
@@ -240,7 +242,7 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
-"""
+
 # CALCULANDO EL MEJOR LEARNING RATE PARA SGD
 # Miro entre 0.01 y 0.1 100 iteraciones.
 # Miro entre 0.01 y 0.12 100 iteraciones
@@ -259,10 +261,12 @@ datos = np.array(datos)
 print(datos)
 plt.scatter(datos[:,0],datos[:,1])
 plt.show()
-"""
+
 # Utilización del Gradiente descendente estocástico para nuestro dataset
-"""
+
 w = sgd(x, y, 0.01, 500, 64,10**(-3))
+print("x",x)
+print("W",w)
 print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
@@ -340,4 +344,37 @@ def sign(x):
 
 # Función pedida en el enunciado
 def f_1(x_1,x_2):
-    return sign((x_1-0.2)^2 + x_2^2 - 0.6)
+    return sign((x_1-0.2)**2 + x_2**2 - 0.6)
+
+column = []
+for i in range(0,len(muestra)):
+    column.append(f_1(muestra[i][0],muestra[i][1]))
+
+column = np.array(column)
+
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+
+# Definiendo dataset --> matriz con la muestra generada y con la nueva columna asociada a cada tupla según su signo
+column = np.array(column)
+muestra = np.array(muestra)
+
+print("Evaluando los elementos de la muestra en f e introduciendo ruido... Creando dataset")
+
+# Introduciendo ruido aleatorio en el 10% de los datos
+# Para ello, defino un conjunto de índices a lo largo de los índices de column, tomando un 10% de ellos.
+# Es importante no reemplazar para que salgan índices únicos
+# Tras ello, cambio el signo de las etiquetas situadas en esos índices
+indices = np.random.choice(len(column),int(0.1*len(column)),replace=False)
+column[indices] = -column[indices]
+
+print("Dibujando las etiquetas obtenidas...")
+plt.scatter(muestra[:,0],muestra[:,1],c=column)
+plt.xlabel("x_1")
+plt.ylabel("x_2")
+plt.show()
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
