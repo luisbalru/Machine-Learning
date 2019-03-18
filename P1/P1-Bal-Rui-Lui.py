@@ -404,12 +404,33 @@ error_out = 0
 for i in range(0,1000):
     np.random.seed()
     muestra = simula_unif(1000,2,1)
+    column = []
     for i in range(0,len(muestra)):
         column.append(f_1(muestra[i][0],muestra[i][1]))
 
-    column = np.array(column)
+    column = np.array(column, np.float64)
     muestra = np.array(muestra)
     indices = np.random.choice(len(column),int(0.1*len(column)),replace=False)
     column[indices] = -column[indices]
     dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
     w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
+    test = simula_unif(1000,2,1)
+    col_test = []
+    for i in range(0,len(test)):
+        col_test.append(f_1(test[i][0],test[i][1]))
+    col_test = np.array(col_test, np.float64)
+    test = np.array(test)
+    indices = np.random.choice(len(col_test),int(0.1*len(col_test)),replace=False)
+    col_test[indices] = -col_test[indices]
+    data_test = np.hstack((np.ones(shape=(test.shape[0],1)),test))
+    error_in += Err(dataset,column,w)
+    error_out += Err(data_test,col_test,w)
+
+error_in = error_in/1000
+error_out = error_out/1000
+
+print("Error medio interior y exterior")
+print("Error interior medio: ",error_in)
+print("Error exterior medio: ",error_out)
+
+input("\n--- Pulsar tecla para continuar ---\n")
