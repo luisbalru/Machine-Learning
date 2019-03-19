@@ -72,7 +72,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 # Apartado b)
 print("Apartado b)")
-w,k,data = GD(E,np.array([1.0,1.0],np.float64),0.01,gradientE,evalE,10**(-14))
+w,k,data = GD(np.array([1.0,1.0],np.float64),0.01,gradientE,evalE,10**(-14))
 print("El número de iteraciones necesarias para epsilon = 10**(-14) es ",k)
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -444,8 +444,9 @@ def hessianaf(w):
     der_x = diff(diff(f,x),x)
     der_y = diff(diff(f,y),y)
     der_xy = diff(der_x,y)
-    return np.array([np.array(der_x.subs([(x,w[0]),(y,w[1])]),der_xy.subs([(x,w[0]),(y,w[1])])),np.array(der_xy.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])]))])
+    return np.matrix([[der_x.subs([(x,w[0]),(y,w[1])]),der_xy.subs([(x,w[0]),(y,w[1])])],[der_xy.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])])]],dtype='float')
 
+#print(np.linalg.inv(hessianaf(np.array([1.0,1.0]))))
 print("Definiendo el método de Newton")
 
 ## MÉTODO DE NEWTON
@@ -461,10 +462,15 @@ print("Definiendo el método de Newton")
 
 
 def MetodoNewton(w,learning_rate,gradientf,f,hessf, max_iters = 15000000):
-    medidas = [f(w)]
+    medidas = []
+    medidas.append(f(w))
     for i in range(0,max_iters):
         last_w = w
         w = w - learning_rate * np.linalg.inv(hessf(w)).dot(gradientf(w))
-        medidas.insert(len(medidas),f(w))
-
+        medidas.append(f(w))
     return w, medidas
+
+# Ejecutamos el metodo de Newton con punto de inicio (1,1) y lr 0.01
+print ('BONUS: metodo de Newton\n')
+print ('Punto de inicio: (1.0, 1.0), Learning rate: 0.01\n')
+w, g = MetodoNewton(np.array([1.0,1.0]), 0.01, gradientf, evalf, hessianaf, 50)
