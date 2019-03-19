@@ -515,10 +515,12 @@ def MetodoNewton(w,learning_rate,gradientf,f_2,hessf, max_iters = 15000000):
 
 print("EJECUCIONES EN LOS PUNTOS DEL APARTADO ANTERIOR")
 
-#
+
 print('(1.0, 1.0), LR=0.01')
 w, g = MetodoNewton(np.array([1.0,1.0],np.float64), 0.01, gradienteF, f, hessianaF, 50)
-print("w", w)
+print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
 plt.plot(range(0,51),g)
 plt.show()
 print("Mínimo de f: " , f(w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
