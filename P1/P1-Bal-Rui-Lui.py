@@ -21,7 +21,7 @@ from sympy.functions import exp, sin
 
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
-"""
+
 
 
 # ALGORITMO DE GRADIENTE DESCENDENTE
@@ -32,7 +32,7 @@ Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 #   y número de variables del caso en cuestión.
 # - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
 #   definirla en cada caso.
-
+"""
 def GD(w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
     num_iter = 0
     diferencia = 1
@@ -85,7 +85,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 
 ################## Ejercicio 1.3 #################################
-"""
+
 x, y = symbols('x y', real=True)
 f = x**2 + 2*y**2 + 2*sin(2*math.pi*x)*sin(2*math.pi*y)
 
@@ -96,13 +96,13 @@ def gradientf(w):
 
 def evalf(w):
     return f.subs([(x,w[0]),(y,w[1])])
-"""
+
 print("#################################################")
 print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
 
-w,k,data = GD(f,np.array([0.1,0.1],np.float64),0.01,gradientf,evalf,10**(-20),50)
+w,k,data = GD(np.array([0.1,0.1],np.float64),0.01,gradientf,evalf,10**(-20),50)
 print("Coordenadas del mínimo: ", w)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
@@ -112,7 +112,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
-w,k,data = GD(f,np.array([0.1,0.1],np.float64),0.1,gradientf,evalf,10**(-20),50)
+w,k,data = GD(np.array([0.1,0.1],np.float64),0.1,gradientf,evalf,10**(-20),50)
 plt.plot(range(0,k+1),data,'bo')
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
@@ -172,7 +172,7 @@ def readData(file_x, file_y):
 	y = np.array(y, np.float64)
 
 	return x, y
-"""
+
 # FUNCIÓN PARA CALCULAR EL ERROR
 # Efectúa el producto escalar de x y w, lo que genera la salida
 # de la función lineal que hemos interpolado. Después, calcula la
@@ -210,7 +210,7 @@ def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
         iter = iter + 1
     return w
 
-"""
+
 # PSEUDOINVERSA
 # Calcula la pseudoinversa (Moore-Penrose) de una matriz. Se basa en la utilización
 # de la descomposición en valores singulares (SVD) vista en teoría.
@@ -437,16 +437,61 @@ input("\n--- Pulsar tecla para continuar ---\n")
 """
 ################# BONUS #################
 
+print("########### EJERCICIO BONUS ############")
+
 # Definiendo f de nuevo
 print("Calculando f y su hessiana")
 
-def hessianaf(w):
-    der_x = diff(diff(f,x),x)
-    der_y = diff(diff(f,y),y)
-    der_xy = diff(der_x,y)
-    return np.matrix([[der_x.subs([(x,w[0]),(y,w[1])]),der_xy.subs([(x,w[0]),(y,w[1])])],[der_xy.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])])]],dtype='float')
+# En el ejercicio 1 utilicé sympy para definir de forma simbólica f
+# Ahora, con el cálculo de la hessiana, me he encontrado con muchos errores
+# así que, por simplicidad, he decidido definir los distintos órdenes de la función
+# f y escribir explícitamente las derivadas (así cubro las dos posibilidades y, por
+# otra parte, se gana muchísimo en eficiencia).
 
-#print(np.linalg.inv(hessianaf(np.array([1.0,1.0]))))
+def f(w):
+	x = w[0]
+	y = w[1]
+	return x**2+2*y**2+2*math.sin(2*math.pi*x)*math.sin(2*math.pi*y)
+
+# Derivada parcial de f respecto de x
+def f_x(w):
+	x = w[0]
+	y = w[1]
+	return 2*x+4*math.pi*math.sin(2*math.pi*y)*math.cos(2*math.pi*x)
+
+# Derivada parcial de f respecto de y
+def f_y(w):
+	x = w[0]
+	y = w[1]
+	return 4*y+4*math.pi*math.sin(2*math.pi*x)*math.cos(2*math.pi*y)
+
+# Gradiente de f
+def gradienteF(w):
+	return np.array([f_x(w), f_y(w)])
+
+# Derivada segunda de f respecto de x dos veces
+def f_xx(w):
+	x = w[0]
+	y = w[1]
+	return 2 - 8*(math.pi)**2*math.sin(2*math.pi*y)*math.sin(2*math.pi*x)
+
+# Derivada segunda de f respecto de x, y luego, y (mismo valor que el caso análogo por el lema de Schwartz)
+def f_xy(w):
+	x = w[0]
+	y = w[1]
+	return 8*(math.pi)**2*math.cos(2*math.pi*x)*math.cos(2*math.pi*y)
+
+# Derivada segunda de f respecto de y dos veces
+def f_yy(w):
+	x = w[0]
+	y = w[1]
+	return 4 - 8*(math.pi)**2*math.sin(2*math.pi*x)*math.sin(2*math.pi*y)
+
+# Matriz Hessiana de f
+def hessianaF(w):
+	return np.array([np.array([f_xx(w), f_xy(w)]), np.array([f_xy(w), f_yy(w)])])
+
+
 print("Definiendo el método de Newton")
 
 ## MÉTODO DE NEWTON
@@ -460,17 +505,20 @@ print("Definiendo el método de Newton")
 # por lo que la convergencia, para las funciones que son suficientemente regulares,
 # es mucho más potente.
 
-
-def MetodoNewton(w,learning_rate,gradientf,f,hessf, max_iters = 15000000):
-    medidas = []
-    medidas.append(f(w))
+def MetodoNewton(w,learning_rate,gradientf,f_2,hessf, max_iters = 15000000):
+    medida = [f_2(w)]
     for i in range(0,max_iters):
         last_w = w
         w = w - learning_rate * np.linalg.inv(hessf(w)).dot(gradientf(w))
-        medidas.append(f(w))
-    return w, medidas
+        medida.insert(len(medida),f_2(w))
+    return w, medida
 
-# Ejecutamos el metodo de Newton con punto de inicio (1,1) y lr 0.01
-print ('BONUS: metodo de Newton\n')
-print ('Punto de inicio: (1.0, 1.0), Learning rate: 0.01\n')
-w, g = MetodoNewton(np.array([1.0,1.0]), 0.01, gradientf, evalf, hessianaf, 50)
+print("EJECUCIONES EN LOS PUNTOS DEL APARTADO ANTERIOR")
+
+#
+print('(1.0, 1.0), LR=0.01')
+w, g = MetodoNewton(np.array([1.0,1.0],np.float64), 0.01, gradienteF, f, hessianaF, 50)
+print("w", w)
+plt.plot(range(0,51),g)
+plt.show()
+print("Mínimo de f: " , f(w))
