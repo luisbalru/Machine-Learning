@@ -33,7 +33,7 @@ Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 # - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
 #   definirla en cada caso.
 
-def GD(E,w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
+def GD(w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
     num_iter = 0
     diferencia = 1
     medidas = [f(w)]
@@ -85,7 +85,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 
 ################## Ejercicio 1.3 #################################
-
+"""
 x, y = symbols('x y', real=True)
 f = x**2 + 2*y**2 + 2*sin(2*math.pi*x)*sin(2*math.pi*y)
 
@@ -96,7 +96,7 @@ def gradientf(w):
 
 def evalf(w):
     return f.subs([(x,w[0]),(y,w[1])])
-
+"""
 print("#################################################")
 print("EJERCICIO 1.3")
 # Apartado a)
@@ -440,14 +440,31 @@ input("\n--- Pulsar tecla para continuar ---\n")
 # Definiendo f de nuevo
 print("Calculando f y su hessiana")
 
-x, y = symbols('x y', real=True)
-f = x**2 + 2*y**2 + 2*sin(2*math.pi*x)*sin(2*math.pi*y)
-
 def hessianaf(w):
     der_x = diff(diff(f,x),x)
     der_y = diff(diff(f,y),y)
     der_xy = diff(der_x,y)
     return np.array([np.array(der_x.subs([(x,w[0]),(y,w[1])]),der_xy.subs([(x,w[0]),(y,w[1])])),np.array(der_xy.subs([(x,w[0]),(y,w[1])]),der_y.subs([(x,w[0]),(y,w[1])]))])
 
-def evalf(w):
-    return f.subs([(x,w[0]),(y,w[1])])
+print("Definiendo el método de Newton")
+
+## MÉTODO DE NEWTON
+# Parámetros:
+#   - w: vector inicial w
+#   - learning_rate
+#   - gradientf: Gradiente de la función f
+#   - f: Función a la que le aplicamos el método de minimización
+#   - hessf: Matriz hessiana de f
+# Método con gran parecido al Gradiente Estocástico, introduciendo la Hessiana de f,
+# por lo que la convergencia, para las funciones que son suficientemente regulares,
+# es mucho más potente.
+
+
+def MetodoNewton(w,learning_rate,gradientf,f,hessf, max_iters = 15000000):
+    medidas = [f(w)]
+    for i in range(0,max_iters):
+        last_w = w
+        w = w - learning_rate * np.linalg.inv(hessf(w)).dot(gradientf(w))
+        medidas.insert(len(medidas),f(w))
+
+    return w, medidas
