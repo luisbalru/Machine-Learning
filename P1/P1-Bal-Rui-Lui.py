@@ -32,7 +32,7 @@ Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 #   y número de variables del caso en cuestión.
 # - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
 #   definirla en cada caso.
-"""
+
 def GD(w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
     num_iter = 0
     diferencia = 1
@@ -434,7 +434,7 @@ print("Error interior medio: ",error_in)
 print("Error exterior medio: ",error_out)
 
 input("\n--- Pulsar tecla para continuar ---\n")
-"""
+
 ################# BONUS #################
 
 print("########### EJERCICIO BONUS ############")
