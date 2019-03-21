@@ -132,9 +132,96 @@ Probamos ahora el algoritmo en distintos puntos iniciales para ver la importanci
 
 \subsubsection{Conclusión sobre la verdadera dificultad de encontrar el mínimo global de una función arbitraria}
 
+Tanto en análisis real de una variable como en varias variables reales, la búsqueda de extremos relativos está asociada al concepto de derivada. En el primer caso, buscamos mínimos en el interior del intervalo de definición de la función derivando e igualando a cero la derivada. En el caso de varias variables, calculamos el gradiente e igualamos a cero para los extremos interiores y, en la superficie, utilizamos los multiplicadores de Lagrange. En suma, la optimización está ligada a la derivación. La derivabilidad de una función es un concepto totalmente local, esto es, se puede estudiar con todo rigor en un entorno abierto de un punto. El llamado carácter local de la derivabilidad favorece en muchas demostraciones, en las que basta con comprobarlo para un entorno abierto ya que la extensión al dominio completo es trivial. Sin embargo, la desventaja es que los extremos, en este caso los mínimos, pueden ser relativos. Por tanto, la verdadera dificultad a la hora de encontrar el mínimo global de una función arbitraria es toparse con mínimos locales. Gradiente Descendente es ejemplo de un algoritmo versátil a la hora de encontrar mínimos, pero sólo da garantías para entornos del punto de inicio, cayendo en mínimos locales y olvidándose, a buen seguro, del mínimo global (si es que existe).
+
+\section{Ejercicio sobre Regresión Lineal}
+
+\subsection{Modelo de regresión lineal con SGD y Pseudoinversa}
+
+En este ejercicio se pide generar un modelo de regresión lineal con dos algoritmos distintos sobre el conjunto de datos extraído de imágenes de dígitos manuscritos. Las etiquetas son 1 o -1, dependiendo de si la imagen es un 5 o un 1, respectivamente.
+
+\subsubsection{SGD}
+
+El algoritmo SGD introduce una modificación sobre GD: en vez de tomar todo el conjunto de datos, elige de forma aleatoria un subconjunto (el llamado minibatch) y se va acumulando, como derivada del error, la diferencia entre el valor estimado y el valor real de la etiqueta. A diferencia de gradiente descendiente, SGD encuentra mínimos locales en funciones no convexas. \\
+
+SGD recibe, como parámetros, el conjunto de datos, etiquetas, learning rate, el tamaño de los subconjunto a coger, una tolerancia y el número máximo de iteraciones. Como no se nos especifican, me dispongo a hacer un estudio sobre qué parámetros escoger. En concreto, qué tasa de aprendizaje y qué tamaño de minibatch. \\
+
+En primer lugar, estudio la tasa de aprendizaje. Para ello, genero números equiespaciados en distintos intervalos y comparo los errores:
 
 
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{error1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 1} 
+	\label{fig:error1}
+\end{figure}
 
+Como se puede apreciar, la mayoría de los puntos no tienen imagen. Eso se debe a que el error es tan grande que se le asigna el valor infinito. Parece que los mejores valores están entre alrededor de 0.1 y a partir de 0.6.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{error2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 0.1} 
+	\label{fig:error2}
+\end{figure}
+
+Aquí se puede observar que los errores más pequeños están sobre 0.08. Veámoslo de más cerca:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{error3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 0.04} 
+	\label{fig:error3}
+\end{figure}
+
+El mejor resultado está sobre  0.01, donde el error está cerca de 0.081. Por tanto, escojo ese learning rate.
+
+Para el tamaño del minibatch, la literatura recomienda tamaños entre 32 y 128 (\cite{lfd}).
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{minibatch.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica Minibatch-Error entre 32 y 128} 
+	\label{fig:mb}
+\end{figure}
+
+Los errores son prácticamente iguales. Con una tabla salimos de dudas:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Tamaño & Ein            \\ \hline
+		32     & 8.25503056e-02 \\ \hline
+		50     & 8.21136740e-02 \\ \hline
+		64     & 8.22251817e-02 \\ \hline
+		80     & 8.18136400e-02 \\ \hline
+		100    & 8.18921430e-02 \\ \hline
+		110    & 8.18857729e-02 \\ \hline
+		128    & 8.19507535e-02 \\ \hline
+	\end{tabular}
+	\caption{Tabla TamañoMinibatch-Error}
+	\label{table2}
+\end{table}
+
+Por tanto, tomo el minibatch con tamaño 80.\\
+
+Una vez elegidos los parámetros, ejecuto el algoritmo de Gradiente Descendente Estocástico y se obtienen los siguientes resultados:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{sgd.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Algoritmo SGD sobre el conjunto de datos de imágenes manuscritas} 
+	\label{fig:sgd}
+\end{figure}
+
+Ademas, $w=(-1.24216077,-0.14997997,-0.45243432)$, $E_{in} = 0.0819386655754886$ y $E_{out} = 0.13418223441350954$.
+Merece la pena detenerse para señalar la recta que divide el espacio separando las dos clases. En el eje X represento la intensidad, que se mueve entre 0 y 1. Si $w$ es un vector con las coordenadas estimadas después de la regresión, la ecuación general de la recta tiene la siguiente expresión:
+
+$$y = \frac{-w[1]}{w[2]}x - \frac{w[0]}{w[2]}$$
+
+En $x=0$, la recta corta al eje Y en el punto $y = \frac{-w[0]}{w[2]}$. En $x=1$, la recta tiene una ordenada de $y=\frac{-w[1]}{w[2]}- \frac{w[0]}{w[2]}$, por tanto, así se define la recta en la orden \textit{plot} de \textit{Matplotlib}.
 \newpage
 \section{Bibliografía}
 
