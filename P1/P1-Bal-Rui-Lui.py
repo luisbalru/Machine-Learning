@@ -151,8 +151,7 @@ for i in range(0,len(datos)):
     print('Valor mínimo: ',datos[i][1])
 
 
-#print(datos)
-
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 """
 #Ejercicio 2. Regresión lineal
@@ -258,12 +257,39 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
 
 # CALCULANDO EL MEJOR LEARNING RATE PARA SGD
-# Miro entre 0.01 y 0.1 100 iteraciones.
+# Miro entre 0.01 y 1 100 iteraciones.
 # Miro entre 0.01 y 0.12 100 iteraciones
 # Miro entre 0.01 y 0.04 --> Mejores resultados con error 0.081...
 # Miro entre 0.55 y 0.65 200 iters
 
+"""
+rates = np.linspace(0.01,1,num=200)
+datos = []
+for i in rates:
+    w = sgd(x,y,i,500,64,10**(-3))
+    e = Err(x,y,w)
+    datos.append([i,e])
 
+datos = np.array(datos)
+plt.scatter(datos[:,0],datos[:,1])
+plt.xlabel("Learning rate")
+plt.ylabel("Ein cometido")
+plt.show()
+
+rates = np.linspace(0.01,0.1,num=200)
+datos = []
+for i in rates:
+    w = sgd(x,y,i,500,64,10**(-3))
+    e = Err(x,y,w)
+    datos.append([i,e])
+
+datos = np.array(datos)
+plt.scatter(datos[:,0],datos[:,1])
+plt.xlabel("Learning rate")
+plt.ylabel("Ein cometido")
+plt.show()
+"""
+print("Calculando el mejor learning rate")
 rates = np.linspace(0.01,0.04,num=200)
 datos = []
 for i in rates:
@@ -272,14 +298,34 @@ for i in rates:
     datos.append([i,e])
 
 datos = np.array(datos)
-print(datos)
 plt.scatter(datos[:,0],datos[:,1])
+plt.xlabel("Learning rate")
+plt.ylabel("Ein cometido")
 plt.show()
 
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+# Probando distintos tamaños para el minibatch
+# 80 es el mejor tamaño
+print("Calculando el mejor tamaño de minibatch")
+mb = [32,50,64,80,100,110,128]
+datos = []
+for i in mb:
+    w = sgd(x,y,0.01,500,i,10**(-3))
+    e = Err(x,y,w)
+    datos.append([i,e])
+
+datos = np.array(datos)
+print(datos)
+plt.scatter(datos[:,0],datos[:,1])
+plt.xlabel("Tamaño minibatch")
+plt.ylabel("Ein cometido")
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 # Utilización del Gradiente descendente estocástico para nuestro dataset
 
-w = sgd(x, y, 0.01, 500, 64,10**(-3))
-print("x",x)
+w = sgd(x, y, 0.01, 500, 80,10**(-3))
 print("W",w)
 print("Resultados del error en el Gradiente Descendente Estocástico")
 print ("Ein: ", Err(x,y,w))
@@ -334,6 +380,8 @@ plt.show()
 # Función que genera datos en el cuadrado [-size,size]x[-size,size]
 def simula_unif(N,d,size):
     return np.random.uniform(-size,size,(N,d))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 #### EXPERIMENTO
 
