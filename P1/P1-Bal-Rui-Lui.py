@@ -16,22 +16,27 @@ from sympy.functions import exp, sin
 
 
 # Fijo la semilla para garantizar la reproducibilidad de los resultados
-#np.random.seed(77145416)
-"""
+np.random.seed(77145416)
 
+"""
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
 
 
 
 # ALGORITMO DE GRADIENTE DESCENDENTE
-# - El parámetro E se refiere a una empresión de la librería de cálculo simbólico
-#   sympy para calcular las derivadas parciales y generalizar la función lo máximo posible.
-# - gradient es una función que calcula el gradiente. Es necesario definir esa función
+# - Función que implementa Gradiente Descendente.
+# - Parámetros:
+#   - w: vector de partida que almacenará el mínimo.
+#   - learning rate
+#   - gradient es una función que calcula el gradiente. Es necesario definir esa función
 #   para cada caso que queramos considerar, puesto que depende directamente del nombre
 #   y número de variables del caso en cuestión.
-# - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
+#   - f es la función que evalúa la expresión en los diferentes valores de w. También hay que
 #   definirla en cada caso.
+#   - epsilon fija el criterio de parada, de forma que si la diferencia de la
+#     imagen de dos w consecutivos es menor que epsilon, el algoritmo para.
+
 
 def GD(w,learning_rate,gradient,f,epsilon, max_iters = 15000000):
     num_iter = 0
@@ -65,6 +70,8 @@ def evalE(w):
 
 print("#################################################")
 print("EJERCICIO 1.2")
+# Calculando el mínimo
+
 # Apartado a)
 print("Apartado a)")
 print("El gradiente de E es: ", diff(E,u),",",diff(E,v))
@@ -81,6 +88,13 @@ print("Apartado c)")
 print("COORDENADAS:")
 print("Coordenada X: ", w[0])
 print("Coordenada Y: ", w[1])
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+
+plt.plot(range(0,k+1),data,'bo')
+plt.xlabel('Número de iteraciones')
+plt.ylabel('f(x,y)')
+plt.show()
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 
@@ -126,7 +140,7 @@ print("Apartado b)")
 datos = []
 array = np.array([(0.1,0.1),(1,1),(-0.5,-0.5),(-1,-1)])
 for n in array:
-    w,k,data = GD(f,n,0.01,gradientf,evalf,10**(-20),50)
+    w,k,data = GD(n,0.01,gradientf,evalf,10**(-20),50)
     datos.append([w,evalf(w)])
 
 datos = np.array(datos)
