@@ -222,6 +222,51 @@ Merece la pena detenerse para señalar la recta que divide el espacio separando 
 $$y = \frac{-w[1]}{w[2]}x - \frac{w[0]}{w[2]}$$
 
 En $x=0$, la recta corta al eje Y en el punto $y = \frac{-w[0]}{w[2]}$. En $x=1$, la recta tiene una ordenada de $y=\frac{-w[1]}{w[2]}- \frac{w[0]}{w[2]}$, por tanto, así se define la recta en la orden \textit{plot} de \textit{Matplotlib}.
+
+\subsubsection{Pseudoinversa}
+
+El algoritmo de pseudoinversa, a través de la descomposición en valores singulares de las matriz (dataset), genera, en general, mejores resultados que SGD. Sin embargo, calcular un inversa (o pseudo) es muy costoso computacionalmente. El resultado es el siguiente:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{pseudoinversa.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Algoritmo Pseudoinversa sobre el conjunto de datos de imágenes manuscritas} 
+	\label{fig:pseud}
+\end{figure}
+
+Los valores de error son menores que en SGD: $E_{in}=0.07918658628900395, E_{out}=0.13095383720052586$. Además, $w=(-1.11588016,-1.24859846,+0.49753165)$.
+\newpage
+
+\subsubsection{Experimento}
+
+Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entrenamiento de 1000 puntos en $[-1,1]\times[-1,1]$.
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{puntos.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{1000 puntos en $[-1,1]\times[-1,1]$.} 
+	\label{fig:puntos2D}
+\end{figure}
+
+A continuación, defino la función $f(x_1,x_2) = sign((x_1-0.2)^2+x_2^2-0.6)$. Con ella etiqueto los puntos generados anteriormente. Además, introduzco ruido en un 10\% de los puntos (cambio el signo tomando un 10\% de índices aleatoriamente). Es importante, en la adquisición de los índices, indicar que se haga sin reemplazamiento, para que no se puedan repetir. He aquí el resultado:
+
+Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entrenamiento de 1000 puntos en $[-1,1]\times[-1,1]$.
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{puntos2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Puntos etiquetas mediante la función f y con un 10\% de ruido} 
+	\label{fig:puntos2D-et}
+\end{figure}
+ 
+Sobre estos puntos, aplico un modelo de regresión lineal, SGD concretamente, para ver si las dos clases son linealmente separables. Es obvio que no lo son, así que la recta de regresión no va a servir para clasificar, como ahora veremos. El error obtenido es $E_{in} = 0.8962522665389515$ y $w=(0.02259206,-0.54045135,0.03210277)$
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{sgd-puntos.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{SGD evaluado en el dataset creado. Como se puede ver, no es una buena opción para clasificar} 
+	\label{fig:sgd-p}
+\end{figure}
+
+Para terminar nuestro experimento, ejecutamos todo lo anterior 1000 veces para así hacer una media de los errores y obtener resultados más firmes. El error medio interno obtenido es de 0.927829119571025 y el exterior es  0.9326862860312469. Es evidente, a la luz de los resultados del error y la propia intuición al ver la representación de los puntos, que el modelo de regresión lineal no es apropiado para este caso. La literatura indica que la regresión lineal es útil en espacios con tuplas etiquetadas en clases linealmente separables (\cite{lfd}, \cite{ctm}). Por tanto, para tratar este tipo de problemas sería necesario añadir a nuestro espacio de funciones objetivo algunas transformaciones no lineales, es decir, polinomios (potencias de los datos). Lo mejor de esta estrategia es que la clase de funciones sigue siendo lineal a pesar de incluir transformaciones no lineales.
 \newpage
 \section{Bibliografía}
 
