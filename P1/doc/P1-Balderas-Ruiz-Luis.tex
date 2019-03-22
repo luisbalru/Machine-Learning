@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{soul}
 
+
 %----------------------------------------------------------------------------------------
 %	TÍTULO Y DATOS DEL ALUMNO
 %----------------------------------------------------------------------------------------
@@ -272,8 +273,81 @@ Para terminar nuestro experimento, ejecutamos todo lo anterior 1000 veces para a
 
 Recuperamos la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$ para aplicarle el método de Newton. Dicho método es una extensión de Gradiente Descendente, basado en la inversión de la matriz Hessiana. Los resultados son generalmente más buenos (son necesarias menos iteraciones) aunque computacionalmente es más costoso. \\
 
-Desde un punto de vista pragmático, he definido funciones que evalúan $f$, $f_x,f_y, f_{xx},f_{yy}$ y $f_{xy}$. Sabemos que $f_{xy} = f_{yx}$ por la simetría de las segundas derivadas, debido a que el espacio es euclídeo y las derivadas segundas de $f$ son continuas (Teorema de Schwarz, Teorema de Clairaut, \cite{rudin}). Por último, defino el algoritmo utilizando la inversa de la matriz Hessiana (previamente calculada con un módulo) por el gradiente de $f$. Veamos cómo desciende el valor de la función con las iteraciones del método de Newton:
+Desde un punto de vista pragmático, he definido funciones que evalúan $f$, $f_x,f_y, f_{xx},f_{yy}$ y $f_{xy}$. Sabemos que $f_{xy} = f_{yx}$ por la simetría de las segundas derivadas, debido a que el espacio es euclídeo y las derivadas segundas de $f$ son continuas (Teorema de Schwarz, Teorema de Clairaut, \cite{rudin}). Por último, defino el algoritmo utilizando la inversa de la matriz Hessiana (previamente calculada con un módulo) por el gradiente de $f$. Veamos cómo desciende el valor de la función con las iteraciones del método de Newton tratando los puntos iniciales del ejercicio anterior:
 
+\subsection{Caso 1}
+
+Para $w_0=(1,1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=( 0.98039190351 , 0.990414773324 )$$ El mínimo es $f(w) = 2.93780445477$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (1,1) y $\eta = 0.01$} 
+	\label{fig:bon1}
+\end{figure}
+
+\subsection{Caso 2}
+Para $w_0=(0.1,0.1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(0.0492016140411 , 0.0489001338764)$$ El mínimo es $f(w) =0.191231609806$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (0.1,0.1) y $\eta = 0.01$} 
+	\label{fig:bon2}
+\end{figure}
+
+\subsection{Caso 3}
+
+Para $w_0=(-1,-1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(-0.98039190351 , -0.990414773324)$$ El mínimo es $f(w) = 2.93780445477$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (-1,-1) y $\eta = 0.01$} 
+	\label{fig:bon3}
+\end{figure}
+
+
+
+\subsection{Caso 4}
+
+Para $w_0=(-0.5,-0.5), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(-0.490225784263 , -0.49523545828)$$ El mínimo es $f(w) = 0.734511770938$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (-0.5,-0.5) y $\eta = 0.01$} 
+	\label{fig:bon4}
+\end{figure}
+
+\subsection{Caso 5}
+
+Para $w_0=(0.1,0.1), \eta = 0.1$, el punto donde se alcanza el mínimo es $$w=(0.000368050007016 , 0.000364119013)$$ El mínimo es $f(w) = 1.09819291954\times 10^{-5}$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus5.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (0.1,0.1) y $\eta = 0.1$} 
+	\label{fig:bon5}
+\end{figure}
+
+Recuperando la función $f$, vemos que hay multitud de mínimos, por lo que el punto inicial y la tasa de aprendizaje es determinante en la caída al mínimo.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Representación 3D de la función} 
+	\label{fig:f}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Representación del contorno de f} 
+	\label{fig:f22}
+\end{figure}
+
+Además, las gráficas mostradas en los distintos casos indican que el método de Newton, ante funciones que son dos veces derivables y con derivada continua, tiene mucho mejor rendimiento que Gradiente Descendente, ya que aprovechamos la información de la curvatura de la función y no sólo de la pendiente de los hiperplanos tangentes (dependiendo de la dimensión).
 \newpage
 \section{Bibliografía}
 
