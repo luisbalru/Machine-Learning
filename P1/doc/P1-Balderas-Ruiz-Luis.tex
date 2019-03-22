@@ -51,7 +51,7 @@
 
 \subsubsection{Implementación del algoritmo de gradiente descendente}
 
-Gradiente descendente es un algoritmo muy general que puede ser usado para entrenar una gran cantidad de modelos de aprendizaje consiguiendo errores pequeños. Desde un punto de vista más matemático, es una ténica que busca minimizar funciones dos veces derivables. \cite{lfd}. Más concretamente, gradiente descendente trabaja en espacios de cualquier dimensión, incluso de dimensión infinita. En este caso, el espacio de búsqueda es un espacio de funciones donde se calcula la derivada de Fréchet del funcional a minimizar para determinar la dirección descendente \cite{funtional_analysis}. \\
+Gradiente descendente es un algoritmo muy general que puede ser usado para entrenar una gran cantidad de modelos de aprendizaje consiguiendo errores pequeños. Desde un punto de vista más matemático, es una técnica que busca minimizar funciones derivables. \cite{lfd}. Más concretamente, gradiente descendente trabaja en espacios de cualquier dimensión, incluso de dimensión infinita. En este caso, el espacio de búsqueda es un espacio de funciones donde se calcula la derivada de Fréchet del funcional a minimizar para determinar la dirección descendente \cite{funtional_analysis}. \\
 
 En el marco de nuestro desarrollo teórico, gradiente descendente se ha presentado como una técnica de estimación paramétrica, en la que, dado un conjunto de entrenamiento y sus correspondientes, se pretende minimizar el error cometidos en las predicciones de las etiquetas sobre dichos puntos (lo que venimos llamando $E_{in}$) de cara a adquirir un conocimiento extrapolable a tuplas no examinadas (el conjunto de test). Sin embargo, en esta práctica se pretende enfocar este algoritmo como una herramienta de minimización de funciones. Por tanto, es necesario variar el esquema definido en clase y establecer un criterio de parada acorde a nuestro objetivo, esto es, minimizar una función. Teniéndolo en cuenta, tomo como criterio de parada el hecho de que la diferencia entre la imagen de dos puntos consecutivos predichos sea más pequeña que una tolerancia. En otras palabras, si $f$ es la función que queremos minimizar y $w_1,w_2$ son valores consecutivos,
 
@@ -267,6 +267,13 @@ Sobre estos puntos, aplico un modelo de regresión lineal, SGD concretamente, pa
 \end{figure}
 
 Para terminar nuestro experimento, ejecutamos todo lo anterior 1000 veces para así hacer una media de los errores y obtener resultados más firmes. El error medio interno obtenido es de 0.927829119571025 y el exterior es  0.9326862860312469. Es evidente, a la luz de los resultados del error y la propia intuición al ver la representación de los puntos, que el modelo de regresión lineal no es apropiado para este caso. La literatura indica que la regresión lineal es útil en espacios con tuplas etiquetadas en clases linealmente separables (\cite{lfd}, \cite{ctm}). Por tanto, para tratar este tipo de problemas sería necesario añadir a nuestro espacio de funciones objetivo algunas transformaciones no lineales, es decir, polinomios (potencias de los datos). Lo mejor de esta estrategia es que la clase de funciones sigue siendo lineal a pesar de incluir transformaciones no lineales.
+
+\section{Bonus}
+
+Recuperamos la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$ para aplicarle el método de Newton. Dicho método es una extensión de Gradiente Descendente, basado en la inversión de la matriz Hessiana. Los resultados son generalmente más buenos (son necesarias menos iteraciones) aunque computacionalmente es más costoso. \\
+
+Desde un punto de vista pragmático, he definido funciones que evalúan $f$, $f_x,f_y, f_{xx},f_{yy}$ y $f_{xy}$. Sabemos que $f_{xy} = f_{yx}$ por la simetría de las segundas derivadas, debido a que el espacio es euclídeo y las derivadas segundas de $f$ son continuas (Teorema de Schwarz, Teorema de Clairaut, \cite{rudin}). Por último, defino el algoritmo utilizando la inversa de la matriz Hessiana (previamente calculada con un módulo) por el gradiente de $f$. Veamos cómo desciende el valor de la función con las iteraciones del método de Newton:
+
 \newpage
 \section{Bibliografía}
 
