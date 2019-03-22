@@ -21,7 +21,7 @@ np.random.seed(77145416)
 """
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
-""""
+
 
 
 # ALGORITMO DE GRADIENTE DESCENDENTE
@@ -262,8 +262,6 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 # Miro entre 0.01 y 0.04 --> Mejores resultados con error 0.081...
 # Miro entre 0.55 y 0.65 200 iters
 
-"""
-"""
 rates = np.linspace(0.01,1,num=200)
 datos = []
 for i in rates:
@@ -502,7 +500,7 @@ print("Error interior medio: ",error_in)
 print("Error exterior medio: ",error_out)
 
 input("\n--- Pulsar tecla para continuar ---\n")
-"""
+
 ################# BONUS #################
 
 print("########### EJERCICIO BONUS ############")
