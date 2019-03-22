@@ -21,7 +21,7 @@ np.random.seed(77145416)
 """
 Ejercicio 1: Ejercicio sobre la búsqueda iterativa de óptimos.
 """
-
+""""
 
 
 # ALGORITMO DE GRADIENTE DESCENDENTE
@@ -263,6 +263,7 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 # Miro entre 0.55 y 0.65 200 iters
 
 """
+"""
 rates = np.linspace(0.01,1,num=200)
 datos = []
 for i in rates:
@@ -288,6 +289,7 @@ plt.scatter(datos[:,0],datos[:,1])
 plt.xlabel("Learning rate")
 plt.ylabel("Ein cometido")
 plt.show()
+"""
 """
 print("Calculando el mejor learning rate")
 rates = np.linspace(0.01,0.04,num=200)
@@ -500,7 +502,7 @@ print("Error interior medio: ",error_in)
 print("Error exterior medio: ",error_out)
 
 input("\n--- Pulsar tecla para continuar ---\n")
-
+"""
 ################# BONUS #################
 
 print("########### EJERCICIO BONUS ############")
@@ -541,7 +543,7 @@ def f_xx(w):
 	y = w[1]
 	return 2 - 8*(math.pi)**2*math.sin(2*math.pi*y)*math.sin(2*math.pi*x)
 
-# Derivada segunda de f respecto de x, y luego, y (mismo valor que el caso análogo por el lema de Schwartz)
+# Derivada segunda de f respecto de x, y luego, y (mismo valor que el caso análogo por el teorema de Schwarz)
 def f_xy(w):
 	x = w[0]
 	y = w[1]
@@ -586,6 +588,52 @@ print('(1.0, 1.0), LR=0.01')
 w, g = MetodoNewton(np.array([1.0,1.0],np.float64), 0.01, gradienteF, f, hessianaF, 50)
 print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
 plt.plot(range(0,51),g)
+plt.xlabel("Número de iteraciones")
+plt.ylabel("f(w)")
+plt.show()
+print("Mínimo de f: " , f(w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+print('(0.1, 0.1), LR=0.01')
+w, g = MetodoNewton(np.array([0.1,0.1],np.float64), 0.01, gradienteF, f, hessianaF, 50)
+print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
+plt.plot(range(0,51),g)
+plt.xlabel("Número de iteraciones")
+plt.ylabel("f(w)")
+plt.show()
+print("Mínimo de f: " , f(w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+print('(-1.0, -1.0), LR=0.01')
+w, g = MetodoNewton(np.array([-1.0,-1.0],np.float64), 0.01, gradienteF, f, hessianaF, 50)
+print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
+plt.plot(range(0,51),g)
+plt.xlabel("Número de iteraciones")
+plt.ylabel("f(w)")
+plt.show()
+print("Mínimo de f: " , f(w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+print('(-0.5, -0.5), LR=0.01')
+w, g = MetodoNewton(np.array([-0.5,-0.5],np.float64), 0.01, gradienteF, f, hessianaF, 50)
+print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
+plt.plot(range(0,51),g)
+plt.xlabel("Número de iteraciones")
+plt.ylabel("f(w)")
+plt.show()
+print("Mínimo de f: " , f(w))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+print('(0.1, 0.1), LR=0.1')
+w, g = MetodoNewton(np.array([0.1,0.1],np.float64), 0.1, gradienteF, f, hessianaF, 50)
+print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
+plt.plot(range(0,51),g)
+plt.xlabel("Número de iteraciones")
+plt.ylabel("f(w)")
 plt.show()
 print("Mínimo de f: " , f(w))
 
