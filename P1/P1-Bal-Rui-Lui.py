@@ -328,6 +328,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 w = sgd(x, y, 0.01, 500, 80,10**(-3))
 print("W",w)
 print("Resultados del error en el Gradiente Descendente Estocástico")
+print("W",w)
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
@@ -359,6 +360,7 @@ plt.show()
 
 w = pseudoinverse(x,y)
 print("Resultados del error en el algoritmo de pseudoinversa")
+print("W",w)
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
@@ -443,8 +445,8 @@ input("\n--- Pulsar tecla para continuar ---\n")
 print("Aplicando SGD sobre el nuevo dataset")
 dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
 w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
-print("W",w)
 print("Resultados del error en el Gradiente Descendente Estocástico sobre el nuevo dataset")
+print("W",w)
 print("Ein: ", Err(dataset,column,w))
 print("Modelo de regresión lineal")
 
@@ -459,6 +461,8 @@ plt.show()
 input("\n--- Pulsar tecla para continuar ---\n")
 
 # d) Ejecutar los apartados anteriores 1000 veces
+
+print("Ejecutando el experimento 1000 veces")
 
 error_in = 0
 error_out = 0
