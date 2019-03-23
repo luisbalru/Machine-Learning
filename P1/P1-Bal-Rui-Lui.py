@@ -116,9 +116,9 @@ print("EJERCICIO 1.3")
 # Apartado a)
 print("Apartado a)")
 
-w,k,data = GD(np.array([0.1,0.1],np.float64),0.01,gradientf,evalf,10**(-20),50)
+w,k,data_gd1 = GD(np.array([0.1,0.1],np.float64),0.01,gradientf,evalf,10**(-20),50)
 print("Coordenadas del mínimo: ", w)
-plt.plot(range(0,k+1),data,'bo')
+plt.plot(range(0,k+1),data_gd1)
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
@@ -126,8 +126,8 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 ## para learning_rate = 0.1
 print("Learning rate 0.1")
-w,k,data = GD(np.array([0.1,0.1],np.float64),0.1,gradientf,evalf,10**(-20),50)
-plt.plot(range(0,k+1),data,'bo')
+w,k,data_gd2 = GD(np.array([0.1,0.1],np.float64),0.1,gradientf,evalf,10**(-20),50)
+plt.plot(range(0,k+1),data_gd2)
 plt.xlabel('Número de iteraciones')
 plt.ylabel('f(x,y)')
 plt.show()
@@ -560,6 +560,15 @@ def hessianaF(w):
 
 print("Definiendo el método de Newton")
 
+## Función para comprobar si una matriz es definida positiva
+
+def is_positiveDefinite(matrix):
+    det = matrix[0][0]*matrix[1][1] - matrix[1][0]*matrix[0][1]
+    if(matrix[0][1]>0 and det>0):
+        return True
+    else:
+        return False
+
 ## MÉTODO DE NEWTON
 # Parámetros:
 #   - w: vector inicial w
@@ -575,6 +584,7 @@ def MetodoNewton(w,learning_rate,gradientf,f_2,hessf, max_iters = 15000000):
     medida = [f_2(w)]
     for i in range(0,max_iters):
         last_w = w
+        print("Definida positiva en la iteración ", i, is_positiveDefinite(hessf(w)))
         w = w - learning_rate * np.linalg.inv(hessf(w)).dot(gradientf(w))
         medida.insert(len(medida),f_2(w))
     return w, medida
@@ -596,8 +606,10 @@ input("\n--- Pulsar tecla para continuar ---\n")
 print('(0.1, 0.1), LR=0.01')
 w, g = MetodoNewton(np.array([0.1,0.1],np.float64), 0.01, gradienteF, f, hessianaF, 50)
 print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
-plt.plot(range(0,51),g)
+plt.plot(range(0,51),g,label="Método de Newton")
+plt.plot(range(0,25),data_gd1,label="Gradiente descendente")
 plt.xlabel("Número de iteraciones")
+plt.legend()
 plt.ylabel("f(w)")
 plt.show()
 print("Mínimo de f: " , f(w))
@@ -627,11 +639,13 @@ print("Mínimo de f: " , f(w))
 input("\n--- Pulsar tecla para continuar ---\n")
 
 print('(0.1, 0.1), LR=0.1')
-w, g = MetodoNewton(np.array([0.1,0.1],np.float64), 0.1, gradienteF, f, hessianaF, 50)
+w, g = MetodoNewton(np.array([0.1,0.1],np.float64), 0.1, gradienteF, f, hessianaF,50)
 print("Punto donde se alcanza el mínimo: (", w[0],",",w[1],")")
-plt.plot(range(0,51),g)
+plt.plot(range(0,51),g,label="Método de Newton")
+plt.plot(range(0,52),data_gd2,label="Gradiente descendente")
 plt.xlabel("Número de iteraciones")
 plt.ylabel("f(w)")
+plt.legend()
 plt.show()
 print("Mínimo de f: " , f(w))
 

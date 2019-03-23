@@ -71,7 +71,7 @@ $$\frac{\partial E(u,v)}{\partial v} = (2u^2e^v-8ve^{-u})(u^2e^v-2v^2e^{-u})$$
 
 $$\Rightarrow \nabla E(u,v) = \left((4ue^v+4v^2e^{-v})(u^2e^v-2v^2e^{-u}),(u^2e^v-2v^2e^{-u})(2u^2e^v-8ve^{-u})\right)$$
 
-Dado $\epsilon = 10^{-14}$, el número de iteraciones necesarias para obtener un valor por debajo de esa tolerancia (usando flotantes de 64 bits) es 34. Dicho valor se da en el par $(x,y) = (0.619207671834479,0.968448270676094)$
+Dado $\epsilon = 10^{-14}$, el número de iteraciones necesarias para obtener un valor por debajo de esa tolerancia (usando flotantes de 64 bits) es 34. Dicho valor se da en el par $(x,y)$ = (0.619207671834479, 0.968448270676094).
 
 Podemos observarlo en la siguiente gráfica, en la que vemos como converge muy rápidamente (basta una iteración para que se acerque mucho al punto final) hasta que en el 34 se da el criterio de parada. \\
 
@@ -84,7 +84,7 @@ Podemos observarlo en la siguiente gráfica, en la que vemos como converge muy r
 
 \subsubsection{Función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$}
 
-En este caso trabajo con la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$. Esta función vuelve a ser clase $C^{\infty}$, luego podemos aplicar gradiente descendente sin problema. Tomando como punto inicial $(x_0,y_0) = (0.1,0.1), \eta = 0.01$ y un máximo de 50 iteraciones, minimizo la función y muestro el gráfico correspondiente. Como se puede ver, la convergencia se produce cerca de la duodécima iteración para llegar a la parada en la número 24. Las coordenadas del mínimo obtenido son $(x,y) = (0.24380496934646,-0.237925821480742$)
+En este caso trabajo con la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$. Esta función vuelve a ser clase $C^{\infty}$, luego podemos aplicar gradiente descendente sin problema. Tomando como punto inicial $(x_0,y_0) = (0.1,0.1), \eta = 0.01$ y un máximo de 50 iteraciones, minimizo la función y muestro el gráfico correspondiente. Como se puede ver, la convergencia se produce cerca de la duodécima iteración para llegar a la parada en la número 24. Las coordenadas del mínimo obtenido son $(x,y)$ = (0.24380496934646, -0.237925821480742)
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -108,7 +108,7 @@ Para el caso en el que $\eta=0.1$ vamos a observar que no hay una convergencia, 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
 	\includegraphics[scale=0.6]{f3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Nube de puntos consecuencia del learning rate = 0.1} 
+	\caption{Comportamiento errático de la imagen debido a learning rate = 0.1} 
 	\label{fig:f3}
 \end{figure}
 
@@ -122,10 +122,10 @@ Probamos ahora el algoritmo en distintos puntos iniciales para ver la importanci
 	\begin{tabular}{|c|c|c|}
 		\hline
 		$(x_0,y_0)$   & $(x,y)$ (Valor donde se alcanza el mínimo)                                 & $f(x,y)$          \\ \hline
-		$(0.1,0.1)$   & $(0.243804969346460, -0.237925821480742)$  & -1.82007854154716 \\ \hline
-		$(1,1)$       & $(1.21807030090520, 0.712811950338754)$    & 0.593269374325836 \\ \hline
-		$(-0.5,-0.5)$ & $(-0.731377459870107, -0.237855362955527)$ & -1.33248106233098 \\ \hline
-		$(-1,-1)$     & $(-1.21807030090520, -0.712811950338754)$  & 0.593269374325836 \\ \hline
+		(0.1, 0.1)   & (0.243804969346460, -0.237925821480742) & -1.82007854154716 \\ \hline
+		(1, 1)       & (1.21807030090520, 0.712811950338754)    & 0.593269374325836 \\ \hline
+		(-0.5, -0.5) & (-0.731377459870107, -0.237855362955527) & -1.33248106233098 \\ \hline
+		(-1, -1)     & (-1.21807030090520, -0.712811950338754)  & 0.593269374325836 \\ \hline
 	\end{tabular}
 	\caption{Tabla requerida en el ejercicio 3 b)}
 	\label{table1}
@@ -133,7 +133,7 @@ Probamos ahora el algoritmo en distintos puntos iniciales para ver la importanci
 
 \subsubsection{Conclusión sobre la verdadera dificultad de encontrar el mínimo global de una función arbitraria}
 
-Tanto en análisis real de una variable como en varias variables reales, la búsqueda de extremos relativos está asociada al concepto de derivada. En el primer caso, buscamos mínimos en el interior del intervalo de definición de la función derivando e igualando a cero la derivada. En el caso de varias variables, calculamos el gradiente e igualamos a cero para los extremos interiores y, en la superficie, utilizamos los multiplicadores de Lagrange. En suma, la optimización está ligada a la derivación. La derivabilidad de una función es un concepto totalmente local, esto es, se puede estudiar con todo rigor en un entorno abierto de un punto. El llamado carácter local de la derivabilidad favorece en muchas demostraciones, en las que basta con comprobarlo para un entorno abierto ya que la extensión al dominio completo es trivial. Sin embargo, la desventaja es que los extremos, en este caso los mínimos, pueden ser relativos. Por tanto, la verdadera dificultad a la hora de encontrar el mínimo global de una función arbitraria es toparse con mínimos locales. Gradiente Descendente es ejemplo de un algoritmo versátil a la hora de encontrar mínimos, pero sólo da garantías para entornos del punto de inicio, cayendo en mínimos locales y olvidándose, a buen seguro, del mínimo global (si es que existe).
+Tanto en análisis real de una variable como en varias variables reales, la búsqueda de extremos relativos está asociada al concepto de derivada. En el primer caso, buscamos mínimos en el interior del intervalo de definición de la función derivando e igualando a cero la derivada. En el caso de varias variables, calculamos el gradiente e igualamos a cero para los extremos interiores y, en la superficie, utilizamos los multiplicadores de Lagrange. En suma, la optimización está ligada a la derivación. La derivabilidad de una función es un concepto totalmente local, esto es, se puede estudiar con todo rigor en un entorno abierto de un punto. El llamado carácter local de la derivabilidad favorece la realización de muchas demostraciones, en las que basta con comprobarlo para un entorno abierto ya que la extensión al dominio completo es trivial. Sin embargo, la desventaja es que los extremos, en este caso los mínimos, pueden ser relativos. Por tanto, la verdadera dificultad a la hora de encontrar el mínimo global de una función arbitraria es toparse con mínimos locales. Gradiente Descendente es ejemplo de un algoritmo versátil a la hora de encontrar mínimos, pero sólo da garantías para entornos del punto de inicio, cayendo en mínimos locales y olvidándose, a buen seguro, del mínimo global (si es que existe).
 
 \section{Ejercicio sobre Regresión Lineal}
 
@@ -157,7 +157,7 @@ En primer lugar, estudio la tasa de aprendizaje. Para ello, genero números equi
 	\label{fig:error1}
 \end{figure}
 
-Como se puede apreciar, la mayoría de los puntos no tienen imagen. Eso se debe a que el error es tan grande que se le asigna el valor infinito. Parece que los mejores valores están entre alrededor de 0.1 y a partir de 0.6.
+Como se puede apreciar, la mayoría de los puntos no tienen imagen. Eso se debe a que el error es tan grande que se le asigna el valor infinito. Parece que los mejores valores están entre alrededor de 0.1 y a partir de 0.6 hasta 0.7. Después todas son infinito.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -194,13 +194,13 @@ Los errores son prácticamente iguales. Con una tabla salimos de dudas:
 	\begin{tabular}{|c|c|}
 		\hline
 		Tamaño & Ein            \\ \hline
-		32     & 8.25503056e-02 \\ \hline
-		50     & 8.21136740e-02 \\ \hline
-		64     & 8.22251817e-02 \\ \hline
-		80     & 8.18136400e-02 \\ \hline
-		100    & 8.18921430e-02 \\ \hline
-		110    & 8.18857729e-02 \\ \hline
-		128    & 8.19507535e-02 \\ \hline
+		32     & 8.25503056$\times 10^{-2}$ \\ \hline
+		50     & 8.21136740$\times 10^{-2}$ \\ \hline
+		64     & 8.22251817$\times 10^{-2}$ \\ \hline
+		80     & 8.18136400$\times 10^{-2}$ \\ \hline
+		100    & 8.18921430$\times 10^{-2}$ \\ \hline
+		110    & 8.18857729$\times 10^{-2}$ \\ \hline
+		128    & 8.19507535$\times 10^{-2}$ \\ \hline
 	\end{tabular}
 	\caption{Tabla TamañoMinibatch-Error}
 	\label{table2}
@@ -217,7 +217,7 @@ Una vez elegidos los parámetros, ejecuto el algoritmo de Gradiente Descendente 
 	\label{fig:sgd}
 \end{figure}
 
-Ademas, $w=(-1.24216077,-0.14997997,-0.45243432)$, $E_{in} = 0.0819386655754886$ y $E_{out} = 0.13418223441350954$.
+Ademas, $w=$(-1.24216077,-0.14997997,-0.45243432), $E_{in}$ = 0.0819386655754886 y $E_{out}$ = 0.13418223441350954.
 Merece la pena detenerse para señalar la recta que divide el espacio separando las dos clases. En el eje X represento la intensidad, que se mueve entre 0 y 1. Si $w$ es un vector con las coordenadas estimadas después de la regresión, la ecuación general de la recta tiene la siguiente expresión:
 
 $$y = \frac{-w[1]}{w[2]}x - \frac{w[0]}{w[2]}$$
@@ -235,7 +235,7 @@ El algoritmo de pseudoinversa, a través de la descomposición en valores singul
 	\label{fig:pseud}
 \end{figure}
 
-Los valores de error son menores que en SGD: $E_{in}=0.07918658628900395, E_{out}=0.13095383720052586$. Además, $w=(-1.11588016,-1.24859846,+0.49753165)$.
+Los valores de error son menores que en SGD: $E_{in}$=0.07918658628900395, $E_{out}$=0.13095383720052586. Además, $w=$(-1.11588016, -1.24859846, -0.49753165).
 \newpage
 
 \subsubsection{Experimento}
@@ -258,7 +258,7 @@ Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entre
 	\label{fig:puntos2D-et}
 \end{figure}
  
-Sobre estos puntos, aplico un modelo de regresión lineal, SGD concretamente, para ver si las dos clases son linealmente separables. Es obvio que no lo son, así que la recta de regresión no va a servir para clasificar, como ahora veremos. El error obtenido es $E_{in} = 0.8962522665389515$ y $w=(0.02259206,-0.54045135,0.03210277)$
+Sobre estos puntos, aplico un modelo de regresión lineal, SGD concretamente, para ver si las dos clases son linealmente separables. Es obvio que no lo son, así que la recta de regresión no va a servir para clasificar, como ahora veremos. El error obtenido es $E_{in}$ = 0.8962522665389515 y w=(0.02259206, -0.54045135, 0.03210277)
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -271,13 +271,18 @@ Para terminar nuestro experimento, ejecutamos todo lo anterior 1000 veces para a
 
 \section{Bonus}
 
-Recuperamos la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$ para aplicarle el método de Newton. Dicho método es una extensión de Gradiente Descendente, basado en la inversión de la matriz Hessiana. Los resultados son generalmente más buenos (son necesarias menos iteraciones) aunque computacionalmente es más costoso. \\
+Recuperamos la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$ para aplicarle el método de Newton. Dicho método es una extensión de Gradiente Descendente, basado en la inversión de la matriz Hessiana. El método de Newton en varias variables tiene la siguiente expresión recurrente:
+
+$$ x_{n+1} = x_{n} - \lambda [Hf(x_n)]^{-1} \nabla f(x_n)$$
+
+donde $[Hf(x_n)]^{-1}$ es la inversa de la matriz Hessiana, $\lambda \in (0,1)$. Si la Hessiana es definida positiva (por tanto invertible) y Lipschitziana, el método de Newton converge en orden cuadrático al mínimo (a pesar de la complejidad computacional en el cálculo de la inversa). Sin embargo, si la matriz no es definida positiva, el método acaba por converger en un punto de silla (puntos donde se da un cambio en la curvatura) \cite{pam}, \cite{np}.
+
 
 Desde un punto de vista pragmático, he definido funciones que evalúan $f$, $f_x,f_y, f_{xx},f_{yy}$ y $f_{xy}$. Sabemos que $f_{xy} = f_{yx}$ por la simetría de las segundas derivadas, debido a que el espacio es euclídeo y las derivadas segundas de $f$ son continuas (Teorema de Schwarz, Teorema de Clairaut, \cite{rudin}). Por último, defino el algoritmo utilizando la inversa de la matriz Hessiana (previamente calculada con un módulo) por el gradiente de $f$. Veamos cómo desciende el valor de la función con las iteraciones del método de Newton tratando los puntos iniciales del ejercicio anterior:
 
 \subsection{Caso 1}
 
-Para $w_0=(1,1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=( 0.98039190351 , 0.990414773324 )$$ El mínimo es $f(w) = 2.93780445477$.
+Para $w_0=(1,1), \eta$ = 0.01, el punto donde se alcanza el mínimo es $$w=( 0.98039190351 , 0.990414773324 )$$ El mínimo es $f(w) = 2.93780445477$.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -287,7 +292,7 @@ Para $w_0=(1,1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=( 0.9
 \end{figure}
 
 \subsection{Caso 2}
-Para $w_0=(0.1,0.1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(0.0492016140411 , 0.0489001338764)$$ El mínimo es $f(w) =0.191231609806$.
+Para $w_0=(0.1,0.1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(0.0492016140411 , 0.0489001338764)$$ El mínimo es $f(w) =0.191231609806$. En la siguiente gráfica plasmo el rendimiento con el Método de Newton y con el Gradiente Descendente sobre los mismos datos iniciales:
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -295,6 +300,8 @@ Para $w_0=(0.1,0.1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(
 	\caption{Método de Newton sobre f con w inicial (0.1,0.1) y $\eta = 0.01$} 
 	\label{fig:bon2}
 \end{figure}
+
+Como se puede ver, con tan sólo 24 iteraciones, Gradiente Descendente converge al posible mínimo mientras que el Método de Newton, tras 50, se queda muy lejos.
 
 \subsection{Caso 3}
 
@@ -331,6 +338,11 @@ Para $w_0=(0.1,0.1), \eta = 0.1$, el punto donde se alcanza el mínimo es $$w=(0
 	\label{fig:bon5}
 \end{figure}
 
+Curiosamente, este caso muestra que un learning rate elevado en el método de Newton para esta función corrige las deficiencias generadas en el Gradiente descendente, encontrando un supuesto mínimo y evitando el comportamiento errático.
+
+En los casos anteriores, la matriz Hessiana \textbf{nunca} es definida positiva. Esto explica que no haya convergencia a los mínimos sino a puntos de silla (comparando los valores de las tablas obtenidos con GD, Newton siempre consigue peores resultados en los supuestos mínimos hallados).
+
+
 Recuperando la función $f$, vemos que hay multitud de mínimos, por lo que el punto inicial y la tasa de aprendizaje es determinante en la caída al mínimo.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
@@ -347,7 +359,7 @@ Recuperando la función $f$, vemos que hay multitud de mínimos, por lo que el p
 	\label{fig:f22}
 \end{figure}
 
-Además, las gráficas mostradas en los distintos casos indican que el método de Newton, ante funciones que son dos veces derivables y con derivada continua, tiene mucho mejor rendimiento que Gradiente Descendente, ya que aprovechamos la información de la curvatura de la función y no sólo de la pendiente de los hiperplanos tangentes (dependiendo de la dimensión).
+En la práctica, el método de Newton es útil cuando estamos muy cerca de un mínimo. Por tanto, una idea acertada sería utilizar métodos alternativos más potentes para aproximarnos a los mínimos, como el método del gradiente conjugado (\cite{pam}) o gradiente descendente con tasa de aprendizaje variable y, tras ellos, aplicar el método de Newton para garantizar el mínimo.
 \newpage
 \section{Bibliografía}
 
