@@ -54,7 +54,7 @@
 
 Gradiente descendente es un algoritmo muy general que puede ser usado para entrenar una gran cantidad de modelos de aprendizaje consiguiendo errores pequeños. Desde un punto de vista más matemático, es una técnica que busca minimizar funciones derivables. \cite{lfd}. Más concretamente, gradiente descendente trabaja en espacios de cualquier dimensión, incluso de dimensión infinita. En este caso, el espacio de búsqueda es un espacio de funciones donde se calcula la derivada de Fréchet del funcional a minimizar para determinar la dirección descendente \cite{funtional_analysis}. \\
 
-En el marco de nuestro desarrollo teórico, gradiente descendente se ha presentado como una técnica de estimación paramétrica, en la que, dado un conjunto de entrenamiento y sus correspondientes, se pretende minimizar el error cometidos en las predicciones de las etiquetas sobre dichos puntos (lo que venimos llamando $E_{in}$) de cara a adquirir un conocimiento extrapolable a tuplas no examinadas (el conjunto de test). Sin embargo, en esta práctica se pretende enfocar este algoritmo como una herramienta de minimización de funciones. Por tanto, es necesario variar el esquema definido en clase y establecer un criterio de parada acorde a nuestro objetivo, esto es, minimizar una función. Teniéndolo en cuenta, tomo como criterio de parada el hecho de que la diferencia entre la imagen de dos puntos consecutivos predichos sea más pequeña que una tolerancia. En otras palabras, si $f$ es la función que queremos minimizar y $w_1,w_2$ son valores consecutivos,
+En el marco de nuestro desarrollo teórico, gradiente descendente se ha presentado como una técnica de estimación paramétrica, en la que, dado un conjunto de entrenamiento etiquetado, se pretende minimizar el error cometidos en las predicciones de las etiquetas sobre dichos puntos (lo que venimos llamando $E_{in}$) de cara a adquirir un conocimiento extrapolable a tuplas no examinadas (el conjunto de test). Sin embargo, en esta práctica se pretende enfocar este algoritmo como una herramienta de minimización de funciones. Por tanto, es necesario variar el esquema definido en clase y establecer un criterio de parada acorde a nuestro objetivo, esto es, minimizar una función. Teniéndolo en cuenta, tomo como criterio de parada el hecho de que la diferencia entre la imagen de dos puntos consecutivos predichos sea más pequeña que una tolerancia. En otras palabras, si $f$ es la función que queremos minimizar y $w_1,w_2$ son valores consecutivos,
 
 $$\text{Dado un } \epsilon > 0, \text{ si } |f(w_1)-f(w_2)| < \epsilon \Rightarrow \text{ PARADA }$$
 
@@ -166,7 +166,7 @@ Como se puede apreciar, la mayoría de los puntos no tienen imagen. Eso se debe 
 	\label{fig:error2}
 \end{figure}
 
-Aquí se puede observar que los errores más pequeños están sobre 0.08. Veámoslo de más cerca:
+Aquí se puede observar que los errores más pequeños están sobre 0.08. Veámoslo más de cerca:
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -226,7 +226,7 @@ En $x=0$, la recta corta al eje Y en el punto $y = \frac{-w[0]}{w[2]}$. En $x=1$
 
 \subsubsection{Pseudoinversa}
 
-El algoritmo de pseudoinversa, a través de la descomposición en valores singulares de las matriz (dataset), genera, en general, mejores resultados que SGD. Sin embargo, calcular un inversa (o pseudo) es muy costoso computacionalmente. El resultado es el siguiente:
+El algoritmo de pseudoinversa, a través de la descomposición en valores singulares de las matriz (dataset), genera, a grandes rasgos, mejores resultados que SGD. Sin embargo, calcular un inversa (o pseudo, si no existiese la inversa) es muy costoso computacionalmente. El resultado es el siguiente:
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -236,6 +236,13 @@ El algoritmo de pseudoinversa, a través de la descomposición en valores singul
 \end{figure}
 
 Los valores de error son menores que en SGD: $E_{in}$=0.07918658628900395, $E_{out}$=0.13095383720052586. Además, $w=$(-1.11588016, -1.24859846, -0.49753165).
+
+Como se puede observar, ambos métodos consiguen separar bastante bien las clases, por lo que los errores conseguidos son pequeños. Nuestro objetivo siempre es minimizar $E_{out}$ a pesar de que, a priori, sólo podemos controlar $E_{in}$, ya que se refiere a los datos que conocemos y están etiquetados. La desigualdad de Hoeffding nos garantiza que, si $h$ es la función que ajusta los datos, $N$ es el tamaño de nuestra muestra, $\epsilon>0$ la diferencia entre los errores y $\delta = 2e^{-2\epsilon^2N}$
+
+$$ E_{out}(h) \leq E_{in}(h) + \sqrt{\frac{1}{2N} log \frac{2}{\delta}}$$
+
+Por tanto, con un número suficientemente grande de datos en la muestra, si conseguimos que $E_{in}$ sea muy pequeño, se garantiza que $E_{out}$ también lo sea \cite{esl}.
+
 \newpage
 
 \subsubsection{Experimento}
@@ -250,7 +257,6 @@ Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entre
 
 A continuación, defino la función $f(x_1,x_2) = sign((x_1-0.2)^2+x_2^2-0.6)$. Con ella etiqueto los puntos generados anteriormente. Además, introduzco ruido en un 10\% de los puntos (cambio el signo tomando un 10\% de índices aleatoriamente). Es importante, en la adquisición de los índices, indicar que se haga sin reemplazamiento, para que no se puedan repetir. He aquí el resultado:
 
-Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entrenamiento de 1000 puntos en $[-1,1]\times[-1,1]$.
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
 	\includegraphics[scale=0.6]{puntos2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
