@@ -1,0 +1,390 @@
+\input{preambuloSimple.tex}
+\graphicspath{ {./images/} }
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{soul}
+
+
+%----------------------------------------------------------------------------------------
+%	TÍTULO Y DATOS DEL ALUMNO
+%----------------------------------------------------------------------------------------
+
+\title{	
+\normalfont \normalsize 
+\textsc{\textbf{Aprendizaje Automático (2019)} \\ Doble Grado en Ingeniería Informática y Matemáticas \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Memoria Práctica 1 \\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Luis Balderas Ruiz \\ \texttt{luisbalderas@correo.ugr.es}} 
+ % Nombre y apellidos 
+
+
+\date{\normalsize\today} % Incluye la fecha actual
+
+%----------------------------------------------------------------------------------------
+% DOCUMENTO
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Muestra el Título
+
+\newpage %inserta un salto de página
+
+\tableofcontents % para generar el índice de contenidos
+
+\listoffigures
+
+\listoftables
+
+\newpage
+
+
+%----------------------------------------------------------------------------------------
+%	Introducción
+%----------------------------------------------------------------------------------------
+
+\section{EJERCICIO SOBRE LA BÚSQUEDA ITERATIVA DE ÓPTIMOS}
+
+\subsection{Gradiente Descendente}
+
+\subsubsection{Implementación del algoritmo de gradiente descendente}
+
+Gradiente descendente es un algoritmo muy general que puede ser usado para entrenar una gran cantidad de modelos de aprendizaje consiguiendo errores pequeños. Desde un punto de vista más matemático, es una técnica que busca minimizar funciones derivables. \cite{lfd}. Más concretamente, gradiente descendente trabaja en espacios de cualquier dimensión, incluso de dimensión infinita. En este caso, el espacio de búsqueda es un espacio de funciones donde se calcula la derivada de Fréchet del funcional a minimizar para determinar la dirección descendente \cite{funtional_analysis}. \\
+
+En el marco de nuestro desarrollo teórico, gradiente descendente se ha presentado como una técnica de estimación paramétrica, en la que, dado un conjunto de entrenamiento etiquetado, se pretende minimizar el error cometidos en las predicciones de las etiquetas sobre dichos puntos (lo que venimos llamando $E_{in}$) de cara a adquirir un conocimiento extrapolable a tuplas no examinadas (el conjunto de test). Sin embargo, en esta práctica se pretende enfocar este algoritmo como una herramienta de minimización de funciones. Por tanto, es necesario variar el esquema definido en clase y establecer un criterio de parada acorde a nuestro objetivo, esto es, minimizar una función. Teniéndolo en cuenta, tomo como criterio de parada el hecho de que la diferencia entre la imagen de dos puntos consecutivos predichos sea más pequeña que una tolerancia. En otras palabras, si $f$ es la función que queremos minimizar y $w_1,w_2$ son valores consecutivos,
+
+$$\text{Dado un } \epsilon > 0, \text{ si } |f(w_1)-f(w_2)| < \epsilon \Rightarrow \text{ PARADA }$$
+
+
+He de añadir que mi algoritmo devuelve el valor mínimo encontrado ($w$), el número de iteraciones necesarias para encontrarlo y una lista con las distintas imágenes de la función para así ver como va disminuyendo.
+
+\subsubsection{Función $E(u,v) = (u^2e^v-2v^2e^{-u})^2$}
+
+Considero la función $E(u,v) = (u^2e^v-2v^2e^{-u})^2$. Como se puede ver, es una función de clase $C^{\infty}$ respecto de las dos variables, luego es factible utilizar el gradiente descendente para encontrar su mínimo. Tomando $\eta=0.01$ y empezando en $(u,v)=(1,1)$, calculo el mínimo. \\
+
+Primero, calculo el gradiente de la función $E(u,v)$:
+$$\frac{\partial E(u,v)}{\partial u} = (u^2e^v-2v^2e^{-u})(4ue^v+4v^2e^{-v})$$
+$$\frac{\partial E(u,v)}{\partial v} = (2u^2e^v-8ve^{-u})(u^2e^v-2v^2e^{-u})$$
+
+$$\Rightarrow \nabla E(u,v) = \left((4ue^v+4v^2e^{-v})(u^2e^v-2v^2e^{-u}),(u^2e^v-2v^2e^{-u})(2u^2e^v-8ve^{-u})\right)$$
+
+Dado $\epsilon = 10^{-14}$, el número de iteraciones necesarias para obtener un valor por debajo de esa tolerancia (usando flotantes de 64 bits) es 34. Dicho valor se da en el par $(x,y)$ = (0.619207671834479, 0.968448270676094).
+
+Podemos observarlo en la siguiente gráfica, en la que vemos como converge muy rápidamente (basta una iteración para que se acerque mucho al punto final) hasta que en el 34 se da el criterio de parada. \\
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{e1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Progresión de la imagen de E en cada iteración} 
+	\label{fig:e1}
+\end{figure}
+
+\subsubsection{Función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$}
+
+En este caso trabajo con la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$. Esta función vuelve a ser clase $C^{\infty}$, luego podemos aplicar gradiente descendente sin problema. Tomando como punto inicial $(x_0,y_0) = (0.1,0.1), \eta = 0.01$ y un máximo de 50 iteraciones, minimizo la función y muestro el gráfico correspondiente. Como se puede ver, la convergencia se produce cerca de la duodécima iteración para llegar a la parada en la número 24. Las coordenadas del mínimo obtenido son $(x,y)$ = (0.24380496934646, -0.237925821480742)
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Progresión de la imagen de f en cada iteración} 
+	\label{fig:f1}
+\end{figure}
+
+Si dibujamos el contorno de esta función, podemos ver que existen varias zonas con mínimos y que, empezando en el par indicado antes, por la proximidad que presenta, cae en el mínimo obtenido.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{El mínimo alcanzado es cercano al punto inicial, luego la convergencia es lógica} 
+	\label{fig:f2}
+\end{figure}
+
+
+Para el caso en el que $\eta=0.1$ vamos a observar que no hay una convergencia, ya que, al ser un learning rate alto, se producen saltos que imposibilitan el descenso al mínimo. Así lo muestra la siguiente gráfica:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Comportamiento errático de la imagen debido a learning rate = 0.1} 
+	\label{fig:f3}
+\end{figure}
+
+Por tanto, vemos que ajustar el valor del learning rate es determinante para conseguir buenos resultados. Con esta idea, en el siguiente ejercicio, en el que no se ponen restricciones sobre los parámetros, desarrollo un pequeño estudio sobre el conjunto de valores apropiado que puede tomar la tasa de aprendizaje. Por otra parte, una tasa de aprendizaje constante acaba por tener un peor rendimiento en el proceso de minimización, ya que, para un $w$ cercano al mínimo, $\eta$ debería ir disminuyendo. De esta forma conseguiríamos una convergencia mucho más rápida. En ese sentido, se presenta el Gradiente Descendente Rápido (Faster Gradient Descent), a través de un learning rate adaptativo \cite{fgd}.
+
+\subsubsection{Evaluación en distintos puntos}
+
+Probamos ahora el algoritmo en distintos puntos iniciales para ver la importancia de este parámetro de entrada y para constatar, una vez más, que gradiente descendente es un algoritmo que garantiza encontrar mínimos locales (la derivada es un concepto local). En la primera columna de la tabla se encuentran los puntos iniciales, a continuación, los mínimos encontrados y, finalmente, la imagen de estos.
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|}
+		\hline
+		$(x_0,y_0)$   & $(x,y)$ (Valor donde se alcanza el mínimo)                                 & $f(x,y)$          \\ \hline
+		(0.1, 0.1)   & (0.243804969346460, -0.237925821480742) & -1.82007854154716 \\ \hline
+		(1, 1)       & (1.21807030090520, 0.712811950338754)    & 0.593269374325836 \\ \hline
+		(-0.5, -0.5) & (-0.731377459870107, -0.237855362955527) & -1.33248106233098 \\ \hline
+		(-1, -1)     & (-1.21807030090520, -0.712811950338754)  & 0.593269374325836 \\ \hline
+	\end{tabular}
+	\caption{Tabla requerida en el ejercicio 3 b)}
+	\label{table1}
+\end{table}
+
+\subsubsection{Conclusión sobre la verdadera dificultad de encontrar el mínimo global de una función arbitraria}
+
+Tanto en análisis real de una variable como en varias variables reales, la búsqueda de extremos relativos está asociada al concepto de derivada. En el primer caso, buscamos mínimos en el interior del intervalo de definición de la función derivando e igualando a cero la derivada. En el caso de varias variables, calculamos el gradiente e igualamos a cero para los extremos interiores y, en la superficie, utilizamos los multiplicadores de Lagrange. En suma, la optimización está ligada a la derivación. La derivabilidad de una función es un concepto totalmente local, esto es, se puede estudiar con todo rigor en un entorno abierto de un punto. El llamado carácter local de la derivabilidad favorece la realización de muchas demostraciones, en las que basta con comprobarlo para un entorno abierto ya que la extensión al dominio completo es trivial. Sin embargo, la desventaja es que los extremos, en este caso los mínimos, pueden ser relativos. Por tanto, la verdadera dificultad a la hora de encontrar el mínimo global de una función arbitraria es toparse con mínimos locales. Gradiente Descendente es ejemplo de un algoritmo versátil a la hora de encontrar mínimos, pero sólo da garantías para entornos del punto de inicio, cayendo en mínimos locales y olvidándose, a buen seguro, del mínimo global (si es que existe).
+
+\section{Ejercicio sobre Regresión Lineal}
+
+\subsection{Modelo de regresión lineal con SGD y Pseudoinversa}
+
+En este ejercicio se pide generar un modelo de regresión lineal con dos algoritmos distintos sobre el conjunto de datos extraído de imágenes de dígitos manuscritos. Las etiquetas son 1 o -1, dependiendo de si la imagen es un 5 o un 1, respectivamente.
+
+\subsubsection{SGD}
+
+El algoritmo SGD introduce una modificación sobre GD: en vez de tomar todo el conjunto de datos, elige de forma aleatoria un subconjunto (el llamado minibatch) y se va acumulando, como derivada del error, la diferencia entre el valor estimado y el valor real de la etiqueta. A diferencia de gradiente descendiente, SGD encuentra mínimos locales en funciones no convexas. Es necesario garantizar que todos los datos pasan al menos una vez por el algoritmo. En mi caso, desarrollo dos algoritmos: uno basado más en probabilidad pura, en el que no se garantiza de forma determinista que se pasen por todos los datos (aunque se le proporciona una cantidad de iteraciones tan grandes que, dado que todos los puntos son equiprobables, en probabilidad se asume que todos los puntos son evaluados), y otro en el que sí.\\
+
+SGD recibe, como parámetros, el conjunto de datos, etiquetas, learning rate, el tamaño de los subconjunto a coger, una tolerancia y el número máximo de iteraciones (en el caso del más determinista, llamado \textit{sgd\_teoria}, no le paso tolerancia). Como no se nos especifican, me dispongo a hacer un estudio sobre qué parámetros escoger. En concreto, qué tasa de aprendizaje y qué tamaño de minibatch. \\
+
+En primer lugar, estudio la tasa de aprendizaje. Para ello, genero números equiespaciados en distintos intervalos y comparo los errores:
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{lr1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 1} 
+	\label{fig:error1}
+\end{figure}
+
+Como se puede apreciar, la mayoría de los puntos no tienen imagen. Eso se debe a que el error es tan grande que se le asigna el valor infinito. Parece que los mejores valores están entre 0.1 y 0.12 de forma discontinua.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{lr2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 0.1} 
+	\label{fig:error2}
+\end{figure}
+
+Aquí se puede observar que los errores más pequeños están sobre 0.08. Veámoslo más de cerca:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{lr3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica LearningRate-Error entre 0.01 y 0.04} 
+	\label{fig:error3}
+\end{figure}
+
+El mejor resultado está sobre  0.028, con un error por debajo de 0.08. Por tanto, escojo ese learning rate.
+
+Para el tamaño del minibatch, la literatura recomienda tamaños entre 32 y 128 (\cite{lfd}).
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{mb1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Gráfica Minibatch-Error entre 32 y 128} 
+	\label{fig:mb}
+\end{figure}
+
+Los errores son prácticamente iguales. Con una tabla salimos de dudas:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Tamaño & Ein            \\ \hline
+		32     & 7.99957961$\times 10^{-2}$ \\ \hline
+		50     & 7.98057939$\times 10^{-2}$ \\ \hline
+		64     & 7.95063577$\times 10^{-2}$ \\ \hline
+		80     & 7.99062669$\times 10^{-2}$ \\ \hline
+		100    & 8.01261672$\times 10^{-2}$ \\ \hline
+		110    & 7.99992441$\times 10^{-2}$ \\ \hline
+		128    & 8.01803133$\times 10^{-2}$ \\ \hline
+	\end{tabular}
+	\caption{Tabla TamañoMinibatch-Error}
+	\label{table2}
+\end{table}
+
+Por tanto, tomo el minibatch con tamaño 64.\\
+
+Una vez elegidos los parámetros, ejecuto el algoritmo de Gradiente Descendente Estocástico (basado más en probabilidad) y se obtienen los siguientes resultados:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{sgd.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Algoritmo SGD sobre el conjunto de datos de imágenes manuscritas} 
+	\label{fig:sgd}
+\end{figure}
+
+Ademas, $w=$(-1.24216077,-0.14997997,-0.45243432), $E_{in}$ = 0.0819386655754886 y $E_{out}$ = 0.13418223441350954.
+Merece la pena detenerse para señalar la recta que divide el espacio separando las dos clases. En el eje X represento la intensidad, que se mueve entre 0 y 1. Si $w$ es un vector con las coordenadas estimadas después de la regresión, la ecuación general de la recta tiene la siguiente expresión:
+
+$$y = \frac{-w[1]}{w[2]}x - \frac{w[0]}{w[2]}$$
+
+En $x=0$, la recta corta al eje Y en el punto $y = \frac{-w[0]}{w[2]}$. En $x=1$, la recta tiene una ordenada de $y=\frac{-w[1]}{w[2]}- \frac{w[0]}{w[2]}$, por tanto, así se define la recta en la orden \textit{plot} de \textit{Matplotlib}.
+
+A continuación, muestro el resultado del algoritmo más fiel a lo desarrollado en teoría. Como se puede ver, separa igualmente bien las dos clases:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{sgd-teoria.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Algoritmo SGD-Teoría sobre el conjunto de datos de imágenes manuscritas} 
+	\label{fig:sgd_teoria}
+\end{figure}
+
+Ademas, $w=$(-1.13081462, -1.04414122, -0.48906579), $E_{in}$ =0.0793339239707  y $E_{out}$ = 0.131530278414. De hecho, se puede observar que la aproximación más fiel a la teoría tiene un error menor (con 1000 épocas).
+
+\newpage
+
+\subsubsection{Pseudoinversa}
+
+El algoritmo de pseudoinversa, a través de la descomposición en valores singulares de las matriz (dataset), genera, a grandes rasgos, mejores resultados que SGD. Sin embargo, calcular un inversa (o pseudo, si no existiese la inversa) es muy costoso computacionalmente. El resultado es el siguiente:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{pseudoinversa.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Algoritmo Pseudoinversa sobre el conjunto de datos de imágenes manuscritas} 
+	\label{fig:pseud}
+\end{figure}
+
+Los valores de error son menores que en SGD: $E_{in}$=0.07918658628900395, $E_{out}$=0.13095383720052586. Además, $w=$(-1.11588016, -1.24859846, -0.49753165).
+
+Como se puede observar, ambos métodos consiguen separar bastante bien las clases, por lo que los errores conseguidos son pequeños. Nuestro objetivo siempre es minimizar $E_{out}$ a pesar de que, a priori, sólo podemos controlar $E_{in}$, ya que se refiere a los datos que conocemos y están etiquetados. La desigualdad de Hoeffding nos garantiza que, si $h$ es la función que ajusta los datos, $N$ es el tamaño de nuestra muestra, $\epsilon>0$ la diferencia entre los errores y $\delta = 2e^{-2\epsilon^2N}$
+
+$$ E_{out}(h) \leq E_{in}(h) + \sqrt{\frac{1}{2N} log \frac{2}{\delta}}$$
+
+Por tanto, con un número suficientemente grande de datos en la muestra, si conseguimos que $E_{in}$ sea muy pequeño, se garantiza que $E_{out}$ también lo sea \cite{esl}.
+
+\newpage
+
+\subsubsection{Experimento}
+
+Nos ocupamos ahora del experimento. En primer lugar, genero una muestra de entrenamiento de 1000 puntos en $[-1,1]\times[-1,1]$.
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{puntos.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{1000 puntos en $[-1,1]\times[-1,1]$.} 
+	\label{fig:puntos2D}
+\end{figure}
+
+A continuación, defino la función $f(x_1,x_2) = sign((x_1-0.2)^2+x_2^2-0.6)$. Con ella etiqueto los puntos generados anteriormente. Además, introduzco ruido en un 10\% de los puntos (cambio el signo tomando un 10\% de índices aleatoriamente). Es importante, en la adquisición de los índices, indicar que se haga sin reemplazamiento, para que no se puedan repetir. He aquí el resultado:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{puntos2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Puntos etiquetas mediante la función f y con un 10\% de ruido} 
+	\label{fig:puntos2D-et}
+\end{figure}
+ 
+Sobre estos puntos, aplico un modelo de regresión lineal, SGD concretamente, para ver si las dos clases son linealmente separables. Es obvio que no lo son, así que la recta de regresión no va a servir para clasificar, como ahora veremos. El error obtenido es $E_{in}$ = 0.936602482496 y w=(0.02184074, -0.4376081, -0.00690195)
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{modelo-lineal-nuevo.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{SGD evaluado en el dataset creado. Como se puede ver, no es una buena opción para clasificar} 
+	\label{fig:sgd-p}
+\end{figure}
+
+Para terminar nuestro experimento, ejecutamos todo lo anterior 1000 veces (y 50 épocas) para así hacer una media de los errores y obtener resultados más firmes. El error medio interno obtenido es de 0.926849850453 y el exterior es  0.932811604219. Es evidente, a la luz de los resultados del error y la propia intuición al ver la representación de los puntos, que el modelo de regresión lineal no es apropiado para este caso. La literatura indica que la regresión lineal es útil en espacios con tuplas etiquetadas en clases linealmente separables (\cite{lfd}, \cite{ctm}). Por tanto, para tratar este tipo de problemas sería necesario añadir a nuestro espacio de funciones objetivo algunas transformaciones no lineales, es decir, polinomios (potencias de los datos). Lo mejor de esta estrategia es que la clase de funciones sigue siendo lineal a pesar de incluir transformaciones no lineales.
+
+\section{Bonus}
+
+Recuperamos la función $f(x,y)=x^2+2y^2+2sin(2\pi x) sin(2\pi y)$ para aplicarle el método de Newton. Dicho método es una extensión de Gradiente Descendente, basado en la inversión de la matriz Hessiana. El método de Newton en varias variables tiene la siguiente expresión recurrente:
+
+$$ x_{n+1} = x_{n} - \lambda [Hf(x_n)]^{-1} \nabla f(x_n)$$
+
+donde $[Hf(x_n)]^{-1}$ es la inversa de la matriz Hessiana, $\lambda \in (0,1)$. Si la Hessiana es definida positiva (por tanto invertible) y Lipschitziana, el método de Newton converge en orden cuadrático al mínimo (a pesar de la complejidad computacional en el cálculo de la inversa). Sin embargo, si la matriz no es definida positiva, el método acaba por converger en un punto de silla (puntos donde se da un cambio en la curvatura) \cite{pam}, \cite{np}.
+
+
+Desde un punto de vista pragmático, he definido funciones que evalúan $f$, $f_x,f_y, f_{xx},f_{yy}$ y $f_{xy}$. Sabemos que $f_{xy} = f_{yx}$ por la simetría de las segundas derivadas, debido a que el espacio es euclídeo y las derivadas segundas de $f$ son continuas (Teorema de Schwarz, Teorema de Clairaut, \cite{rudin}). Por último, defino el algoritmo utilizando la inversa de la matriz Hessiana (previamente calculada con un módulo) por el gradiente de $f$. Veamos cómo desciende el valor de la función con las iteraciones del método de Newton tratando los puntos iniciales del ejercicio anterior:
+
+\subsection{Caso 1}
+
+Para $w_0=(1,1), \eta$ = 0.01, el punto donde se alcanza el mínimo es $$w=( 0.98039190351 , 0.990414773324 )$$ El mínimo es $f(w) = 2.93780445477$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (1,1) y $\eta = 0.01$} 
+	\label{fig:bon1}
+\end{figure}
+
+\subsection{Caso 2}
+Para $w_0=(0.1,0.1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(0.0492016140411 , 0.0489001338764)$$ El mínimo es $f(w) =0.191231609806$. En la siguiente gráfica plasmo el rendimiento con el Método de Newton y con el Gradiente Descendente sobre los mismos datos iniciales:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (0.1,0.1) y $\eta = 0.01$} 
+	\label{fig:bon2}
+\end{figure}
+
+Como se puede ver, con tan sólo 24 iteraciones, Gradiente Descendente converge al posible mínimo mientras que el Método de Newton, tras 50, se queda muy lejos.
+
+\subsection{Caso 3}
+
+Para $w_0=(-1,-1), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(-0.98039190351 , -0.990414773324)$$ El mínimo es $f(w) = 2.93780445477$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (-1,-1) y $\eta = 0.01$} 
+	\label{fig:bon3}
+\end{figure}
+
+
+
+\subsection{Caso 4}
+
+Para $w_0=(-0.5,-0.5), \eta = 0.01$, el punto donde se alcanza el mínimo es $$w=(-0.490225784263 , -0.49523545828)$$ El mínimo es $f(w) = 0.734511770938$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (-0.5,-0.5) y $\eta = 0.01$} 
+	\label{fig:bon4}
+\end{figure}
+
+\subsection{Caso 5}
+
+Para $w_0=(0.1,0.1), \eta = 0.1$, el punto donde se alcanza el mínimo es $$w=(0.000368050007016 , 0.000364119013)$$ El mínimo es $f(w) = 1.09819291954\times 10^{-5}$.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{bonus5.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Método de Newton sobre f con w inicial (0.1,0.1) y $\eta = 0.1$} 
+	\label{fig:bon5}
+\end{figure}
+
+Curiosamente, este caso muestra que un learning rate elevado en el método de Newton para esta función corrige las deficiencias generadas en el Gradiente descendente, encontrando un supuesto mínimo y evitando el comportamiento errático.
+
+En los casos anteriores, la matriz Hessiana \textbf{nunca} es definida positiva. Esto explica que no haya convergencia a los mínimos sino a puntos de silla (comparando los valores de las tablas obtenidos con GD, Newton siempre consigue peores resultados en los supuestos mínimos hallados).
+
+
+Recuperando la función $f$, vemos que hay multitud de mínimos, por lo que el punto inicial y la tasa de aprendizaje es determinante en la caída al mínimo.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Representación 3D de la función} 
+	\label{fig:f}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{f2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Representación del contorno de f} 
+	\label{fig:f22}
+\end{figure}
+
+En la práctica, el método de Newton es útil cuando estamos muy cerca de un mínimo. Por tanto, una idea acertada sería utilizar métodos alternativos más potentes para aproximarnos a los mínimos, como el método del gradiente conjugado (\cite{pam}) o gradiente descendente con tasa de aprendizaje variable y, tras ellos, aplicar el método de Newton para garantizar el mínimo.
+\newpage
+\section{Bibliografía}
+
+%------------------------------------------------
+
+\bibliography{citas} %archivo citas.bib que contiene las entradas 
+\bibliographystyle{plain} % hay varias formas de citar
+
+\end{document}
