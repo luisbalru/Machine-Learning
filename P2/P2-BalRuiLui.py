@@ -82,6 +82,18 @@ class Ejercicio1:
 		a,b = simula_recta([-50,50])
 		print("Pendiente (a): ", a)
 		print("Término independiente (b): ", b)
+		print("Generando la nube de 50 puntos uniformemente")
+		puntos = simula_unif(50,2,[5,7])
+		print("Añadiendo las etiquetas correspondientes")
+		signos = f_ej12(a,b,puntos[:,0],puntos[:,1])
+		# Necesita tener la misma dimensión que puntos para poder hacer append
+		signos = signos.reshape(len(signos),1)
+		puntos = np.append(puntos,signos, axis=1)
+		plt.scatter(puntos[:,0],puntos[:,1], c = puntos[:,2])
+		plt.plot([5,7],[5*a+b,7*a+b])
+		plt.show()
+
+
 
 Ejerc1 = Ejercicio1()
 #Ejerc1.Ej1()
