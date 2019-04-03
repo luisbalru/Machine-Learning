@@ -132,6 +132,7 @@ class Ejercicio1:
 
 		input("\n--- Pulsa una tecla para continuar ---\n")
 
+	# Con la ayuda de la función contour dibujo las funciones implícitas pedidas
 
 	def Ej3(self):
 		print("Ejercicio 3")
@@ -177,11 +178,45 @@ class Ejercicio1:
 		plt.title("f(x,y) = y-20x**2-5x+3")
 		plt.show()
 
+		input("\n--- Pulsa una tecla para continuar ---\n")
 
-Ejerc1 = Ejercicio1()
+
+class Ejercicio2:
+
+	def __init__(self):
+		print("####################################################")
+		print("####################################################")
+		print("EJERCICIO 2: MODELOS LINEALES")
+		print("####################################################")
+		print("####################################################")
+
+	def ajusta_PLA(datos,label,max_iter,vini):
+		w = vini
+		w_old = vini
+		it = 0
+		changes = True
+		while(it < max_iter and changes):
+			for i in range(len(datos)):
+				if np.sign(w.dot(datos[i])) != y[i]:
+					w_old = w
+					w = w_old + y[i]*datos[i]
+			if w == w_old:
+				changes = False
+			it = it +1
+
+
+
+
+# EJECUCIONES DEL EJERCICIO 1
+
+#Ejerc1 = Ejercicio1()
 #Ejerc1.Ej1()
-Ejerc1.Ej2()
-Ejerc1.Ej3()
+#Ejerc1.Ej2()
+#Ejerc1.Ej3()
+
+# EJECUCIONES DEL EJERCICIO 2
+
+Ejerc2 = Ejercicio2()
 
 
 ###############################################################################
