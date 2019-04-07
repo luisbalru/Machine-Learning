@@ -48,175 +48,169 @@ def f_ej12(a,b,x,y):
 Ejercicio 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO
 """
 
-class Ejercicio1:
+"""
+print("####################################################")
+print("####################################################")
+print("EJERCICIO 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO")
+print("####################################################")
+print("####################################################")
 
-	def __init__(self):
-		self.dataset = []
-		print("####################################################")
-		print("####################################################")
-		print("EJERCICIO 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO")
-		print("####################################################")
-		print("####################################################")
+print("Ejercicio 1. Dibujar una gráfica con la nube de puntos correspondiente")
+print("a) N=50, dim=2, rango = [-50,50] con simula_unif")
 
-	def Ej1(self):
-		print("Ejercicio 1. Dibujar una gráfica con la nube de puntos correspondiente")
-		print("a) N=50, dim=2, rango = [-50,50] con simula_unif")
+listaN = simula_unif(50,2,[-50,50])
+plt.scatter(listaN[:,0],listaN[:,1])
+plt.title("Nube de puntos generada con simula_unif")
+plt.show()
 
-		listaN = simula_unif(50,2,[-50,50])
-		plt.scatter(listaN[:,0],listaN[:,1])
-		plt.title("Nube de puntos generada con simula_unif")
-		plt.show()
+input("\n--- Pulsa una tecla para continuar ---\n")
 
-		input("\n--- Pulsa una tecla para continuar ---\n")
+print("b) N=50, dim=2, sigma=[5,7] con simula_gaus")
 
-		print("b) N=50, dim=2, sigma=[5,7] con simula_gaus")
+gauss = simula_gaus(50,2,np.array([5,7]))
+plt.scatter(gauss[:,0],gauss[:,1])
+plt.title("Nube de puntos generada con simula_gaus")
+plt.show()
 
-		gauss = simula_gaus(50,2,np.array([5,7]))
-		plt.scatter(gauss[:,0],gauss[:,1])
-		plt.title("Nube de puntos generada con simula_gaus")
-		plt.show()
+input("\n--- Pulsa una tecla para continuar ---\n")
+"""
 
-		input("\n--- Pulsa una tecla para continuar ---\n")
+print("Ejercicio 2")
+# En primer lugar, simulo los parámetros a, b para la recta y = ax+b en [-50,50]
+print("Apartado a)")
+print("Calculando la pendiente (a) y la ordenada en el origen (b) de la recta...")
+a,b = simula_recta([-50,50])
+print("Pendiente (a): ", a)
+print("Término independiente (b): ", b)
+print("Generando la nube de 50 puntos uniformemente")
+puntos = simula_unif(50,2,np.array([-50,50]))
 
-	def Ej2(self):
-		print("Ejercicio 2")
-		# En primer lugar, simulo los parámetros a, b para la recta y = ax+b en [-50,50]
-		print("Calculando la pendiente (a) y la ordenada en el origen (b) de la recta...")
-		a,b = simula_recta([-50,50])
-		print("Pendiente (a): ", a)
-		print("Término independiente (b): ", b)
-		print("Generando la nube de 50 puntos uniformemente")
-		puntos = simula_unif(50,2,np.array([-50,50]))
+print("Añadiendo las etiquetas correspondientes")
+signos = f_ej12(a,b,puntos[:,0],puntos[:,1])
+# Necesita tener la misma dimensión que puntos para poder hacer append
+signos = signos.reshape(len(signos),1)
+puntos_un = np.append(puntos,signos, axis=1)
+print("Conjunto de datos a representar gráficamente")
+print(puntos_un)
+plt.scatter(puntos_un[:,0],puntos_un[:,1], c = puntos_un[:,2])
+plt.plot([-50,50],[-50*a+b,50*a+b])
+plt.title("Conjunto aleatorio de datos y recta que los separa")
+plt.show()
 
-		print("Añadiendo las etiquetas correspondientes")
-		signos = f_ej12(a,b,puntos[:,0],puntos[:,1])
-		# Necesita tener la misma dimensión que puntos para poder hacer append
-		signos = signos.reshape(len(signos),1)
-		puntos = np.append(puntos,signos, axis=1)
-		print("Conjunto de datos a representar gráficamente")
-		print(puntos)
-		plt.scatter(puntos[:,0],puntos[:,1], c = puntos[:,2])
-		plt.plot([-50,50],[-50*a+b,50*a+b])
-		plt.title("Conjunto aleatorio de datos y recta que los separa")
-		plt.show()
+input("\n--- Pulsa una tecla para continuar ---\n")
+"""
+print("Apartado b)")
+#Separo los datos por etiquetas
+arriba = []
+debajo = []
+for i in range(len(puntos)):
+	if puntos[i][2] == 1.0:
+		arriba.append(puntos[i])
+	else:
+		debajo.append(puntos[i])
+# Defino los índices en cada subconjunto para introducir ruido en el 10% de las tuplas
+index1 = np.random.choice(len(arriba),int(0.1*len(arriba)),replace = False)
+arriba[index1][2] = -arriba[index1][2]
 
-		input("\n--- Pulsa una tecla para continuar ---\n")
+index2 = np.random.choice(len(debajo), int(0.1*len(debajo)),replace = False)
+for i in index2:
+	debajo[i][2] = -debajo[i][2]
 
-		#Separo los datos por etiquetas
-		arriba = []
-		debajo = []
-		for i in range(len(puntos)):
-			if puntos[i][2] == 1.0:
-				arriba.append(puntos[i])
-			else:
-				debajo.append(puntos[i])
-
-		# Defino los índices en cada subconjunto para introducir ruido en el 10% de las tuplas
-		index1 = np.random.choice(len(arriba),int(0.1*len(arriba)),replace = False)
-		arriba[index1][2] = -arriba[index1][2]
-
-		index2 = np.random.choice(len(debajo), int(0.1*len(debajo)),replace = False)
-		for i in index2:
-			debajo[i][2] = -debajo[i][2]
-
-		# Concatenación de los conjuntos y plot de los resultados. Ahora hay puntos
-		# mal clasificados
-		puntos_ruido = np.concatenate((arriba,debajo))
-		print("Modificación de  los puntos anteriores añadiendo ruido en el 10% de las etiquetas")
-		print(puntos_ruido)
-		plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
-		plt.plot([-50,50],[-50*a+b,50*a+b])
-		plt.title("Introducción de ruido sobre el conjunto de datos.\n Ahora hay puntos mal clasificados")
-		plt.show()
-		self.dataset = puntos_ruido
-
-		input("\n--- Pulsa una tecla para continuar ---\n")
-
-	# Con la ayuda de la función contour dibujo las funciones implícitas pedidas
-
-	def Ej3(self):
-		print("Ejercicio 3")
-		delta = 0.25
-		xrange = np.arange(-50, 50, delta)
-		yrange = np.arange(-50, 50, delta)
-		X, Y = np.meshgrid(xrange,yrange)
-
-		print("Representando f(x,y) = (x-10)**2+(y-20)**2 - 400")
-		F = (X-10)**2 + (Y-20)**2 - 400
-		plt.contour(X, Y, F , [0], colors=['red'])
-		plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
-		plt.title("f(x,y) = (x-10)**2+(y-20)**2 - 400")
-		plt.show()
-
-		input("\n--- Pulsa una tecla para continuar ---\n")
-
-		print("Representando f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
-		G = 0.5*(X+10)**2 + (Y-20)**2 - 400
-		plt.contour(X, Y, G , [0], colors=['red'])
-		plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
-		plt.title("f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
-		plt.show()
-
-		input("\n--- Pulsa una tecla para continuar ---\n")
-
-		print("Representando f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
-		H = 0.5*(X-10)**2 + (Y+20)**2 - 400
-		plt.contour(X, Y, H , [0], colors=['red'])
-		plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
-		plt.title("f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
-		plt.show()
-
-		input("\n--- Pulsa una tecla para continuar ---\n")
-
-		xrange = np.arange(-200, 200, delta)
-		yrange = np.arange(-200, 200, delta)
-		X, Y = np.meshgrid(xrange,yrange)
-		print("Representando f(x,y) = y-20x**2-5x+3")
-		I = Y-20*X**2-5*X+3
-		plt.contour(X, Y, I , [0], colors=['red'])
-		plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
-		plt.title("f(x,y) = y-20x**2-5x+3")
-		plt.show()
-
-		input("\n--- Pulsa una tecla para continuar ---\n")
+# Concatenación de los conjuntos y plot de los resultados. Ahora hay puntos
+# mal clasificados
+puntos_ruido = np.concatenate((arriba,debajo))
+print("Modificación de  los puntos anteriores añadiendo ruido en el 10% de las etiquetas")
+print(puntos_ruido)
+plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
+plt.plot([-50,50],[-50*a+b,50*a+b])
+plt.title("Introducción de ruido sobre el conjunto de datos.\n Ahora hay puntos mal clasificados")
+plt.show()
 
 
-class Ejercicio2:
+input("\n--- Pulsa una tecla para continuar ---\n")
 
-	def __init__(self):
-		print("####################################################")
-		print("####################################################")
-		print("EJERCICIO 2: MODELOS LINEALES")
-		print("####################################################")
-		print("####################################################")
+# Con la ayuda de la función contour dibujo las funciones implícitas pedidas
 
-	def ajusta_PLA(datos,label,max_iter,vini):
-		w = vini
-		w_old = vini
-		it = 0
-		changes = True
-		while(it < max_iter and changes):
-			for i in range(len(datos)):
-				if np.sign(w.dot(datos[i])) != y[i]:
-					w_old = w
-					w = w_old + y[i]*datos[i]
-			if w == w_old:
-				changes = False
-			it = it +1
+print("Ejercicio 3")
+delta = 0.25
+xrange = np.arange(-50, 50, delta)
+yrange = np.arange(-50, 50, delta)
+X, Y = np.meshgrid(xrange,yrange)
+
+print("Representando f(x,y) = (x-10)**2+(y-20)**2 - 400")
+F = (X-10)**2 + (Y-20)**2 - 400
+plt.contour(X, Y, F , [0], colors=['red'])
+plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.title("f(x,y) = (x-10)**2+(y-20)**2 - 400")
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Representando f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
+G = 0.5*(X+10)**2 + (Y-20)**2 - 400
+plt.contour(X, Y, G , [0], colors=['red'])
+plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.title("f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Representando f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
+H = 0.5*(X-10)**2 + (Y+20)**2 - 400
+plt.contour(X, Y, H , [0], colors=['red'])
+plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.title("f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+xrange = np.arange(-200, 200, delta)
+yrange = np.arange(-200, 200, delta)
+X, Y = np.meshgrid(xrange,yrange)
+print("Representando f(x,y) = y-20x**2-5x+3")
+I = Y-20*X**2-5*X+3
+plt.contour(X, Y, I , [0], colors=['red'])
+plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.title("f(x,y) = y-20x**2-5x+3")
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+"""
+
+print("####################################################")
+print("####################################################")
+print("EJERCICIO 2: MODELOS LINEALES")
+print("####################################################")
+print("####################################################")
+
+print("Definiendo la función ajusta_PLA...")
+
+def ajusta_PLA(datos,label,max_iter,vini):
+	w = vini
+	w_old = vini
+	it = 0
+	changes = True
+	while(it < max_iter and changes):
+		#print(it)
+		for i in range(len(datos)):
+			changes = False
+			if np.sign(w.dot(datos[i])) != label[i]:
+				w_old = w
+				w = w_old + label[i]*datos[i]
+				changes = True
+		it = it +1
+	return w,it
+
+print("Ejercicio 1")
+
+print("a) Ejecuto PLA con los datos de 2a de la sección anterior. Parámetros:")
+print("a) 1. Vector 0")
+
+w21, it21 = ajusta_PLA(puntos,signos,100000,np.array([0,0],np.float64))
+print("w obtenido: ", w21)
+print("Número de iteraciones necesarias para la convergencia: ", it21)
 
 
-
-
-# EJECUCIONES DEL EJERCICIO 1
-
-#Ejerc1 = Ejercicio1()
-#Ejerc1.Ej1()
-#Ejerc1.Ej2()
-#Ejerc1.Ej3()
-
-# EJECUCIONES DEL EJERCICIO 2
-
-Ejerc2 = Ejercicio2()
 
 
 ###############################################################################
