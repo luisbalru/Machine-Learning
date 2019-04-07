@@ -98,19 +98,22 @@ plt.title("Conjunto aleatorio de datos y recta que los separa")
 plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-"""
+
 print("Apartado b)")
 #Separo los datos por etiquetas
 arriba = []
 debajo = []
-for i in range(len(puntos)):
-	if puntos[i][2] == 1.0:
-		arriba.append(puntos[i])
+for i in range(len(puntos_un)):
+	if puntos_un[i][2] == 1.0:
+		arriba.append(puntos_un[i])
 	else:
-		debajo.append(puntos[i])
+		debajo.append(puntos_un[i])
+
+arriba = np.array(arriba)
+debajo = np.array(debajo)
 # Defino los índices en cada subconjunto para introducir ruido en el 10% de las tuplas
 index1 = np.random.choice(len(arriba),int(0.1*len(arriba)),replace = False)
-arriba[index1][2] = -arriba[index1][2]
+arriba[index1][0][2] = -arriba[index1][0][2]
 
 index2 = np.random.choice(len(debajo), int(0.1*len(debajo)),replace = False)
 for i in index2:
@@ -128,7 +131,7 @@ plt.show()
 
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-
+"""
 # Con la ayuda de la función contour dibujo las funciones implícitas pedidas
 
 print("Ejercicio 3")
@@ -185,32 +188,62 @@ print("####################################################")
 
 print("Definiendo la función ajusta_PLA...")
 
-def ajusta_PLA(datos,label,max_iter,vini):
+def ajusta_PLA(datos,label,vini,max_iter = -1):
 	w = vini
 	w_old = vini
 	it = 0
 	changes = True
-	while(it < max_iter and changes):
-		#print(it)
-		for i in range(len(datos)):
-			changes = False
-			if np.sign(w.dot(datos[i])) != label[i]:
-				w_old = w
-				w = w_old + label[i]*datos[i]
-				changes = True
-		it = it +1
+	if max_iter != -1:
+		while(it < max_iter and changes):
+			#print(it)
+			for i in range(len(datos)):
+				changes = False
+				if np.sign(w.dot(datos[i])) != label[i]:
+					w_old = w
+					w = w_old + label[i]*datos[i]
+					changes = True
+			it = it +1
+	else:
+		while(changes):
+			#print(it)
+			for i in range(len(datos)):
+				changes = False
+				if np.sign(w.dot(datos[i])) != label[i]:
+					w_old = w
+					w = w_old + label[i]*datos[i]
+					changes = True
+			it = it +1
+			w = np.array(w)
 	return w,it
 
 print("Ejercicio 1")
 
 print("a) Ejecuto PLA con los datos de 2a de la sección anterior. Parámetros:")
 print("a) 1. Vector 0")
+"""
+NO ACABA
+w21a1, it21a1 = ajusta_PLA(puntos,signos,np.array([0,0],np.float64))
+print("w obtenido: ", w21a1)
+print("Número de iteraciones necesarias para la convergencia: ", it21a1)
+"""
 
-w21, it21 = ajusta_PLA(puntos,signos,100000,np.array([0,0],np.float64))
-print("w obtenido: ", w21)
-print("Número de iteraciones necesarias para la convergencia: ", it21)
+print("a) 2. Vector de números aleatorios [0,1]")
+
+w21a2, it21a2 = ajusta_PLA(puntos,signos,np.array([np.random.rand(),np.random.rand()]),10)
+print("w obtenido: ",w21a2)
+print("Número de iteraciones necesarias para la convergencia: ",it21a2)
+
+print("b) PLA con los datos de 2b de la sección anterior. Parámetros:")
+print("1. Vector 0")
+w21b1, it21b1 = ajusta_PLA(puntos,puntos_ruido[:,2],np.array([0,0],np.float64),10)
+print("w obtenido: ",w21b1)
+print("Número de iteraciones necesarias para la convergencia: ",it21b1)
 
 
+print("2. Vector de números aleatorios [0,1]")
+w21b2, it21b2 = ajusta_PLA(puntos,puntos_ruido[:,2],np.array([np.random.rand(),np.random.rand()],np.float64),10)
+print("w obtenido: ",w21b2)
+print("Número de iteraciones necesarias para la convergencia: ",it21b2)
 
 
 ###############################################################################
