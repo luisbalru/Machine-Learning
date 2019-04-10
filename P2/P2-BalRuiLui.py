@@ -7,7 +7,7 @@ Aprendizaje Automático 2019
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
-warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+#warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 
 # Fijamos la semilla
@@ -45,10 +45,10 @@ def f_ej12(a,b,x,y):
 
 
 """
-Ejercicio 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO
+#Ejercicio 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO
+"""
 """
 
-"""
 print("####################################################")
 print("####################################################")
 print("EJERCICIO 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO")
@@ -73,7 +73,7 @@ plt.title("Nube de puntos generada con simula_gaus")
 plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-"""
+
 
 print("Ejercicio 2")
 # En primer lugar, simulo los parámetros a, b para la recta y = ax+b en [-50,50]
@@ -113,11 +113,17 @@ arriba = np.array(arriba)
 debajo = np.array(debajo)
 # Defino los índices en cada subconjunto para introducir ruido en el 10% de las tuplas
 index1 = np.random.choice(len(arriba),int(0.1*len(arriba)),replace = False)
-arriba[index1][0][2] = -arriba[index1][0][2]
+print(index1)
+for i in index1:
+	arriba[i][2] = -arriba[i][2]
+#arriba[index1][:,2] = -arriba[index1][:,2]
 
 index2 = np.random.choice(len(debajo), int(0.1*len(debajo)),replace = False)
+print(index2)
+
 for i in index2:
 	debajo[i][2] = -debajo[i][2]
+#debajo[index2][:,2] = -debajo[index2][:,2]
 
 # Concatenación de los conjuntos y plot de los resultados. Ahora hay puntos
 # mal clasificados
@@ -131,7 +137,7 @@ plt.show()
 
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-"""
+
 # Con la ayuda de la función contour dibujo las funciones implícitas pedidas
 
 print("Ejercicio 3")
@@ -143,7 +149,7 @@ X, Y = np.meshgrid(xrange,yrange)
 print("Representando f(x,y) = (x-10)**2+(y-20)**2 - 400")
 F = (X-10)**2 + (Y-20)**2 - 400
 plt.contour(X, Y, F , [0], colors=['red'])
-plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
 plt.title("f(x,y) = (x-10)**2+(y-20)**2 - 400")
 plt.show()
 
@@ -152,7 +158,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 print("Representando f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
 G = 0.5*(X+10)**2 + (Y-20)**2 - 400
 plt.contour(X, Y, G , [0], colors=['red'])
-plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
 plt.title("f(x,y) = 0.5(x+10)**2+(y-20)**2 - 400")
 plt.show()
 
@@ -161,7 +167,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 print("Representando f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
 H = 0.5*(X-10)**2 + (Y+20)**2 - 400
 plt.contour(X, Y, H , [0], colors=['red'])
-plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
 plt.title("f(x,y) = 0.5(x-10)**2+(y+20)**2 - 400")
 plt.show()
 
@@ -173,12 +179,12 @@ X, Y = np.meshgrid(xrange,yrange)
 print("Representando f(x,y) = y-20x**2-5x+3")
 I = Y-20*X**2-5*X+3
 plt.contour(X, Y, I , [0], colors=['red'])
-plt.scatter(self.dataset[:,0],self.dataset[:,1], c = self.dataset[:,2])
+plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
 plt.title("f(x,y) = y-20x**2-5x+3")
 plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-"""
+
 
 print("####################################################")
 print("####################################################")
@@ -195,9 +201,8 @@ def ajusta_PLA(datos,label,vini,max_iter = -1):
 	changes = True
 	if max_iter != -1:
 		while(it < max_iter and changes):
-			#print(it)
+			changes = False
 			for i in range(len(datos)):
-				changes = False
 				if np.sign(w.dot(datos[i])) != label[i]:
 					w_old = w
 					w = w_old + label[i]*datos[i]
@@ -205,9 +210,8 @@ def ajusta_PLA(datos,label,vini,max_iter = -1):
 			it = it +1
 	else:
 		while(changes):
-			#print(it)
+			changes = False
 			for i in range(len(datos)):
-				changes = False
 				if np.sign(w.dot(datos[i])) != label[i]:
 					w_old = w
 					w = w_old + label[i]*datos[i]
@@ -216,22 +220,27 @@ def ajusta_PLA(datos,label,vini,max_iter = -1):
 			w = np.array(w)
 	return w,it
 
+
+
 print("Ejercicio 1")
 
 print("a) Ejecuto PLA con los datos de 2a de la sección anterior. Parámetros:")
 print("a) 1. Vector 0")
-"""
-NO ACABA
-w21a1, it21a1 = ajusta_PLA(puntos,signos,np.array([0,0],np.float64))
+
+#NO ACABA
+w21a1, it21a1 = ajusta_PLA(puntos,signos,np.array([0,0],np.float64),16000)
 print("w obtenido: ", w21a1)
 print("Número de iteraciones necesarias para la convergencia: ", it21a1)
-"""
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("a) 2. Vector de números aleatorios [0,1]")
 
-w21a2, it21a2 = ajusta_PLA(puntos,signos,np.array([np.random.rand(),np.random.rand()]),10)
+w21a2, it21a2 = ajusta_PLA(puntos,signos,np.array([np.random.rand(),np.random.rand()]),16000)
 print("w obtenido: ",w21a2)
 print("Número de iteraciones necesarias para la convergencia: ",it21a2)
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("b) PLA con los datos de 2b de la sección anterior. Parámetros:")
 print("1. Vector 0")
@@ -239,12 +248,72 @@ w21b1, it21b1 = ajusta_PLA(puntos,puntos_ruido[:,2],np.array([0,0],np.float64),1
 print("w obtenido: ",w21b1)
 print("Número de iteraciones necesarias para la convergencia: ",it21b1)
 
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("2. Vector de números aleatorios [0,1]")
 w21b2, it21b2 = ajusta_PLA(puntos,puntos_ruido[:,2],np.array([np.random.rand(),np.random.rand()],np.float64),10)
 print("w obtenido: ",w21b2)
 print("Número de iteraciones necesarias para la convergencia: ",it21b2)
 
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+"""
+
+# REGRESIÓN LOGÍSTICA CON GRADIENTE DESCENDENTE ESTOCÁSTICO
+# Parámetros:
+#       - x: Conjunto de datos a evaluar
+#       - y: Verdaderos valores de la etiqueta asociada a cada tupla
+#       - learning_rate
+#       - max_iters: Número máximo de iteraciones
+#       - minibatch_size: Tamaño del minibatch
+#       - epsilon: Cota del error
+# Aclaraciones:
+# 		Este algoritmo se distingue de SGD en la forma en la que se calcula
+# 		el gradiente de E_in:
+#			$\nabla E_{in} = -1/N \sum_{n=1}^{N} = \frac{y_n x_n}{1+ exp(y_n w^T(t)x_n)}
+
+
+
+def sgd_logistic_regression(x,y,learning_rate,minibatch_size = 1, epsilon = 0.01):
+    w = np.zeros(len(x[0]),np.float64)
+    indices = np.array(range(0,x.shape[0]))
+    np.random.shuffle(indices)
+    it = 0
+    while it < max_iters:
+        for j in range(int(len(x)/minibatch_size)-1):
+            last_w = w
+            X_minib = x[indices[j*minibatch_size:(j+1)*minibatch_size:1],:]
+            Y_minib = y[indices[j*minibatch_size:(j+1)*minibatch_size:1]]
+            suma = -1/len(x[0])*np.dot(Y_minib,X_minib)/(1+np.exp(np.dot(Y_minib,np.dot(X_minib,last_w))))
+            w = w - learning_rate * suma
+        if len(x) % minibatch_size != 0:
+            resto = (len(x) % minibatch_size)*minibatch_size
+            indices = np.append(indices[-resto:],indices[:minibatch_size-resto])
+            last_w = w
+            X_minib = x[indices[j*minibatch_size:(j+1)*minibatch_size:1],:]
+            Y_minib = y[indices[j*minibatch_size:(j+1)*minibatch_size:1]]
+            suma = -1/len(x[0])*np.dot(Y_minib,X_minib)/(1+np.exp(np.dot(Y_minib,np.dot(X_minib,last_w))))
+            w = w - learning_rate * suma
+        it = it+1
+        np.random.shuffle(indices)
+    return w
+
+print("Ejercicio 2")
+print("Generando 100 puntos en [0,2]x[0,2]")
+puntos2 = simula_unif(100,2,[0,2])
+print("Simulando recta que los separa...")
+a,b = simula_recta([0,2])
+print("Pendiente (a): ", a)
+print("Término independiente (b): ", b)
+
+print("Añadiendo las etiquetas correspondientes")
+etiquetas = f_ej12(a,b,puntos2[:,0],puntos2[:,1])
+etiquetas = etiquetas.reshape(len(etiquetas),1)
+p = np.append(puntos2,etiquetas, axis=1)
+plt.scatter(puntos2[:,0],puntos2[:,1],c=p[:,2])
+plt.plot([0,2],[b,(2*a+b)])
+plt.title("Conjunto aleatorio de datos y recta que los separa")
+plt.show()
 
 ###############################################################################
 ###############################################################################
