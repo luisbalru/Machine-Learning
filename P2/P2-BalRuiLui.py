@@ -11,7 +11,7 @@ import warnings
 
 
 # Fijamos la semilla
-np.random.seed(7)
+np.random.seed(123456789)
 
 
 def simula_unif(N, dim, rango):
@@ -231,31 +231,40 @@ print("Definiendo la función ajusta_PLA...")
 def ajusta_PLA(datos,label,vini,max_iter = -1):
 	w = vini
 	w_old = vini
-	datos = np.concatenate((datos,np.ones((datos.shape[0],1),np.float64)),axis=1)
+	datos = np.concatenate((np.ones((datos.shape[0],1),np.float64),datos),axis=1)
 	it = 0
 	changes = True
 	if max_iter != -1:
 		while(it < max_iter and changes):
-			changes = False
+			w_old = w
 			for i in range(len(datos)):
 				if np.sign(w.dot(datos[i])) != label[i]:
-					w_old = w
-					w = w_old + label[i]*datos[i]
-					changes = True
+					w = w + label[i]*datos[i]
+			if np.all(np.equal(w,w_old)):
+				break
 			it = it +1
 	else:
 		while(changes):
-			changes = False
+			w_old = w
 			for i in range(len(datos)):
 				if np.sign(w.dot(datos[i])) != label[i]:
-					w_old = w
-					w = w_old + label[i]*datos[i]
-					changes = True
+					w = w + label[i]*datos[i]
+			if np.all(np.equal(w,w_old)):
+				break
 			it = it +1
 			w = np.array(w)
 	return w,it
 
-
+def ajusta_PLA2(datos,label,max_iter,vini):
+	w = vini
+	for i in range(max_iter):
+		w_old = w
+		for d,l in zip(datos,label):
+			if np.sign(w.dot(d)) != l:
+				w = w + l*d
+		if np.all(np.equal(w,w_old)):
+			return w, i
+	return w,max_iter
 
 print("Ejercicio 1")
 
@@ -299,50 +308,37 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 def sigmoide(x):
 	return 1/(np.exp(-x)+1)
 
+
+def gradienteRL(datos,etiq,w):
+	return -etiq*datos/(1+np.exp(etiq*w.dot(datos)))
+
 # REGRESIÓN LOGÍSTICA CON GRADIENTE DESCENDENTE ESTOCÁSTICO
 # Parámetros:
 #       - x: Conjunto de datos a evaluar
 #       - y: Verdaderos valores de la etiqueta asociada a cada tupla
 #       - learning_rate
 #       - max_iters: Número máximo de iteraciones
-#       - minibatch_size: Tamaño del minibatch
 #       - epsilon: Cota del error
 # Aclaraciones:
 # 		Este algoritmo se distingue de SGD en la forma en la que se calcula
 # 		el gradiente de E_in:
 #			$\nabla E_{in} = -1/N \sum_{n=1}^{N} = \frac{y_n x_n}{1+ exp(y_n w^T(t)x_n)}
+#		El tamaño del minibatch es 1
 
 
-def sgd_logistic_regression(x,y,learning_rate,minibatch_size = 1, epsilon = 0.01, max_iters = 15000):
-	x = np.hstack((np.ones(shape=(x.shape[0],1)),x))
+def sgd_logistic_regression(x,y,learning_rate, epsilon = 0.01, max_iters = 15000):
 	w = np.zeros(len(x[0]),np.float64)
 	last_w = np.ones(len(w),np.float64)
-	indices = np.array(range(0,x.shape[0]))
+	indices = np.array(range(len(x)))
 	np.random.shuffle(indices)
 	it = 0
-	i=0
 	while np.linalg.norm(w-last_w) > epsilon and it < max_iters:
-		for j in range(int(len(x)/minibatch_size)-1):
-			X_minib = x[indices[j*minibatch_size:(j+1)*minibatch_size:1],:]
-			Y_minib = y[indices[j*minibatch_size:(j+1)*minibatch_size:1]]
-			last_w = w
-			X_minib = np.array(X_minib)
-			Y_minib = np.array(Y_minib)
-			suma = -1/len(x[0])*Y_minib*X_minib*(sigmoide(-Y_minib*X_minib.dot(last_w))[0])
-			suma = suma[0]
-			w = w - learning_rate * suma
-			i=j
-		if len(x) % minibatch_size != 0:
-			resto = (len(x) % minibatch_size)*minibatch_size
-			indices = np.append(indices[-resto:],indices[:minibatch_size-resto])
-			last_w = w
-			X_minib = x[indices[i*minibatch_size:(i+1)*minibatch_size:1],:]
-			Y_minib = y[indices[i*minibatch_size:(i+1)*minibatch_size:1]]
-			X_minib = np.array(X_minib)
-			Y_minib = np.array(Y_minib)
-			suma = -1/len(x[0])*Y_minib*X_minib*(sigmoide(-Y_minib*X_minib.dot(last_w))[0])
-			suma = suma[0]
-			w = w - learning_rate * suma
+		last_w = np.copy(w)
+		for j in range(len(x)):
+			X_minib = x[indices[j]]
+			Y_minib = y[indices[j]]
+			gradiente = gradienteRL(X_minib,Y_minib,w)
+			w = w - learning_rate * gradiente
 		np.random.shuffle(indices)
 		it = it+1
 	return w
@@ -366,6 +362,7 @@ print("Término independiente (b): ", b)
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Añadiendo las etiquetas correspondientes")
+
 etiquetas = f_ej12(a,b,puntos2[:,0],puntos2[:,1])
 etiquetas = etiquetas.reshape(len(etiquetas),1)
 y = reetiquetar(etiquetas)
@@ -381,18 +378,18 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 print("Ejecutando SGD con Regresión Logística")
 print("Parámetros: Learning_rate 0.01, epsilon 0.01")
 
-w = sgd_logistic_regression(puntos2,etiquetas,15000,64)
+puntos2 = np.hstack((np.ones(shape=(puntos2.shape[0],1)),puntos2))
+w = sgd_logistic_regression(puntos2,etiquetas,0.01)
 print("El valor de w es: ", w)
 # [[ 0.04156455  0.08628088  0.08090566]]
 
 
 def error_acierto(X,y,w):
-	x = np.concatenate((X, np.ones((X.shape[0], 1), np.float64)), axis=1)
 	tam = y.size
 	suma = 0
 
 	for i in range(0,tam):
-		if np.abs(sigmoide(x[i].dot(w.T))-y[i]) > 0.5:
+		if np.abs(sigmoide(X[i].dot(w.T))-y[i]) > 0.5:
 			suma += 1
 
 	return suma/tam
@@ -400,11 +397,11 @@ def error_acierto(X,y,w):
 
 print("Ein: ", error_acierto(puntos2,y,w))
 
+labels = []
+for i in range(len(etiquetas)):
+	labels.append(etiquetas[i][0])
 
-plt.scatter(puntos2[:,0],puntos2[:,1],c=p[:,2])
-plt.plot([0,2], [-w[0]/w[2], -w[0]/w[2]-2*w[1]/w[2]])
-plt.title("Recta generada con el w de la RL-SGD")
-plt.show()
+dibujaRecta(puntos2, labels, -w[1]/w[2], -w[0]/w[2], 'SGD Regresión Logística', 'Pene', 'Pene')
 
 
 ###############################################################################
