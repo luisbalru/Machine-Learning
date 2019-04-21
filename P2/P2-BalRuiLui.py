@@ -42,16 +42,36 @@ def simula_recta(intervalo):
 def f_ej12(a,b,x,y):
 	return np.sign(y-a*x-b)
 
-"""
-	@brief Dibuja los puntos coloreados según etiqueta y el ajuste lineal realizado
-	@param x: Conjunto de datos
-	@param y: etiquetas
-	@param a: Pendiente del ajuste
-	@param b: Ordenada en el origen
-	@param titulo: Título para el plot
-	@param eje_x: Etiqueta para el eje X
-	@param eje_y: Etiqueta para el eje Y
-"""
+#
+# CÁLCULO DEL ERROR EN REGRESIÓN LOGÍSTICA
+# @brief Función que calcula el error medio en regresión logística vía la Máxima Verosimilitud
+# @param X dataset
+# @param y etiquetas
+# @param w coeficientes ajustados mediante SGD-RL
+# @return Error medio
+#
+
+def error_rl(X,y,w):
+	tam = y.size
+	suma = 0
+
+	for i in range(0,tam):
+		suma = suma + np.log(1+np.exp(-y[i]*w.dot(X[i])))
+
+	return suma/tam
+
+#
+# DIBUJA RECTA
+#	@brief Dibuja los puntos coloreados según etiqueta y el ajuste lineal realizado
+#	@param x: Conjunto de datos
+#	@param y: etiquetas
+#	@param a: Pendiente del ajuste
+#	@param b: Ordenada en el origen
+#	@param titulo: Título para el plot
+#	@param eje_x: Etiqueta para el eje X
+#	@param eje_y: Etiqueta para el eje Y
+#
+
 def dibujaRecta(x, y, a, b, titulo='Scatter plot de datos', eje_x='X', eje_y='Y'):
 	X = []
 	for i in range(len(x)):
@@ -343,14 +363,6 @@ def sgd_logistic_regression(x,y,learning_rate, epsilon = 0.01, max_iters = 15000
 		it = it+1
 	return w
 
-def reetiquetar(y):
-	y_ = np.array(y)
-	for i in range(0, y_.size):
-		if y_[i] == -1:
-			y_[i] = 0
-	return y_
-
-
 print("Ejercicio 2")
 print("Generando 100 puntos en [0,2]x[0,2]")
 puntos2 = simula_unif(100,2,[0,2])
@@ -363,9 +375,9 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Añadiendo las etiquetas correspondientes")
 
+# Genero los puntos y la gráfica asociada a los puntos con la clasificación
 etiquetas = f_ej12(a,b,puntos2[:,0],puntos2[:,1])
 etiquetas = etiquetas.reshape(len(etiquetas),1)
-y = reetiquetar(etiquetas)
 p = np.append(puntos2,etiquetas, axis=1)
 plt.scatter(puntos2[:,0],puntos2[:,1],c=p[:,2])
 plt.plot([0,2],[b,(2*a+b)])
@@ -381,28 +393,30 @@ print("Parámetros: Learning_rate 0.01, epsilon 0.01")
 puntos2 = np.hstack((np.ones(shape=(puntos2.shape[0],1)),puntos2))
 w = sgd_logistic_regression(puntos2,etiquetas,0.01)
 print("El valor de w es: ", w)
-# [[ 0.04156455  0.08628088  0.08090566]]
 
-
-def error_acierto(X,y,w):
-	tam = y.size
-	suma = 0
-
-	for i in range(0,tam):
-		if np.abs(sigmoide(X[i].dot(w.T))-y[i]) > 0.5:
-			suma += 1
-
-	return suma/tam
-
-
-print("Ein: ", error_acierto(puntos2,y,w))
+print("Ein: ", error_rl(puntos2,etiquetas,w))
 
 labels = []
 for i in range(len(etiquetas)):
 	labels.append(etiquetas[i][0])
 
-dibujaRecta(puntos2, labels, -w[1]/w[2], -w[0]/w[2], 'SGD Regresión Logística', 'Pene', 'Pene')
+dibujaRecta(puntos2, labels, -w[1]/w[2], -w[0]/w[2], 'SGD Regresión Logística', 'Eje X', 'Eje Y')
 
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Evaluando Eout con un conjunto nuevo de 2000 elementos")
+# Conjunto de test
+X_test = simula_unif(2000,2,[0,2])
+y_test = f_ej12(a,b,X_test[:,0],X_test[:,1])
+y_test = y_test.reshape(len(y_test),1)
+X_test = np.hstack((np.ones(shape=(X_test.shape[0],1)),X_test))
+print("Eout: ", error_rl(X_test,y_test,w))
+labels = []
+for i in range(len(y_test)):
+	labels.append(y_test[i][0])
+dibujaRecta(X_test, labels, -w[1]/w[2], -w[0]/w[2], 'SGD Regresión Logística TEST', 'Eje X', 'Eje Y')
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
