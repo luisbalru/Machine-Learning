@@ -84,7 +84,7 @@
 	
 	Creo una recta aleatoria con la función \textit{simula\_recta()} de forma que su pendiente y su ordenada en el origen son las siguientes:
 	
-	$$a = -0.750132431433, b=-14.4754885133$$
+	$$a = -2.04013210695, b=-46.0760383842$$
 	
 	Tras generar el dataset de 50 puntos, etiqueto cada uno de ellos en función de si están por encima o por debajo de la recta (cada color indica una situación). El resultado es el siguiente: 
 	
@@ -165,6 +165,171 @@ Está claro que no genera ningún beneficio en este caso con respecto a la recta
 \end{itemize}
 
 Como se puede ver, ninguna modificación compleja de la función lineal original ha servido para mejorar la clasificación. El motivo es que los datos son prácticamente linealmente separables (solamente han cambiado las etiquetas de 4 puntos) por lo que, a pesar de que no clasificaría el 100\% de los datos bien, comete un error muy pequeño.
+
+
+\section{MODELOS LINEALES}
+
+\subsection{Ejercicio 1}
+
+\textbf{Implementar la función ajusta\_PLA que calcula el hiperplano solución a un problema de clasificación binaria usando el algoritmo PLA. La función devuelve los coeficientes del hiperplano}
+
+\begin{itemize}
+	\item[a)] Ejecutar el algoritmo PLA con los datos simulados en los apartados 2a. Inicializar el algoritmo con: a) el vector cero y, b) con vectores de números aleatorios en [0,1] (10 veces). Anotar el número medio de iteraciones necesarias en ambos para converger. Valorar el resultado relacionando el punto de inicio con el número de iteraciones.
+	
+	En el primer caso, con un vector cero, los resultados son constantes. Los resultados son los siguientes:
+	
+	 w =  (334,13.38587411,4.62931342) y 55 iteraciones de media. He aquí el ajuste:
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.5]{PLA1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Ajuste de PLA con para los datos de 2a inicializado con vector cero} 
+		\label{fig:pla1}
+	\end{figure}
+
+	En el segundo caso, con un vector inicializado con números aleatorios entre 0 y 1, se obtienen los siguientes resultados (w varía en función de la iteración): 53.4 iteraciones de media para la convergencia. Por mostrar que funciona de manera conveniente, represento el resultado de la primera iteración:
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.5]{PLA2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Ajuste de PLA con para los datos de 2a inicializado con vector aleatorio} 
+		\label{fig:pla2}
+	\end{figure}
+	
+	\item[b)] Hacer lo mismo que antes usando ahora los datos del apartado 2b. ¿Observa algún comportamiento diferente? En caso afirmativo diga cuál y las razones para que ello ocurra.
+	
+	Efectivamente, el comportamiento es diferente. Los datos generados en el apartado 2b de la sección 1 están caracterizados por la existencia de ruido en ellos. En concreto, de un 10\% de las etiquetas de cada clase. Por tanto, el conjunto de datos no es linealmente separable. En consecuencia, el algoritmo PLA no puede converger y generar un hiperplano (una recta en este caso) que separe los datos \cite{lfd}, \cite{esl}. 
+	
+	Como se puede ver en la ejecución del algoritmo, tras 15000 iteraciones, los resultados son distintos cada vez y no se consigue la separación como se puede ver a continuación:
+	
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.5]{PLA-ruido.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Ajuste de PLA con para los datos de 2b. No hay convergencia} 
+		\label{fig:pla-ruido}
+	\end{figure}
+
+	Por tanto, sea cual sea el $w$ de inicio, cero o aleatorio, no se alcanza un resultado ni convergencia (la recta se queda fuera de los márgenes previstos en los puntos).
+\end{itemize}
+
+
+\subsection{Ejercicio 2}
+
+\textbf{Regresión Logística}
+
+\begin{itemize}
+	\item[a)] Implementar Regresión Logística con SGD bajo las siguientes condiciones: Inicializar el vector de pesos con valores 0; criterio de parada con $\epsilon = 0.01$; aplicar permutación aleatoria antes de cada época; tasa de aprendizaje de $\eta = 0.01$.
+	
+	En primer lugar, genero el conjunto de datos como se pide, una recta y divido el dataset en dos tipos:
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.6]{reg-log.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Dataset a evaluar con SGD-RL} 
+		\label{fig:reg-log}
+	\end{figure}
+	
+	
+	En el archivo de código está implementada la Regresión Logística con SGD. Cabe destacar que es parecida a SGD que desarrollamos en la práctica anterior, teniendo en cuenta que el tamaño del minibatch es 1. Sin embargo, calculamos el gradiente de $E_in$ vía la fórmula de regresión logística:
+	$$\nabla E_{in} = \frac{-1}{N} \sum_{n=1}^{N} = \frac{y_n x_n}{1+ e^{y_n w^T(t)x_n}}$$
+	
+	Muestro ahora el resultado de la ejecución:
+	
+	w = (-10.69386455, 3.26264871, 6.14173663), $E_{in}$ = 0.13625555
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.6]{SGD-RL.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{SGD-Regresión Logística en training} 
+		\label{fig:sgd-rl-train}
+	\end{figure}
+
+	\item[b)] Usar la muestra de datos etiquetada para enconrar nuestra solución g y estimar $E_{out}$ usando para ello un número suficientemente grande de datos.
+	
+	Para este apartado, genero 2000 puntos 2D en $[0,2]\times[0,2]$. Calculo sus etiquetas y obtengo los siguientes resultados:
+	
+	$E_{out}$ = 0.13496952
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.6]{SGD-RL-T.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{SGD-Regresión Logística en test} 
+		\label{fig:sgd-rl-test}
+	\end{figure}
+	
+	Como se puede comprobar, $E_{out} < E_{in}$. Paradójicamente, en este problema tiene sentido. Si la frontera de decisión es fija (la recta se genera al principio y no se mueve) y simulamos las etiquetas de acuerdo a esa recta, ahora tenemos un dataset a evaluar con una distribución uniforme mucho más poblada que antes. Como SGD-RL ha sido capaz de ajustarse mucho a la frontera de decisión, separa muchísimos más datos  que antes (el dataset es mucho mayor) correctamente y deja prácticamente los mismos mal clasificados, por lo que el error disminuye.
+\end{itemize}	
+	
+\section{BONUS}
+
+\subsection{Ejercicio 1}
+
+\textbf{Considera el conjunto de datos de los dígitos manuscritos. Plantear un problema de clasificación binaria que considere el conjunto de entrenamiento como datos de entrada para aprender la función g. Usar un modelo de Regresión Lineal y aplicar PLA-Pocket como mejora. Responder a la siguientes cuestiones}
+
+\begin{itemize}
+	\item[a)] Generar gráficos separados de los datos de entrenamiento y test junto con la función estimada.
+	
+	En primer lugar, he utilizado la Pseudoinversa como modelo de regresión lineal, ya que lo teníamos implementado en la práctica anterior. Aprovechando Pseudoinversa, el calculado la $w_{ini}$ = (0.50676351, -8.25119739, -0.44464113) . A continuación, con esa $w_{ini}$, ejecuto PLA-Pocket y se obtienen los siguiente resultados:
+	
+	$w$ = (6.50676351, -94.33278003, -4.88432863)
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.6]{train_pla_pocket.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Resultado de entrenamiento PLA-Pocket+Pseudoinversa} 
+		\label{fig:train-pla-pocket}
+	\end{figure}
+
+	En el caso de test, el resultado es el siguiente:
+	
+	\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+		\centering
+		\includegraphics[scale=0.6]{test_pla_pocket.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+		\caption{Resultado de test PLA-Pocket+Pseudoinversa} 
+		\label{fig:test-pla-pocket}
+	\end{figure}
+
+ 	\item[b)] Calcular $E_{in}$ y $E_{test}$
+ 	
+ 	Tras realizar los cálculos, vemos los siguientes resultados:
+ 	
+ 	$$E_{in} = 0.22529313232830822$$
+ 	$$E_{test} = 0.2540983606557377$$
+ 	
+ 	\item[c)] Obtener cotas sobre el verdadero valor de  $E_{out}$.
+ 	
+ 	Pueden calcularse dos cotas (\cite{lfd}). Trato primera la de $E_{in}$. 
+ 	Sea $h \in H$, fija, $f(x)$ la función objetivo (desconocida), $D$ el conjunto de entrenamiento de tamaño N. Podemos escribir la desigualdad de Hoeffding como sigue:
+ 	
+ 	$$P(D: |E_{out}(h)-E_{in}(h)|> \epsilon) \leq 2 e^{-2\epsilon^2N} \hspace{0.5cm} \forall \epsilon > 0$$
+ 	
+ 	Llamando $\delta = 2e^{-2\epsilon^2 N}$, tenemos
+	
+	$$P(D: |E_{out}(h)-E_{in}(h)|> \epsilon) \leq \delta \Rightarrow P(D: |E_{out}(h)-E_{in}(h)| < \epsilon) \geq 1 - \delta$$
+	
+	Podemos escribir, por tanto, la siguiente desigualdad:
+	
+	$$E_{out}(h) \leq E_{in}(h) + \sqrt{\frac{1}{2N} \log \frac{2}{\delta}}$$
+	con probabilidad al menos $1-\delta$ en $D$.
+	
+	Considerando una clase de funciones finita, la expresión se convierte en 
+	$$E_{out}(h) \leq E_{in}(h) + \sqrt{\frac{1}{2N} \log \frac{2|H|}{\delta}}$$
+	
+	Sin embargo, el tamaño de la clase de funciones ahora entra en juego y puede hacer menos útil la cota. Para poder garantizar una buena cota, surge la teoría de la generalización y la Dimensión de Vapnik-Chervonenkis (VC). Como se trata de un modelo lineal, VC = 3 y la cota a utilizar es la siguiente:
+	
+	$$E_{out}(h) \leq E_{in}(h) + \sqrt{\frac{8}{N} \log \frac{4((2N)^{d {VC}}+1)}{\delta}}$$
+	
+	La cota, por tanto, es $E_{out} \leq 0.656229637799$.
+	
+	Para el caso de $E_{test}$, cuando afirmamos que $E_{test}$ es un estimador de $E_{out}$, estamos afirmando que $E_{test}$ generaliza muy bien $E_{out}$. En el caso anterior, intentábamos buscar la función que minimizaba $E_{in}$. Ahora, sin embargo, ya tenemos una función fija y queremos simplemente estimar el error. Por tanto, la desigualdad de Hoeffding con una hipótesis es suficiente para el caso de conjunto de test. 
+	
+	$$E_{out}(h) \leq E_{test}(h) + \sqrt{\frac{1}{2N} \log \frac{2}{\delta}}$$
+	
+	La cota, por tanto, es $E_{out} \leq 0.325087464088$
+	
+	Como intentamos minimizar $E_{out}$, la mejor cota es la menor, es decir, la que genera $E_{test}$.
+\end{itemize}
 
 \newpage
 \section{Bibliografía}

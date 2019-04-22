@@ -11,7 +11,7 @@ import warnings
 
 
 # Fijamos la semilla
-np.random.seed(123456789)
+np.random.seed(77145416)
 
 
 def simula_unif(N, dim, rango):
@@ -97,9 +97,8 @@ def dibujaRecta(x, y, a, b, titulo='Scatter plot de datos', eje_x='X', eje_y='Y'
 	plt.title(titulo)
 	plt.show()
 
-"""
-#Ejercicio 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO
-"""
+
+# Ejercicio 1: SOBRE LA COMPLEJIDAD DE H Y EL RUIDO
 
 
 print("####################################################")
@@ -147,6 +146,7 @@ print("Conjunto de datos a representar gráficamente")
 print(puntos_un)
 plt.scatter(puntos_un[:,0],puntos_un[:,1], c = puntos_un[:,2])
 plt.plot([-50,50],[-50*a+b,50*a+b])
+plt.ylim([-60,60])
 plt.title("Conjunto aleatorio de datos y recta que los separa")
 plt.show()
 
@@ -185,6 +185,7 @@ print("Modificación de  los puntos anteriores añadiendo ruido en el 10% de las
 print(puntos_ruido)
 plt.scatter(puntos_ruido[:,0],puntos_ruido[:,1], c = puntos_ruido[:,2])
 plt.plot([-50,50],[-50*a+b,50*a+b])
+plt.ylim([-60,60])
 plt.title("Introducción de ruido sobre el conjunto de datos.\n Ahora hay puntos mal clasificados")
 plt.show()
 
@@ -248,10 +249,19 @@ print("####################################################")
 
 print("Definiendo la función ajusta_PLA...")
 
-def ajusta_PLA(datos,label,vini,max_iter = -1):
+#
+# PLA
+# @brief Algoritmo que dados un conjunto de datos y etiquetas, genera el ajuste
+# 		 lineal que separa los datos.
+# @param datos Conjunto de datos para clasificar
+# @param label Etiquetas para los datos anteriores
+# @param max_iter Número máximo de iteraciones
+# @param vini Valor inicial de los w
+#
+
+def ajusta_PLA(datos,label,max_iter,vini):
 	w = vini
 	w_old = vini
-	datos = np.concatenate((np.ones((datos.shape[0],1),np.float64),datos),axis=1)
 	it = 0
 	changes = True
 	if max_iter != -1:
@@ -275,51 +285,91 @@ def ajusta_PLA(datos,label,vini,max_iter = -1):
 			w = np.array(w)
 	return w,it
 
-def ajusta_PLA2(datos,label,max_iter,vini):
-	w = vini
-	for i in range(max_iter):
-		w_old = w
-		for d,l in zip(datos,label):
-			if np.sign(w.dot(d)) != l:
-				w = w + l*d
-		if np.all(np.equal(w,w_old)):
-			return w, i
-	return w,max_iter
 
 print("Ejercicio 1")
 
 print("a) Ejecuto PLA con los datos de 2a de la sección anterior. Parámetros:")
 print("a) 1. Vector 0")
 
-# 92 iteraciones w [  36.85168076   47.132749    605.        ]
-w21a1, it21a1 = ajusta_PLA(puntos,signos,np.zeros(puntos.shape[1]+1,np.float64))
-print("w obtenido: ", w21a1)
-print("Número de iteraciones necesarias para la convergencia: ", it21a1)
+
+# Añado la columna de 1 y preparo las etiquetas para ser dibujadas
+puntos = np.hstack((np.ones(shape=(puntos.shape[0],1)),puntos))
+
+labels = []
+for i in range(len(signos)):
+	labels.append(signos[i][0])
+
+
+media21a1 = 0
+print(puntos)
+for i in range(0,10):
+	print("Iteración ", i)
+	w21a1, it21a1 = ajusta_PLA(puntos,signos,15000,np.zeros(puntos.shape[1],np.float64))
+	print("w obtenido: ", w21a1)
+	#dibujaRecta(puntos,labels,-w21a1[1]/w21a1[2], -w21a1[0]/w21a1[2],"PLA", "X","Y")
+	print("Número de iteraciones necesarias para la convergencia: ", it21a1)
+	media21a1 = media21a1 + it21a1
+	input("\n--- Pulsa una tecla para continuar ---\n")
+
+media21a1 = media21a1/10
+print("La media de iteraciones para la convergencia es ", media21a1) ## 55
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("a) 2. Vector de números aleatorios [0,1]")
-# 130 iteraciones w  [  41.12023131   54.91502475  758.21062629]
-w21a2, it21a2 = ajusta_PLA(puntos,signos,np.array([np.random.rand(),np.random.rand(),np.random.rand()]))
-print("w obtenido: ",w21a2)
-print("Número de iteraciones necesarias para la convergencia: ",it21a2)
+media21a2 = 0
+
+for i in range(0,10):
+	print("Iteración ", i)
+	w21a2, it21a2 = ajusta_PLA(puntos,signos,15000,np.array([np.random.rand(),np.random.rand(),np.random.rand()]))
+	print("w obtenido: ",w21a2)
+	#dibujaRecta(puntos,labels,-w21a2[1]/w21a2[2], -w21a2[0]/w21a2[2],"PLA", "X","Y")
+	media21a2 = media21a2 + it21a2
+	print("Número de iteraciones necesarias para la convergencia: ",it21a2)
+	input("\n--- Pulsa una tecla para continuar ---\n")
+
+media21a2 = media21a2/10
+print("La media de iteraciones para la convergencia es ", media21a2) #53.4
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("b) PLA con los datos de 2b de la sección anterior. Parámetros:")
 print("1. Vector 0")
-# No converge. 15000 iteraciones w [  22.7135259   -29.86849622  231.        ]
-w21b1, it21b1 = ajusta_PLA(puntos,puntos_ruido[:,2],np.zeros(puntos.shape[1]+1,np.float64),15000)
-print("w obtenido: ",w21b1)
-print("Número de iteraciones necesarias para la convergencia: ",it21b1)
+media21b1 = 0
+for i in range(0,10):
+	print("Iteración ", i)
+	w21b1, it21b1 = ajusta_PLA(puntos,puntos_ruido[:,2],15000,np.zeros(puntos.shape[1],np.float64))
+	print("w obtenido: ",w21b1)
+	#dibujaRecta(puntos,puntos_ruido[:,2],-w21b1[1]/w21b1[2], -w21b1[0]/w21b1[2],"PLA con ruido", "X","Y")
+	media21b1 = media21b1 + it21b1
+	print("Número de iteraciones necesarias para la convergencia: ",it21b1)
+	input("\n--- Pulsa una tecla para continuar ---\n")
+
+media21b1 = media21b1/10
+if media21b1 > 15000:
+	print("El algoritmo con este conjunto de datos no converge. Siempre se llega al máximo número de iteraciones") # No converge
+else:
+	print("La media de iteraciones para la convergencia es ", media21b1)
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("2. Vector de números aleatorios [0,1]")
-# No converge 15000 iteraciones w [  33.65887969  -42.0748706   243.0822101 ]
-w21b2, it21b2 = ajusta_PLA(puntos,puntos_ruido[:,2],np.array([np.random.rand(),np.random.rand(),np.random.rand()],np.float64),15000)
-print("w obtenido: ",w21b2)
-print("Número de iteraciones necesarias para la convergencia: ",it21b2)
+
+media21b2 = 0
+
+for i in range(0,10):
+	print("Iteración ", i)
+	w21b2, it21b2 = ajusta_PLA(puntos,puntos_ruido[:,2],15000,np.array([np.random.rand(),np.random.rand(),np.random.rand()],np.float64)) # No converge
+	print("w obtenido: ",w21b2)
+	media21b2 = media21b2 +it21b2
+	print("Número de iteraciones necesarias para la convergencia: ",it21b2)
+	input("\n--- Pulsa una tecla para continuar ---\n")
+
+media21b2 = media21b2/10
+if media21b2 > 15000:
+	print("El algoritmo con este conjunto de datos no converge. Siempre se llega al máximo número de iteraciones")
+else:
+	print("La media de iteraciones para la convergencia es ", media21b2)
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -542,6 +592,8 @@ print("Ejecutando Pseudoinversa como ajuste lineal y PLA-Pocket para extraer res
 # al PLA_pocket
 w_ini = pseudoinverse(x,y)
 
+print("w inicial calculada con pseudoinversa: ",w_ini)
+
 # Ejecuto PLA_pocket con 1000 iteraciones y w_ini la salida de Pseudoinversa
 w = PLA_pocket(x, y, 1000, w_ini)
 
@@ -581,7 +633,9 @@ print("de la interpretación de la desigualdad de Hoeffding y su adaptación")
 print("vía la dimensión de Vapnik-Chervonenkis (3 por ser lineal)")
 
 cotaein = E_in + np.sqrt((8/y.size)*np.log(4*((2*y.size)**3 + 1)/0.05))
-cotaetest = E_test + np.sqrt((8/y_test.size)*np.log(4*((2*y_test.size)**3 +1 )/0.05))
+
+print("En el caso de Etest, es suficiente utilizar la desigualdad de Hoeffding")
+cotaetest = E_test + np.sqrt((1/(2*y_test.size))*np.log(2/0.05))
 
 print ('\nCotas sobre el valor del error fuera de la muestra\n')
 print ('Cota basada en Ein:', cotaein)
