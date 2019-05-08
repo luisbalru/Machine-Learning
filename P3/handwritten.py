@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
+import numpy as np
 from sklearn import linear_model
 from sklearn.cross_validation import StratifiedKFold
 
@@ -36,11 +37,13 @@ print("Veamos si las clases están balanceadas")
 clases = sns.countplot(training[64])
 clases.plot()
 
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Descripción estadística de las variables")
 tabla = training.describe()
 print(tabla)
 
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 
 matriz = training.values
@@ -53,21 +56,41 @@ Y_test = matriz_test[:,64]
 print("Represento la matriz de correlación de las características")
 correlation_matrix(training)
 
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Matriz de correlación completa")
+print(training.corr())
+input("\n--- Pulsa una tecla para continuar ---\n")
+
 
 # PCA
 
-# Necesidad de normalizar
+# Necesidad de normalizar para garantizar el buen funciónamiento de PCA
+# La normalización es necesaria tanto en training como en test
+
+print("Escalado estándar: preparación de variables para PCA y clasificación")
 scaler = StandardScaler()
 scaler.fit(X_train_pca)
 X_train_pca = scaler.transform(X_train_pca)
 X_test_pca = scaler.transform(X_test)
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+# 0.95 y 'full' para garantizar el mínimo número de componentes principales
+# con una varianza explicada mayor del 95%
+
+print("PCA: 0.95 Y svd_solver = full")
 pca = PCA(0.95, svd_solver='full')
 pca.fit(X_train_pca)
 
+# Aplico las transformaciones tanto a training como a test
 X_train_pca1 = pca.transform(X_train_pca)
 X_test_pca1 = pca.transform(X_test_pca)
-print(pca.n_components_)
 
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Número de componentes principales:", pca.n_components_)
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 
 """
 # REGRESIÓN LOGÍSTICA
@@ -77,13 +100,18 @@ prediccion = logisticRegr.predict(X_test_pca1)
 print(logisticRegr.score(X_test_pca1, Y_test))
 """
 
+print("CLASIFICACIÓN")
+
 # SGDClassifier
 
+print("Caso 1: SGDClassifier")
+
+print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
 # Validación cruzada
 skf = StratifiedKFold(Y_train_pca, n_folds = 10)
 scores = []
 for train_index, test_index in skf:
-    clf = linear_model.SGDClassifier(max_iter=1000, tol = 1e-6)
+    clf = linear_model.SGDClassifier(max_iter=10000, tol = 1e-6)
     X_train = X_train_pca1[train_index]
     Y_train = Y_train_pca[train_index]
     X_test1 = X_train_pca1[test_index]
