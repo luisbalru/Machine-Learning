@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
+from sklearn import linear_model
+from sklearn.cross_validation import StratifiedKFold
 
 def correlation_matrix(df):
     fig = plt.figure()
@@ -67,8 +69,32 @@ X_test_pca1 = pca.transform(X_test_pca)
 print(pca.n_components_)
 
 
+"""
 # REGRESIÓN LOGÍSTICA
 logisticRegr = LogisticRegression(solver = 'lbfgs')
 logisticRegr.fit(X_train_pca1, Y_train_pca)
 prediccion = logisticRegr.predict(X_test_pca1)
 print(logisticRegr.score(X_test_pca1, Y_test))
+"""
+
+# SGDClassifier
+
+# Validación cruzada
+skf = StratifiedKFold(Y_train_pca, n_folds = 10)
+scores = []
+for train_index, test_index in skf:
+    clf = linear_model.SGDClassifier(max_iter=1000, tol = 1e-6)
+    X_train = X_train_pca1[train_index]
+    Y_train = Y_train_pca[train_index]
+    X_test1 = X_train_pca1[test_index]
+    Y_test1 = Y_train_pca[test_index]
+    clf.fit(X_train,Y_train)
+    scores.append(clf.score(X_test1,Y_test1))
+    
+print(scores)
+
+# E_out
+
+print("Accuracy fuera de la muestra", clf.score(X_test_pca1,Y_test))
+
+
