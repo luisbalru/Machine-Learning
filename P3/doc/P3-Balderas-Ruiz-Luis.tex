@@ -78,6 +78,7 @@ En nuestro caso, las clases están absolutamente balanceadas:
 		8        & 174                  \\ \hline
 		9        & 180                  \\ \hline
 	\end{tabular}
+	\caption{Número de instancias por cada clase}
 \end{table}
 
 Veámoslo también gráficamente:
@@ -91,7 +92,7 @@ Veámoslo también gráficamente:
 
 Por tanto, no es necesario hacer ninguna modificación en ese sentido.
 
-\subsubsection{Selección de características: Variabilidad de los datos}
+\subsubsection{Variabilidad de los datos}
 
 A continuación, estudiamos la calidad de las características (columnas en la matriz). Para ello, realizo una descripción estadística de los datos. De las 63 características se estudia la variabilidad de cada individuo a través de la media, la desviación típica, el recorrido intercuartílico, máximo, mínimo... Represento la matriz de correlación para estudiar la correlación lineal entre las características:
 
@@ -102,7 +103,76 @@ A continuación, estudiamos la calidad de las características (columnas en la m
 	\label{fig:corr-mat}
 \end{figure}
 
+No se aprecia gran correlación lineal entre las variables. Sin embargo, parece que entre la columna 57 y la 1 y la 58 y la 2 (0.822374 y 0.921179 respectivamente) sí hay dependencia lineal.
 
+\subsubsection{Valores perdidos}
+
+Según la documentación del dataset y posteriores análisis exploratorios, no existen valores perdidos en este problema.
+
+\subsubsection{Normalización}
+
+Como se verá en el siguiente apartado, me dispongo a utilizar Análisis de Componentes Principales (PCA) para reducir el tamaño del dataset y optimizar la información. Paso previo a PCA (y también favorable a la clasificación), realizo una normalización y escalado de los datos (\cite{st-sc}). Para ello, lo que se hace es estandarizar las características con una transformación de localización y escala (quitando la media y dividiendo por la desviación típica):
+
+$$ z = (x-\mu)/\sigma $$ 
+
+
+En clasificadores basados en distancia, es muy importante normalizar los datos, consiguiendo que estén todas en el mismo rango. Ejemplos de ello son k-NN, SVM con núcleo RBF o el propio modelo lineal.
+
+\subsubsection{Selección de instancias}
+
+Dado que el tamaño del dataset no es muy grande, no veo conveniente reducir el número de individuos, por lo que no hago ninguna selección de instancias y trabajaré de forma permanente con todas las filas del conjunto de datos.
+
+\subsubsection{Selección de características: PCA}
+
+Análisis de componentes principales (PCA, \cite{pca}) es una técnica de estadística multivariante basada en describir un conjunto de datos en términos de otras variables nuevas no correladas. Los componentes se ordenan por la cantidad de varianza original que describen, por lo que es una técnica útil para reducir la dimensionalidad de un conjunto de datos. Como ya he comentado antes, PCA requiere una normalización previa de los datos. El motivo es que el algoritmo calcula una nueva proyección del dataset, en la que los ejes están basados en la desviación típica de las variables. Por tanto, si una variable tiene una gran desviación típica, le será asignada un gran peso en el cálculo de ejes, en detrimento de aquellas características que tengan menor variabilidad. En consecuencia, para un análisis verosímil de los datos es necesario que todas las variables tengan la misma desviación típica. Por otra parte, es evidente que cada variable tiene una unidad de medida y hay que garantizar que en el estudio estadístico todas las características se homogeneizan. 
+
+En nuestro problema, aplico PCA con los parámetros 0.95 y svd\_solver == 'full' (\cite{pca-sk}) para que elija el número mínimo de componentes principales de forma que se garantiza una varianza explicada mayor al 95\%. Tras la ejecución, el número de componentes principales encontrada es 41.
+
+\subsection{Clasificación}
+
+Esta práctica está centrada en la utilización de modelos lineales. Por tanto, el primer clasificador que voy a utilizar es SGDClassifier de SKLearn (\cite{SGD-C}), esto  es, un modelo lineal basado en gradiente descendente estocástico. Para garantizar una generalización correcta por parte del modelo, utilizo validación cruzada estratificada con 10 particiones(\cite{stk}). Los resultados de los 10 entrenamientos con las distintas particiones son los siguientes: \\
+
+[(1):0.94805194805194803, (2):0.94285714285714284, (3):0.96614583333333337, (4):0.94270833333333337, (5):0.92708333333333337, (6):0.97395833333333337, (7):0.95811518324607325, (8):0.9445910290237467, (9):0.96569920844327173, (10):0.95490716180371349] \\
+
+
+con los siguientes resultados estadísticos:
+
+\begin{itemize}
+	\item Media: 0.9503579568563959
+	\item Varianza: 0.00026031903043294621
+	\item Mínimo: 0.91927083333333337
+	\item Máximo: 0.97135416666666663
+\end{itemize}
+
+Por tanto, se puede comprobar que se está generalizando bien por la varianza tan pequeña generada y los resultados adquieren mayor credibilidad. Queda tan solo evaluarla en el conjunto de test: \\
+
+\textbf{Accuracy fuera de la muestra:} 0.929326655537.
+
+Para acompañar estas medidas, muestro el resumen completo:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& Precision & Recall & F1-Score & Support \\ \hline
+		0         & 1.00      & 0.96   & 0.98     & 178     \\ \hline
+		1         & 0.92      & 0.89   & 0.91     & 182     \\ \hline
+		2         & 0.99      & 0.94   & 0.97     & 177     \\ \hline
+		3         & 0.99      & 0.84   & 0.91     & 183     \\ \hline
+		4         & 0.95      & 0.97   & 0.96     & 181     \\ \hline
+		5         & 0.93      & 0.96   & 0.94     & 182     \\ \hline
+		6         & 1.00      & 0.95   & 0.97     & 181     \\ \hline
+		7         & 0.98      & 0.87   & 0.92     & 179     \\ \hline
+		8         & 0.68      & 0.94   & 0.79     & 174     \\ \hline
+		9         & 0.85      & 0.87   & 0.86     & 180     \\ \hline
+		avg/total & 0.93      & 0.92   & 0.92     & 1797    \\ \hline
+	\end{tabular}
+	\caption{Resultados finales de la clasificación con modelo lineal SGD}
+\end{table}
+
+
+
+\newpage 
 \section{Airfoil self noise}
 \newpage
 \section{Bibliografía}
