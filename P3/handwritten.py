@@ -3,15 +3,18 @@
 
 
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 from sklearn.decomposition import PCA
-from sklearn.linear_model import LogisticRegression
-import numpy as np
+#from sklearn.linear_model import LogisticRegression
 from sklearn import linear_model
 from sklearn.cross_validation import StratifiedKFold
+from scipy import stats
+from sklearn.metrics import classification_report
+
 
 def correlation_matrix(df):
     fig = plt.figure()
@@ -118,11 +121,26 @@ for train_index, test_index in skf:
     Y_test1 = Y_train_pca[test_index]
     clf.fit(X_train,Y_train)
     scores.append(clf.score(X_test1,Y_test1))
-    
+ 
+print("Valores de las clasificaciones en la validación cruzada:")    
 print(scores)
 
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Descripción estadística de los resultados de la validación cruzada:")
+print(stats.describe(scores))
+
+
+input("\n--- Pulsa una tecla para continuar ---\n")
 # E_out
 
+prediccion = clf.predict(X_test_pca1)
 print("Accuracy fuera de la muestra", clf.score(X_test_pca1,Y_test))
 
+print("Resumen de la clasificación:")
+nombres = ['0','1','2','3','4','5','6','7','8','9']
 
+print(classification_report(Y_test,prediccion,target_names = nombres))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
