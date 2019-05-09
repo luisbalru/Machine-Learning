@@ -182,6 +182,14 @@ for i in range(len(resultados)):
     
 pos = np.argmax(mean_results)
 
+print("Mejor configuración tras el GridSearch con Validación Cruzada de 10 particiones:")
+print("C: ",configuraciones[pos][0])
+print("gamma: ",configuraciones[pos][1])
+print("kernel: ", configuraciones[pos][2])
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Resultados finales de la clasificación con SVM y mejores parámetros")
 svm = SVC(C = configuraciones[pos][0], gamma = configuraciones[pos][1], kernel = configuraciones[pos][2])
 svm.fit(X_train_pca1,Y_train_pca)
 y_pred = svm.predict(X_test_pca1)
