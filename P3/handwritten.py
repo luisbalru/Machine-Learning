@@ -14,7 +14,10 @@ from sklearn import linear_model
 from sklearn.cross_validation import StratifiedKFold
 from scipy import stats
 from sklearn.metrics import classification_report
-
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+from sklearn.metrics import make_scorer
+from sklearn.metrics import f1_score
 
 def correlation_matrix(df):
     fig = plt.figure()
@@ -144,3 +147,42 @@ nombres = ['0','1','2','3','4','5','6','7','8','9']
 print(classification_report(Y_test,prediccion,target_names = nombres))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Clasificación con SVM")
+
+C_range = np.logspace(-2,10,4)
+gamma_range = np.logspace(-9,3,4)
+kernel = ['linear','rbf']
+param_grid = dict(gamma=gamma_range, C=C_range, kernel = kernel)
+
+# Defino arrays para almacenar las distintas configuraciones y luego elegir la mejor
+configuraciones = []
+resultados = []
+
+for c in C_range:
+    for g in gamma_range:
+        for k in kernel:
+            skf = StratifiedKFold(Y_train_pca, n_folds = 10)
+            scores = []
+            for train_index, test_index in skf:
+                svmp = SVC(C=c, gamma = g, kernel= k)
+                X_train = X_train_pca1[train_index]
+                Y_train = Y_train_pca[train_index]
+                X_test1 = X_train_pca1[test_index]
+                Y_test1 = Y_train_pca[test_index]
+                svmp.fit(X_train,Y_train)
+                scores.append(clf.score(X_test1,Y_test1))
+            configuraciones.append([c,g,k])
+            resultados.append(scores)
+
+mean_results = []
+
+for i in range(len(resultados)):
+    mean_results.append(np.mean(resultados[i]))
+    
+pos = np.argmax(mean_results)
+
+svm = SVC(C = configuraciones[pos][0], gamma = configuraciones[pos][1], kernel = configuraciones[pos][2])
+svm.fit(X_train_pca1,Y_train_pca)
+y_pred = svm.predict(X_test_pca1)
+print(classification_report(Y_test,y_pred,target_names = nombres))
