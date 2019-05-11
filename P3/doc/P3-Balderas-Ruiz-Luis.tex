@@ -50,7 +50,7 @@
 
 \subsection{Introducción}
 
-Nos enfrentamos a un problema de clasificación multietiqueta (9 clases) sobre una base de datos de reconocimiento de dígitos manuscritos, proveniente de la Universidad de Bogazici. Tras extraer mapas de bits de dimensión $32\times32$ normalizados, se dividen en bloques de $4\times4$ disjuntos y se cuenta el número de píxeles en cada bloque. Esto genera una matriz $8\times8$ con entrada en los números enteros del 0 al 16. Más información en \cite{optdigits.names}. 
+Nos enfrentamos a un problema de clasificación multietiqueta (9 clases, con los números del 0 al 9) (aprendizaje supervisado) sobre una base de datos de reconocimiento de dígitos manuscritos, proveniente de la Universidad de Bogazici. Tras extraer mapas de bits de dimensión $32\times32$ normalizados, se dividen en bloques de $4\times4$ disjuntos y se cuenta el número de píxeles en cada bloque. Esto genera una matriz $8\times8$ con entrada en los números enteros del 0 al 16. Más información en \cite{optdigits.names}. 
 
 \subsection{Preprocesado}
 
@@ -108,6 +108,10 @@ No se aprecia gran correlación lineal entre las variables. Sin embargo, parece 
 \subsubsection{Valores perdidos}
 
 Según la documentación del dataset y posteriores análisis exploratorios, no existen valores perdidos en este problema.
+
+\subsection{Outliers}
+
+A través de la función definida en el código, basada en el cálculo de 'z\_score' (\cite{z-score})  para cada instancia, no se ha encontrado ningún outlier. 
 
 \subsubsection{Normalización}
 
