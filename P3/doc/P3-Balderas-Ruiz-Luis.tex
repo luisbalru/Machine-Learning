@@ -109,15 +109,15 @@ No se aprecia gran correlación lineal entre las variables. Sin embargo, parece 
 
 Según la documentación del dataset y posteriores análisis exploratorios, no existen valores perdidos en este problema.
 
-\subsection{Outliers}
+\subsubsection{Outliers}
 
-A través de la función definida en el código, basada en el cálculo de 'z\_score' (\cite{z-score})  para cada instancia, no se ha encontrado ningún outlier. 
+A través de la función definida en el código, basada en el cálculo de $z_{score}$ (\cite{z-score})  para cada instancia, no se ha encontrado ningún outlier. 
 
 \subsubsection{Normalización}
 
 Como se verá en el siguiente apartado, me dispongo a utilizar Análisis de Componentes Principales (PCA) para reducir el tamaño del dataset y optimizar la información. Paso previo a PCA (y también favorable a la clasificación), realizo una normalización y escalado de los datos (\cite{st-sc}). Para ello, lo que se hace es estandarizar las características con una transformación de localización y escala (quitando la media y dividiendo por la desviación típica):
 
-$$ z = (x-\mu)/\sigma $$ 
+$$ z = \frac{(x-\mu)}{\sigma} $$ 
 
 
 En clasificadores basados en distancia, es muy importante normalizar los datos, consiguiendo que estén todas en el mismo rango. Ejemplos de ello son k-NN, SVM con núcleo RBF o el propio modelo lineal.
@@ -132,25 +132,59 @@ Análisis de componentes principales (PCA, \cite{pca}) es una técnica de estad�
 
 En nuestro problema, aplico PCA con los parámetros 0.95 y svd\_solver == 'full' (\cite{pca-sk}) para que elija el número mínimo de componentes principales de forma que se garantiza una varianza explicada mayor al 95\%. Tras la ejecución, el número de componentes principales encontrada es 41.
 
+\subsection{Sobre métricas para valorar la clasificación(\cite{seleccion-metricas})}
+
+En un problema de aprendizaje supervisado tenemos múltiples formas de evaluar el rendimiento de nuestros modelos. En el fondo, tratamos de ver qué instancias hemos clasificado bien o mal en función de su etiqueta real. Cuando se tienen problemas de clasificación binaria (clase positiva y clase negativa), surgen los siguientes conceptos a la hora de valorar el rendimiento:
+
+\begin{itemize}
+	\item Verdaderos positivos (TP): Instancias correctamente clasificadas como positivas.
+	\item Verdaderos negativos (TN): Instancias correctamente clasificadas como negativas.
+	\item Falsos positivos (FP): Instancias clasificadas como positivas pero que son negativas.
+	\item Falsos negativos (FN): Instancias clasificadas como negativas pero que son positivas.
+\end{itemize}
+
+La forma de medir el rendimiento más conocida es el llamado Accuracy, que responde a la siguiente fórmula:
+
+$$\text{Accuracy} = \frac{TP+TN}{TP+FP+FN+TN}$$
+
+Sin embargo, dependiendo de la casuística del problema (sobre todo, si las clases están muy desbalanceadas), es posible que esta medida no nos aporte información veraz. Este hecho genera la necesidad de valorar nuevas métricas:
+
+$$\text{Precision} = \frac{TP}{TP+FP}$$
+
+$$\text{Recall} = \frac{TP}{TP+FN}$$
+
+$$\text{F1-score} = \frac{2*\text{Recall}*\text{Precision}}{\text{Recall}+\text{Precision}}$$
+
+Todas ellas generan una visión más precisa de cómo ha sido nuestra clasificación. Por tanto, serán todas añadidas en la sección siguiente tras la ejecución de cada algoritmo. De igual manera, se expresará la matriz de confusión (\cite{cf}).
+
 \subsection{Clasificación}
 
 Esta práctica está centrada en la utilización de modelos lineales. Por tanto, el primer clasificador que voy a utilizar es SGDClassifier de SKLearn (\cite{SGD-C}), esto  es, un modelo lineal basado en gradiente descendente estocástico. Para garantizar una generalización correcta por parte del modelo, utilizo validación cruzada estratificada con 10 particiones(\cite{stk}). Los resultados de los 10 entrenamientos con las distintas particiones son los siguientes: \\
 
-[(1):0.94805194805194803, (2):0.94285714285714284, (3):0.96614583333333337, (4):0.94270833333333337, (5):0.92708333333333337, (6):0.97395833333333337, (7):0.95811518324607325, (8):0.9445910290237467, (9):0.96569920844327173, (10):0.95490716180371349] \\
+[(1):0.96623376623376622, (2):0.96103896103896103, (3):0.94791666666666663, (4):0.96354166666666663, (5):0.9453125, (6):0.953125, (7):0.93455497382198949, (8):0.9683377308707124, (9):0.9683377308707124, (10):0.95490716180371349] \\
 
 
 con los siguientes resultados estadísticos:
 
 \begin{itemize}
-	\item Media: 0.9503579568563959
-	\item Varianza: 0.00026031903043294621
-	\item Mínimo: 0.91927083333333337
-	\item Máximo: 0.97135416666666663
+	\item Media: 0.95633061579731893
+	\item Varianza: 0.00012658399732657117
+	\item Mínimo: 0.93455497382198949
+	\item Máximo: 0.9683377308707124
 \end{itemize}
 
 Por tanto, se puede comprobar que se está generalizando bien por la varianza tan pequeña generada y los resultados adquieren mayor credibilidad. Queda tan solo evaluarla en el conjunto de test: \\
 
-\textbf{Accuracy fuera de la muestra:} 0.929326655537.
+\textbf{Accuracy fuera de la muestra:} 0.927657206455.
+
+A continuación, muestro la matriz de confusión:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{conf-m-sgd.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Matriz de confusión para SGD} 
+	\label{fig:conf-m-sgd}
+\end{figure}
 
 Para acompañar estas medidas, muestro el resumen completo:
 
@@ -159,22 +193,102 @@ Para acompañar estas medidas, muestro el resumen completo:
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		& Precision & Recall & F1-Score & Support \\ \hline
-		0         & 1.00      & 0.96   & 0.98     & 178     \\ \hline
-		1         & 0.92      & 0.89   & 0.91     & 182     \\ \hline
-		2         & 0.99      & 0.94   & 0.97     & 177     \\ \hline
-		3         & 0.99      & 0.84   & 0.91     & 183     \\ \hline
-		4         & 0.95      & 0.97   & 0.96     & 181     \\ \hline
-		5         & 0.93      & 0.96   & 0.94     & 182     \\ \hline
-		6         & 1.00      & 0.95   & 0.97     & 181     \\ \hline
-		7         & 0.98      & 0.87   & 0.92     & 179     \\ \hline
-		8         & 0.68      & 0.94   & 0.79     & 174     \\ \hline
-		9         & 0.85      & 0.87   & 0.86     & 180     \\ \hline
-		avg/total & 0.93      & 0.92   & 0.92     & 1797    \\ \hline
+		0         & 0.99      & 0.98   & 0.99     & 178     \\ \hline
+		1         & 0.86      & 0.91   & 0.88     & 182     \\ \hline
+		2         & 0.99      & 0.93   & 0.96     & 177     \\ \hline
+		3         & 0.98      & 0.89   & 0.93     & 183     \\ \hline
+		4         & 0.93      & 0.96   & 0.95     & 181     \\ \hline
+		5         & 0.92      & 0.98   & 0.95     & 182     \\ \hline
+		6         & 0.99      & 0.98   & 0.99     & 181     \\ \hline
+		7         & 0.98      & 0.88   & 0.93     & 179     \\ \hline
+		8         & 0.81      & 0.89   & 0.85     & 174     \\ \hline
+		9         & 0.85      & 0.88   & 0.86     & 180     \\ \hline
+		avg/total & 0.93      & 0.93   & 0.93     & 1797    \\ \hline
 	\end{tabular}
 	\caption{Resultados finales de la clasificación con modelo lineal SGD}
 \end{table}
 
 
+
+A continuación, expreso los resultados del modelo Regresión Logística (\cite{lr}). Realizo de nuevo una validación cruzada con 10 particiones, de forma que obtengo los siguientes resultados: \\
+
+\textbf{Accuracy fuera de la muestra:} 0.943238731219 \\
+
+Matriz de confusión:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{conf-m-rl.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Matriz de confusión para RL} 
+	\label{fig:conf-m-rl}
+\end{figure}
+
+Finalmente, muestro un resumen de la clasificación por cada una de las clases:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& Precision & Recall & F1-Score & Support \\ \hline
+		0         & 0.99      & 0.98   & 0.99     & 178     \\ \hline
+		1         & 0.91      & 0.95   & 0.92     & 182     \\ \hline
+		2         & 0.97      & 0.96   & 0.97     & 177     \\ \hline
+		3         & 0.99      & 0.92   & 0.95     & 183     \\ \hline
+		4         & 0.95      & 0.97   & 0.96     & 181     \\ \hline
+		5         & 0.90      & 0.99   & 0.94     & 182     \\ \hline
+		6         & 0.98      & 0.98   & 0.98     & 181     \\ \hline
+		7         & 0.99      & 0.90   & 0.94     & 179     \\ \hline
+		8         & 0.91      & 0.89   & 0.90     & 174     \\ \hline
+		9         & 0.86      & 0.91   & 0.88     & 180     \\ \hline
+		avg/total & 0.95      & 0.94   & 0.94     & 1797    \\ \hline
+	\end{tabular}
+	\caption{Resultados finales de la clasificación con modelo lineal Regresión Lineal}
+\end{table}
+
+\newpage
+
+Por último, evalúo el algoritmo SVM (\cite{svc}). Lo primero que hay que hacer es elegir los parámetros con los que se ejecutará el algoritmo. Es necesario elegir $C$ (parámetro de penalización para el término del error), $kernel$ y $gamma$ (coeficiente para el núcleo). Para elegir el mejor conjunto de coeficientes, llevo a cabo un GridSearch con validación cruzada de 10 particiones, asegurando así que elijo los mejores parámetros independientemente de la partición que se haga en los datos. Los mejores resultados son los siguientes:
+
+$$ C = 0.01$$
+$$ \gamma = 1^{-9} $$
+$$ kernel = linear $$
+
+Con dichos parámetros, se obtienen los siguientes resultados: \\
+
+\textbf{Accuracy fuera de la muestra:} 0.956594323873 \\
+
+Matriz de confusión:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{conf-m-svm.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Matriz de confusión para SVM} 
+	\label{fig:conf-m-svm}
+\end{figure}
+
+\newpage
+Resumen de la clasificación:
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& Precision & Recall & F1-Score & Support \\ \hline
+		0         & 0.99      & 0.99   & 0.99     & 178     \\ \hline
+		1         & 0.90      & 0.97   & 0.94     & 182     \\ \hline
+		2         & 0.96      & 0.97   & 0.96     & 177     \\ \hline
+		3         & 0.99      & 0.93   & 0.96     & 183     \\ \hline
+		4         & 0.97      & 0.98   & 0.98     & 181     \\ \hline
+		5         & 0.95      & 0.98   & 0.97     & 182     \\ \hline
+		6         & 1.00      & 0.98   & 0.99     & 181     \\ \hline
+		7         & 0.99      & 0.91   & 0.95     & 179     \\ \hline
+		8         & 0.96      & 0.89   & 0.92     & 174     \\ \hline
+		9         & 0.87      & 0.95   & 0.91     & 180     \\ \hline
+		avg/total & 0.96      & 0.96   & 0.96     & 1797    \\ \hline
+	\end{tabular}
+	\caption{Resultados finales de la clasificación con SVM}
+\end{table}
 
 \newpage 
 \section{Airfoil self noise}
