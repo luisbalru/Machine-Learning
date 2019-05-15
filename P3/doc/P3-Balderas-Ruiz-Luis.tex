@@ -292,6 +292,79 @@ Resumen de la clasificación:
 
 \newpage 
 \section{Airfoil self noise}
+
+\subsection{Introducción}
+
+Nos encontramos ante un problema de regresión (aprendizaje supervisado) proveniente de la NASA y alojado en \cite{airfoil-data}. En él se reflejan los datos de una serie de pruebas acústicas y aerodinámicas sobre secciones de aspas en 2 y 3 dimensiones tras ser evaluadas en un túnel de viento. El conjunto de datos consta de 1503 instancias y 6 atributos, que son los siguientes:
+
+\begin{itemize}
+	\item Frecuencia (Hertzs)
+	\item Ángulo de ataque (grados)
+	\item Longitud de la cuerda (metros)
+	\item Velocidad de la corriente (m/s)
+	\item Espesor de desplazamiento lateral en la succión (en metros)
+	\item Nivel de presión de sonido escalado (decibelios) 
+\end{itemize}
+
+siendo esta última la salida. En el presente documento se pretende abordar un procesado y análisis de los datos para encontrar una configuración y un regresor óptimo. Comienzo visualizando la distribución de los datos y la correlación lineal de las variables. Los resultados de dicho análisis nos darán idea sobre qué variables son más o menos trascendentes en el estudio. Además, será necesario aplicar normalización sobre los datos, tratamiento de outliers o valores perdidos.
+
+\newpage
+
+\subsection{Preprocesado}
+
+En primer lugar, muestro la matriz de correlación de las variables junto con el coeficiente correspondiente.
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{corr-airfoil.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Matriz de correlación entre las variables} 
+	\label{fig:corr-airfoil}
+\end{figure}
+
+Como se puede comprobar, la correlación lineal entre las variables es baja. Eso nos indica que el dataset no es redundante y que todas las variables nos aportarán información por sí solas. Tan sólo podemos encontrar dos variables que sí tienen una alta correlación entre ellas: 'Suction-thickness' y 'Angle-Attack', con 0.75 de coeficiente de correlación lineal. Por tanto, podríamos plantearnos eliminar alguna de ellas porque son mutuamente explicables. Además, 'Suction-thickness' Y 'Chord-length' mantienen una correlación inversa de 0.5. 
+
+Para obtener más información, visualizo la distribución de las variables y su relación a través de un pairplot.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{pairplot-air.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Pairplot para el dataset Airfoil} 
+	\label{fig:pairplot-air}
+\end{figure}
+
+Podemos ver ahora con más claridad la correlación entre las variables antes comentadas. Por tanto, podremos considerar la eliminación de alguna de esas características.
+
+\subsubsection{Outliers}
+
+Seguidamente, muestro un resumen estadístico de las variables:
+
+\begin{table}[H]
+	\resizebox{16cm}{!}{
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		& Frequency & Angle-Attack & Chord-Length & Free-Stream Velocity & Suction-tickness & SSPresure-level \\ \hline
+		count & 1.00      & 1503         & 1503         & 1503                 & 1503             & 1503            \\ \hline
+		mean  & 0.92      & 2886.380572  & 0.136548     & 50.860745            & 0.01114          & 124.835943      \\ \hline
+		std   & 0.99      & 3152.573137  & 0.093541     & 15.572784            & 0.01315          & 6.898657        \\ \hline
+		min   & 0.99      & 200          & 0.0254       & 31.7                 & 0.000401         & 103.38          \\ \hline
+		25\%  & 0.95      & 800          & 0.0508       & 39.6                 & 0.002535         & 120.191         \\ \hline
+		50\%  & 0.93      & 1600         & 0.1016       & 39.6                 & 0.004957         & 125.721         \\ \hline
+		75\%  & 1.00      & 4000         & 0.2286       & 71.3                 & 0.015576         & 129.9955        \\ \hline
+		max   & 0.98      & 20000        & 22.2         & 71.3                 & 0.058411         & 140.987         \\ \hline
+	\end{tabular}}
+	\caption{Resumen estadístico de las variables}
+\end{table}
+
+Como vemos, la variable 'Frequency' es la que más desviación típica tiene, por lo que podría generar más outliers. Me centro en esa característica y la comparo con nuestro target, para ver si hay datos que se desvían mucho:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{freq-ssp.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Relación entre la variable Frequency y SSPresure-Level} 
+	\label{fig:freq-ssp}
+\end{figure}
+
+
+
 \newpage
 \section{Bibliografía}
 
