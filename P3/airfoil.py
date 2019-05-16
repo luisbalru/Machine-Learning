@@ -13,8 +13,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.linear_model import LinearRegression
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import ElasticNetCV
+from sklearn.neural_network import MLPRegressor
+from sklearn.svm import SVR
 
 
 
@@ -234,63 +235,15 @@ Y = dataset[:,5]
 
 X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state = 77145416)
 
-print("REGULARIZACIÓN")
-"""
-print("Lasso")
-print("Validación cruzada de 10 particiones para ajustar hiperparámetros")
-
-reg = LassoCV(cv=10,random_state=77145416).fit(X_train,y_train)
-
-print("Parámetros obtenidos")
-print(reg.get_params())
-print("Score para el ajuste en CV")
-print(reg.score(X_train,y_train))
-
-lasso_pred = reg.predict(X_test)
-
-print("Accuracy fuera de la muestra: ", reg.score(X_test,y_test))
-
-input("\n--- Pulsa una tecla para continuar ---\n")
-
-print("Matriz de confusión")
-
-np.set_printoptions(precision=2)
-plot_confusion_matrix(y_test, lasso_pred, classes=names,normalize = True,title='Matriz de confusión para Regularización Lasso')
-plt.show()
-
-input("\n--- Pulsa una tecla para continuar ---\n")
-
-print("Resumen de la clasificación")
-
-print(classification_report(y_test,lasso_pred,target_names = names))
-"""
 
 print("REGRESIÓN")
 
-print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
-# Validación cruzada
-skf = StratifiedKFold(y_train, n_folds = 10,shuffle = True)
 
-scores = []
-for train_index, test_index in skf:
-    clf = LinearRegression()
-    X_train = X_train[train_index]
-    Y_train = y_train[train_index]
-    X_test1 = X_train[test_index]
-    Y_test1 = y_train[test_index]
-    clf.fit(X_train,Y_train)
-    scores.append(clf.score(X_test1,Y_test1))
-
-print("Valores de las clasificaciones en la validación cruzada:")
-print(scores)
+clf = LinearRegression().fit(X_train,y_train)
 
 
-input("\n--- Pulsa una tecla para continuar ---\n")
-
-print("Descripción estadística de los resultados de la validación cruzada:")
-print(stats.describe(scores))
-
-
+print("Coeficiente de R^2 asociado a la predicción dentro de la muestra")
+print(clf.score(X_train,y_train))
 input("\n--- Pulsa una tecla para continuar ---\n")
 # E_out
 
@@ -299,16 +252,38 @@ print("Accuracy fuera de la muestra", clf.score(X_test,y_test))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-print("Matriz de confusión")
+print("ElasticNet")
 
-np.set_printoptions(precision=2)
-plot_confusion_matrix(y_test, prediccion, classes=names,normalize = True,title='Matriz de confusión para Regresión lineal')
-plt.show()
+regr = ElasticNetCV(cv=10,random_state=77145416)
+regr.fit(X_train,y_train)
+print(regr.score(X_train,y_train))
+en_pred = regr.predict(X_test)
+
+print("Accuracy fuera de la muestra", regr.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Redes neuronales")
+
+redes = MLPRegressor()
+redes.fit(X_train,y_train)
+print(redes.get_params())
+print("In R^2")
+print(redes.score(X_train,y_train))
+
+red_pred = redes.predict(X_test)
+print("Out R^2")
+print(redes.score(X_test,y_test))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-print("Resumen de la clasificación:")
+print("SVR")
 
-print(classification_report(y_test,prediccion,target_names = names))
+svr = SVR(C=1,epsilon=0.2)
+svr.fit(X_train,y_train)
+print("In R^2")
+print(svr.score(X_train,y_train))
 
-input("\n--- Pulsa una tecla para continuar ---\n")
+svr_pred = svr.predict(X_test)
+print("Out R^2")
+print(svr.score(X_test,y_test))
