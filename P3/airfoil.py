@@ -7,6 +7,7 @@ import seaborn as sns
 import numpy as np
 from scipy import stats
 from scipy.stats import skew
+from sklearn.preprocessing import StandardScaler
 
 print("AIRFOIL SELF-NOISE")
 
@@ -115,15 +116,43 @@ print("Distribución de SSPresure-level")
 plt.subplots(figsize=(9,9))
 sns.distplot(data['SSPresure-level']).set_title("Distribución de SSPresure-level")
 plt.show()
-# Gráfica de probabilidad
+
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
+# Gráfica de probabilidad
 figura = plt.figure()
 res = stats.probplot(data['SSPresure-level'],plot=plt)
 plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-print("Skewness")
+print("Asimetría de SSPresure-level")
 print(skew(data['SSPresure-level']))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Aplicando transformaciones")
+#logarítmica para la asimetría positiva y transformación cuadrática para la negativa
+
+data['Frequency'] = np.log(data['Frequency'])
+# sqrt porque contiene 0
+data['Angle-Attack'] = np.sqrt(data['Angle-Attack'])
+data['Chord-Length'] = np.log(data['Chord-Length'])
+data['Free-stream-velocity'] = np.log(data['Free-stream-velocity'])
+data['Suction-thickness'] = np.log(data['Suction-thickness'])
+data['SSPresure-level'] = np.square(data['SSPresure-level'])
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Normalización de los datos")
+
+# Definición del objeto para escalar
+scaler = StandardScaler()
+# Calcula la media y la std de los datos
+scaler.fit(data)
+# Transforma los datos
+data = scaler.transform(data)
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
