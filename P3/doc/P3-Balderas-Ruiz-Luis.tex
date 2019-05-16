@@ -372,6 +372,93 @@ Los datos de 'SSPresure-Level' menores que 105Db y mayores que 142Db podrían se
 	\label{fig:sin-out}
 \end{figure}
 
+\subsubsection{Transformaciones en las variables}
+
+La asimetría va a ser la propiedad que defina si una variable necesita ser transformada o no. En el caso de asimetría positiva, aplico una tranformación logarítmica y, en el caso de una asimetría negativa, elevo al cuadrado (\cite{skew1},\cite{skew2}). Según la literaratura, un coeficiente de asimetría de entre -0.5 y 0.5 se denomina asimetría leve. Para valores superiores a 1 (inferiores a -1), la asimetría es alta. Muestro, por tanto, las gráficas y coeficientes de asimetría de cada variable:
+
+\begin{itemize}
+	\item 'Frequency'
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.412]{dist-fr.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de Frequency} 
+	\label{fig:dist-freq}
+\end{figure}
+
+Coeficiente de asimetría: 2.141010620719073
+
+\item 'Angle-Attack'
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{dist-aa.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de Angle Attack} 
+	\label{fig:dist-aa}
+\end{figure}
+
+Coeficiente de asimetría 0.6954226765390694
+
+\item 'Chord-Length'
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{dist-cl.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de Chord-Length} 
+	\label{fig:dist-cl}
+\end{figure}
+
+Coeficiente de asimetría: 0.4552190466982675
+
+\item 'Free Stream Velocity'
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{dist-fsv.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de Free stream velocity} 
+	\label{fig:dist-fsv}
+\end{figure}
+
+Coeficiente de asimetría: 0.2339049705934876
+
+\item 'Suction-thickness'
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{dist-st.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de Suction thickness} 
+	\label{fig:dist-st}
+\end{figure}
+
+Coeficiente de asimetría: 1.6997773651215724
+
+\item SSPresure-Level
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.46]{dist-sspr.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de SSPresure-Level} 
+	\label{fig:dist-sspr}
+\end{figure}
+
+Coeficiente de asimetría: -0.39348332062796404
+
+Estudio también la gráfica de probabilidad:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.46]{prob-ssp.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Probabilidad de SSPresure-Level} 
+	\label{fig:prob-sspr}
+\end{figure}
+\end{itemize}
+
+Por tanto, todas las variables sufren una asimetría positiva excepto SSPresure-Level, cuya asimetría es negativa. Aplico las transformaciones correspondientes. Como Angle-Attack contiene 0, no es conveniente aplicar la transformación logarítmica. La literatura recomienda que se utilice otra, como por ejemplo la raíz cuadrada.
+
+\subsubsection{Normalización}
+
+Tras la transformación de las variables, aplico una normalización basada en z-score (con la media y la desviación típica, como en el ejercicio de clasificación) vía la librería Standard-Scaler (\cite{st-sc}). Es trascendental aplicarla para así mejorar los resultados de la regresión.
+
 \newpage
 \section{Bibliografía}
 
