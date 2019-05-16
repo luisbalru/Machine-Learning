@@ -332,7 +332,7 @@ Para obtener más información, visualizo la distribución de las variables y su
 \end{figure}
 
 Podemos ver ahora con más claridad la correlación entre las variables antes comentadas. Por tanto, podremos considerar la eliminación de alguna de esas características.
-
+\newpage
 \subsubsection{Outliers}
 
 Seguidamente, muestro un resumen estadístico de las variables:
@@ -363,8 +363,14 @@ Como vemos, la variable 'Frequency' es la que más desviación típica tiene, po
 	\label{fig:freq-ssp}
 \end{figure}
 
-Los datos de 'SSPresure-Level' menores que 105Db y mayores que 142Db podrían ser  outliers. Por tanto, los elimino.
+Los datos de 'SSPresure-Level' menores que 105Db y mayores que 142Db podrían ser  outliers. Por tanto, los elimino. Veamos el resultado:
 
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{sin-out-air.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Resultado tras eliminar outliers} 
+	\label{fig:sin-out}
+\end{figure}
 
 \newpage
 \section{Bibliografía}
