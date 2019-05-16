@@ -113,6 +113,14 @@ Según la documentación del dataset y posteriores análisis exploratorios, no e
 
 A través de la función definida en el código, basada en el cálculo de $z_{score}$ (\cite{z-score})  para cada instancia, no se ha encontrado ningún outlier. 
 
+\subsubsection{Transformación de variables}
+
+Al ser características discretas (números enteros del 0 al 16) veo muy poco recomendable hacer transformaciones. Las transformaciones de variables están recomendadas especialmente para las características numéricas continuas.
+
+\subsubsection{Regularización}
+
+La literatura indica que la regularización está recomendada en problemas de regresión. No obstante, tras efectuar pruebas con Lasso y Ridge los resultados son muy pobres, por lo que he descartado incluirlo en este documento.
+
 \subsubsection{Normalización}
 
 Como se verá en el siguiente apartado, me dispongo a utilizar Análisis de Componentes Principales (PCA) para reducir el tamaño del dataset y optimizar la información. Paso previo a PCA (y también favorable a la clasificación), realizo una normalización y escalado de los datos (\cite{st-sc}). Para ello, lo que se hace es estandarizar las características con una transformación de localización y escala (quitando la media y dividiendo por la desviación típica):
@@ -320,9 +328,7 @@ En primer lugar, muestro la matriz de correlación de las variables junto con el
 	\label{fig:corr-airfoil}
 \end{figure}
 
-Como se puede comprobar, la correlación lineal entre las variables es baja. Eso nos indica que el dataset no es redundante y que todas las variables nos aportarán información por sí solas. Tan sólo podemos encontrar dos variables que sí tienen una alta correlación entre ellas: 'Suction-thickness' y 'Angle-Attack', con 0.75 de coeficiente de correlación lineal. Por tanto, podríamos plantearnos eliminar alguna de ellas porque son mutuamente explicables. Además, 'Suction-thickness' Y 'Chord-length' mantienen una correlación inversa de 0.5. 
-
-Para obtener más información, visualizo la distribución de las variables y su relación a través de un pairplot.
+Como se puede comprobar, la correlación lineal entre las variables es baja. Eso nos indica que el dataset no es redundante y que todas las variables nos aportarán información por sí solas. Tan sólo podemos encontrar dos variables que sí tienen una alta correlación entre ellas: 'Suction-thickness' y 'Angle-Attack', con 0.75 de coeficiente de correlación lineal. Por tanto, podríamos plantearnos eliminar alguna de ellas porque son mutuamente explicables. Además, 'Suction-thickness' Y 'Chord-length' mantienen una correlación inversa de 0.5. Para obtener más información, visualizo la distribución de las variables y su relación a través de un pairplot.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
@@ -332,6 +338,11 @@ Para obtener más información, visualizo la distribución de las variables y su
 \end{figure}
 
 Podemos ver ahora con más claridad la correlación entre las variables antes comentadas. Por tanto, podremos considerar la eliminación de alguna de esas características.
+
+
+\subsubsection{Valores perdidos}
+
+La documentación del conjunto de datos y las exploraciones posteriores indican que no hay valores perdidos.
 \newpage
 \subsubsection{Outliers}
 
