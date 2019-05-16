@@ -470,6 +470,12 @@ Por tanto, todas las variables sufren una asimetría positiva excepto SSPresure-
 
 Tras la transformación de las variables, aplico una normalización basada en z-score (con la media y la desviación típica, como en el ejercicio de clasificación) vía la librería Standard-Scaler (\cite{st-sc}). Es trascendental aplicarla para así mejorar los resultados de la regresión.
 
+
+\subsubsection{Reducción de datos}
+
+El tamaño del conjunto de datos es reducido (tan solo 5 características) por lo que no tiene sentido hacer reducción de las mismas. Además, tras el estudio de su correlación, vemos que son más o menos independientes (a excepción de 2) por lo que, en principio, es posible que nos den información valiosa. Además, necesitaremos a continuación dividir el dataset en entrenamiento y test, por lo que si reducimos instancias, vamos a perder capacidad de generalización.
+
+\subsection{Regularización y clasificación}
 \newpage
 \section{Bibliografía}
 

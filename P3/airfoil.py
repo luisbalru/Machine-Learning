@@ -8,6 +8,76 @@ import numpy as np
 from scipy import stats
 from scipy.stats import skew
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LassoCV
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.linear_model import LinearRegression
+from sklearn.cross_validation import StratifiedKFold
+from sklearn.linear_model import LinearRegression
+
+
+
+#
+# plot_confusion_matrix
+# @brief: Función encargada de computar y preparar la impresión de la matriz de confusión. Se puede extraer los resultados normalizados o sin normalizar. Basada en un ejemplo de scikit-learn
+# @param: y_true. Etiquetas verdaderas
+# @param: y_pred. Etiquetas predichas
+# @param: classes. Distintas clases del problema (vector)
+# @param: normalize. Booleano que indica si se normalizan los resultados o no
+# @param: title. Título del gráfico
+# @param: cmap. Paleta de colores para el gráfico
+#
+
+def plot_confusion_matrix(y_true, y_pred, classes,normalize=False,title=None,cmap=plt.cm.Blues):
+    if not title:
+        if normalize:
+            title = 'Matriz de confusión normalizada'
+        else:
+            title = 'Matriz de confusión sin normalizar'
+
+    # Matriz de confusión
+    cm = confusion_matrix(y_true, y_pred)
+    # Clases
+    classes = [0,1,2,3,4,5,6,7,8,9]
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Matriz de confusión normalizada")
+    else:
+        print('Matriz de confusión sin normalizar')
+
+    print(cm)
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+    ax.figure.colorbar(im, ax=ax)
+    # We want to show all ticks...
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           xticklabels=classes, yticklabels=classes,
+           title=title,
+           ylabel='Etiquetas verdaderas',
+           xlabel='Etiquetas predecidas')
+
+    # Rotar las etiquetas para su posible lectura
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    # Creación de anotaciones
+    fmt = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(j, i, format(cm[i, j], fmt),
+                    ha="center", va="center",
+                    color="white" if cm[i, j] > thresh else "black")
+    fig.tight_layout()
+    return ax
+
+
+
+
+
 
 print("AIRFOIL SELF-NOISE")
 
@@ -156,3 +226,89 @@ data = scaler.transform(data)
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
+# Separación de datos
+
+dataset = data
+X = dataset[:,0:4]
+Y = dataset[:,5]
+
+X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state = 77145416)
+
+print("REGULARIZACIÓN")
+"""
+print("Lasso")
+print("Validación cruzada de 10 particiones para ajustar hiperparámetros")
+
+reg = LassoCV(cv=10,random_state=77145416).fit(X_train,y_train)
+
+print("Parámetros obtenidos")
+print(reg.get_params())
+print("Score para el ajuste en CV")
+print(reg.score(X_train,y_train))
+
+lasso_pred = reg.predict(X_test)
+
+print("Accuracy fuera de la muestra: ", reg.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Matriz de confusión")
+
+np.set_printoptions(precision=2)
+plot_confusion_matrix(y_test, lasso_pred, classes=names,normalize = True,title='Matriz de confusión para Regularización Lasso')
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Resumen de la clasificación")
+
+print(classification_report(y_test,lasso_pred,target_names = names))
+"""
+
+print("REGRESIÓN")
+
+print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
+# Validación cruzada
+skf = StratifiedKFold(y_train, n_folds = 10,shuffle = True)
+
+scores = []
+for train_index, test_index in skf:
+    clf = LinearRegression()
+    X_train = X_train[train_index]
+    Y_train = y_train[train_index]
+    X_test1 = X_train[test_index]
+    Y_test1 = y_train[test_index]
+    clf.fit(X_train,Y_train)
+    scores.append(clf.score(X_test1,Y_test1))
+
+print("Valores de las clasificaciones en la validación cruzada:")
+print(scores)
+
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Descripción estadística de los resultados de la validación cruzada:")
+print(stats.describe(scores))
+
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+# E_out
+
+prediccion = clf.predict(X_test)
+print("Accuracy fuera de la muestra", clf.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Matriz de confusión")
+
+np.set_printoptions(precision=2)
+plot_confusion_matrix(y_test, prediccion, classes=names,normalize = True,title='Matriz de confusión para Regresión lineal')
+plt.show()
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Resumen de la clasificación:")
+
+print(classification_report(y_test,prediccion,target_names = names))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
