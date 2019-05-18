@@ -298,6 +298,10 @@ Resumen de la clasificación:
 	\caption{Resultados finales de la clasificación con SVM}
 \end{table}
 
+\subsection{Conclusiones}
+
+A la vista de los resultados, podemos asegurar que el conjunto de datos se presta bien a ser separado de forma lineal, ya que las cotas de error (no mayores al 5\% de accuracy, pero también precision, recall o medida F1) son muy leves. Si estudiamos de forma más detenida las matrices de confusión, podemos encontrar el patrón de que la peor clasificación se produce entorno al número 8 (para regresión logística y SVM). En SGD, el peor resultado se encuentra en el número 3, muy confundido en el clasificador con el 8. En general, parece que la selección de características y la normalización han conseguido moldear un conjunto para dar lugar a una buena clasificación.
+
 \newpage 
 \section{Airfoil self noise}
 
