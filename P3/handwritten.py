@@ -1,5 +1,6 @@
 # Práctica 3 Aprendiza Automático 2019
 # Autor: Luis Balderas Ruiz
+# Problema de clasificación de dígitos
 
 
 import pandas as pd
@@ -121,6 +122,7 @@ print("PREPROCESADO")
 # Balanceo de clases con sns
 print("Veamos si las clases están balanceadas")
 clases = sns.countplot(training[64])
+clases.set_title("Balanceo de las clases")
 clases.plot()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
@@ -225,7 +227,7 @@ print(stats.describe(scores))
 
 
 input("\n--- Pulsa una tecla para continuar ---\n")
-# E_out
+
 
 prediccion = clf.predict(X_test_pca1)
 print("Accuracy fuera de la muestra", clf.score(X_test_pca1,Y_test))
@@ -252,8 +254,8 @@ print("Regresión logística")
 
 
 print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
-# Validación cruzada
 
+# Validación cruzada de 10 particiones para evitar sobreajuste
 logisticRegr = LogisticRegressionCV(cv=10, random_state = 77145416, multi_class = 'multinomial', max_iter=2500)
 logisticRegr.fit(X_train_pca1,Y_train_pca)
 
@@ -284,6 +286,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Clasificación con SVM")
 
+#Distintos valores de C, gamma y kernel para el grid
 C_range = np.logspace(-2,10,4)
 gamma_range = np.logspace(-9,3,4)
 kernel = ['linear','rbf']
@@ -293,6 +296,9 @@ param_grid = dict(gamma=gamma_range, C=C_range, kernel = kernel)
 configuraciones = []
 resultados = []
 
+# GridSeach con validación cruzada para garantizar los mejores hiperparámetros. Shuffle = true para evitar sobreajuste
+# Almaceno los resultados en un array y las configuraciones en otro, de forma que cada resultado está en la misma posición (en su array)
+# que la configuración que dio lugar a ese resultado (en el otro). Así soy capaz de encontrar la mejor configuración buscando el mejor resultado
 for c in C_range:
     for g in gamma_range:
         for k in kernel:
@@ -309,13 +315,14 @@ for c in C_range:
             configuraciones.append([c,g,k])
             resultados.append(scores)
 
-print(resultados)
+#Como hay 10 clasificaciones por cada terna de hiperparámetros, calculo la media de esos 10 acccuracy y elijo la mejor media
 mean_results = []
 
 for i in range(len(resultados)):
     mean_results.append(np.mean(resultados[i]))
 
 pos = np.argmax(mean_results)
+
 
 print("Mejor configuración tras el GridSearch con Validación Cruzada de 10 particiones:")
 print("C: ",configuraciones[pos][0])

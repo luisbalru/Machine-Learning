@@ -1,5 +1,6 @@
 # Práctica 3 Aprendiza Automático 2019
 # Autor: Luis Balderas Ruiz
+# Problema de regresión
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,7 +31,7 @@ print("PREPROCESADO")
 
 print("Matriz de correlación")
 corr_matrix = data.corr()
-k = 6 #number of variables for heatmap
+k = 6 # Número de variables en el heatmap
 cols = corr_matrix.nlargest(k, 'Frequency')['Frequency'].index
 cm = np.corrcoef(data[cols].values.T)
 plt.subplots(figsize=(9,9))
@@ -56,7 +57,8 @@ print(tabla)
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Outliers")
-
+# Busco outliers comparando el target con la variable que tiene más variabilidad. Según los resultados del resumen estadístico, es Frequency
+# Al tener mayor variabilidad, es más probable encontrar elementos que se alejan mucho de la información relevante.
 plt.scatter(data['Frequency'],data['SSPresure-level'])
 plt.xlabel("Frequency")
 plt.title("Buscando outliers a través de Frequency")
@@ -66,7 +68,7 @@ plt.show()
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Eliminando posibles outliers")
-
+#Compacto los datos y elimino los extremos
 data = data.drop(data[data['SSPresure-level']<105].index)
 data = data.drop(data[data['SSPresure-level']>=140].index)
 
@@ -79,7 +81,7 @@ plt.show()
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Distribuciones de las variables: Buscando asimetría y transformaciones")
-
+# Mido la asimetría de cada variable para ver qué transformación requieren
 plt.subplots(figsize=(9,9))
 sns.distplot(data['Frequency']).set_title("Distribución de Frequency")
 plt.show()
@@ -190,7 +192,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 # E_out
 
 prediccion = clf.predict(X_test)
-print("Accuracy fuera de la muestra", clf.score(X_test,y_test))
+print("R^2 para el conjunto de test", clf.score(X_test,y_test))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -198,22 +200,28 @@ print("ElasticNet")
 
 regr = ElasticNetCV(cv=10,random_state=77145416)
 regr.fit(X_train,y_train)
+
+print("Coeficiente de R^2 asociado a la predicción dentro de la muestra")
 print(regr.score(X_train,y_train))
 en_pred = regr.predict(X_test)
 
-print("Accuracy fuera de la muestra", regr.score(X_test,y_test))
+print("R^2 para el conjunto de test", regr.score(X_test,y_test))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Redes neuronales")
 
-redes = MLPRegressor()
+# Establezco un número alto de iteraciones máximas para que no haya problemas de convergencia
+redes = MLPRegressor(max_iter = 2000)
 redes.fit(X_train,y_train)
+print("Parámetros de la red neuronal")
 print(redes.get_params())
+# R^2 para el conjunto de training
 print("In R^2")
 print(redes.score(X_train,y_train))
 
 red_pred = redes.predict(X_test)
+# R^2 para el conjunto de test
 print("Out R^2")
 print(redes.score(X_test,y_test))
 
@@ -223,6 +231,7 @@ print("SVR")
 
 svr = SVR(C=1,epsilon=0.2)
 svr.fit(X_train,y_train)
+
 print("In R^2")
 print(svr.score(X_train,y_train))
 
@@ -232,18 +241,19 @@ print(svr.score(X_test,y_test))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
-#################################### PRUEBA ####################################
+
 # POLINOMIOS CON LAS CARACTERÍSTICAS
 
 from sklearn.preprocessing import PolynomialFeatures
 
+#Grado 3 definitivo ya que es el que arroja mejores resultados introduciendo menos complejidad
 poly = PolynomialFeatures(3)
 X = poly.fit_transform(X)
 
 
 ################################################################################
 
-
+# Repetición exacta del proceso anterior con los nuevos datos.
 X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state = 77145416)
 
 
@@ -277,8 +287,9 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 print("Redes neuronales")
 
-redes = MLPRegressor()
+redes = MLPRegressor(max_iter = 2000)
 redes.fit(X_train,y_train)
+print("Parámetros de la red neuronal")
 print(redes.get_params())
 print("In R^2")
 print(redes.score(X_train,y_train))

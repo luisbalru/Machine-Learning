@@ -479,7 +479,67 @@ Tras la transformación de las variables, aplico una normalización basada en z-
 
 El tamaño del conjunto de datos es reducido (tan solo 5 características) por lo que no tiene sentido hacer reducción de las mismas. Además, tras el estudio de su correlación, vemos que son más o menos independientes (a excepción de 2) por lo que, en principio, es posible que nos den información valiosa. Además, necesitaremos a continuación dividir el dataset en entrenamiento y test, por lo que si reducimos instancias, vamos a perder capacidad de generalización.
 
-\subsection{Regularización y clasificación}
+\subsection{Regresión}
+
+Una vez entendidos, analizados y preprocesados los datos, llega el momento de aplicar los algoritmos de regresión y evaluar los resultados. Antes de comenzar con los algoritmos, me dispongo a comentar cómo se mide la bondad del ajuste en regresión.
+
+\subsubsection{Medida de la bondad: Coeficiente de determinación}
+
+El coeficiente de determinación $R^2$ \cite{rcuadrado} (cuadrado del coeficiente de correlación de Pearson) es el estadístico con el que medimos el ajuste de la regresión (en este caso lineal). Toma valores entre 0 y 1, siendo 0 una total incorrelación entre la función solución generada y la real que queremos ajustar y 1, una total correlación. En un plano general, si llamamos $\sigma^2$ a la varianza de la variable dependiente y $\sigma^2_r$ la varianza residual \cite{var-res}, el coeficiente de determinación se calcula de acuerdo a la siguiente fórmula:
+
+$$ \rho^2 = 1 - \frac{\sigma^2_r}{\sigma^2}$$
+
+Si la regresión es lineal, entonces basta con hacer el cuadrado al coeficiente de correlación de Pearson:
+
+$$R^2 = \frac{\sigma^2_{XY}}{\sigma^2_X \sigma^2_Y}$$
+
+donde $\sigma_{XY}$ es la covarianza de (X,Y), $\sigma^2_X$ es la varianza de la variable X y $\sigma^2_Y$ es la varianza de la variable Y.
+
+\subsubsection{Regresión lineal}
+
+Utilizo en primer lugar el algoritmo básico de regresión lineal implementado en SKLearn (\cite{reg-l}). Tras hacer el ajuste en el conjunto de entrenamiento, evalúo el test obteniendo unos resultados muy pobres fuera de la muestra:
+
+$$R^2 = 0.4003157970532767$$
+
+\subsubsection{ElasticNet}
+
+ElasticNet (\cite{elastic}) es un regresor lineal que combina la regularización de Lasso y de Ridge. En este caso, utilizo validación cruzada de 10 particiones para elegir el mejor modelo y evitar el sobreajuste. Sin embargo, los resultados siguen siendo muy pobres:
+
+$$R^2 = 0.40021812841638726$$
+
+Todo parece indicar que los regresores lineales no están sabiendo generalizar el conjunto de datos.
+
+\subsubsection{Perceptron multicapa (redes neuronales)}
+
+En un intento de reconducir los malos resultados recibidos por parte de los regresores lineales, utilizo el perceptron multicapa (\cite{mlp}) como aproximador universal para encontrar mejor rendimiento. Los parámetros utilizados son los que vienen por defecto (impresos en la ejecución). Una alternativa sería hacer un gridsearch para buscar los más convenientes. El coeficiente de determinación devuelto por la red neuronal es mucho más halagüeño:
+
+$$R^2 = 0.9091615231543956$$
+
+Como se ve en la ejecución, no encontramos problemas de sobreaprendizaje en ningún caso ya que las medidas en training y test son muy parecidas.
+
+\subsection{SVR}
+
+Por último, utilizo la modalidad de SVM para regresión, SVR (\cite{svr}) con parámetros $C=1, \epsilon = 0.2$. De nuevo, un gridsearch nos ayudaría en la elección de los mejores hiperparámetros. Los resultados también son positivos:
+
+$$R^2 = 0.8535264640850369$$
+
+
+
+\subsection{Mejora: Modificación del dataset}
+Como se puede ver, los regresores lineales han tenido muy malos resultados. Los otros dos algoritmos mejoran el panorama, pero no podemos soslayar el motivo de dichos malos resultados. En ciencia de datos nos ocupamos muchas veces del sobreajuste y en este caso, con todo el preprocesamiento y la validación cruzada (cuando corresponde) hemos evitado que ocurra. Sin embargo, nuestro problema aquí es el llamado \textit{under-fitting}, es decir, necesitamos aumentar la complejidad del modelo ya que tenemos un gran sesgo. Para ello, me dispongo a crear nuevas características al dataset que son combinaciones lineales de las variables elevándolas hasta grado 3. Utilizo la librería \textit{PolynomialFeatures} (\cite{pf}), en la que se genera una nueva matriz de características formada por todas las combinaciones de tipo polinómico de hasta el grado indicado. He elegido 3 en un proceso de ensayo-error, intentando introducir la menor complejidad posible y subiendo los resultados. Tras esa modificación sobre los datos, vuelvo a ejecutar los algoritmos, obteniendo los siguientes resultados:
+
+\begin{center}
+
+\begin{itemize}
+	\centering
+	\item[\textbf{Regresor Lineal:}] $R^2 = 0.8020312507944377$
+	\item[\textbf{ElasticNet:}] $R^2 = 0.8027327562232623$
+	\item[\textbf{Red Neuronal:}] $R^2 = 0.9505089732627274$
+	\item[\textbf{SVR:}] $R^2 = 0.8844166670604567$
+\end{itemize}
+\end{center}
+
+Como se puede apreciar, en todos los casos mejora, por lo que el nuevo dataset sí que se presta a la regresión lineal.
 \newpage
 \section{Bibliografía}
 
