@@ -255,7 +255,7 @@ Finalmente, muestro un resumen de la clasificación por cada una de las clases:
 
 \newpage
 
-Por último, evalúo el algoritmo SVM (\cite{svc}). Lo primero que hay que hacer es elegir los parámetros con los que se ejecutará el algoritmo. Es necesario elegir $C$ (parámetro de penalización para el término del error), $kernel$ y $gamma$ (coeficiente para el núcleo). Para elegir el mejor conjunto de coeficientes, llevo a cabo un GridSearch con validación cruzada de 10 particiones, asegurando así que elijo los mejores parámetros independientemente de la partición que se haga en los datos. Los mejores resultados son los siguientes:
+Por último, evalúo el algoritmo SVM (\cite{svc}). Lo primero que hay que hacer es elegir los parámetros con los que se ejecutará el algoritmo. Es necesario elegir $C$ (parámetro de penalización para el término del error), $kernel$ y $gamma$ (coeficiente para el núcleo). Para elegir el mejor conjunto de coeficientes, llevo a cabo un GridSearch con validación cruzada de 10 particiones, asegurando así que elijo los mejores parámetros independientemente de la partición que se haga en los datos. Dicho proceso es costoso computacionalmente y requiere un tiempo (alrededor de un minuto, dependiendo del ordenador donde se ejecute). Los mejores resultados son los siguientes:
 
 $$ C = 0.01$$
 $$ \gamma = 1^{-9} $$
