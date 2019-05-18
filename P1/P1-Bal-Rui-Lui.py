@@ -213,18 +213,27 @@ def Err(x,y,w):
 #         al tamaño del minibatch, definirá los elementos del dataset que se evalúan
 #         en el algoritmo.
 
-def sgd(x,y,learning_rate,max_iters,minibatch_size,epsilon):
+def sgd(x,y,learning_rate,minibatch_size,max_iters):
     w = np.zeros(len(x[0]),np.float64)
     indices = np.array(range(0,x.shape[0]))
-    iter = 0
-    while Err(x,y,w) > epsilon and iter < max_iters:
-        last_w = w
-        for i in range(0,w.size):
-            sum = 0
-            np.random.shuffle(indices)
-            suma = (np.sum(x[indices[0:minibatch_size:1],i] * (x[indices[0:minibatch_size:1]].dot(last_w)-y[indices[0:minibatch_size:1]])))
-            w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
-        iter = iter + 1
+    np.random.shuffle(indices)
+    it = 0
+    while it < max_iters:
+        for j in range(int(len(x)/minibatch_size)-1):
+            last_w = w
+            for i in range(0,w.size):
+                sum = 0
+                suma = (np.sum(x[indices[j*minibatch_size:(j+1)*minibatch_size:1],i] * (x[indices[j*minibatch_size:(j+1)*minibatch_size:1]].dot(last_w)-y[indices[j*minibatch_size:(j+1)*minibatch_size:1]])))
+                w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
+        if len(x) % minibatch_size != 0:
+            resto = (len(x) % minibatch_size)*minibatch_size
+            indices = np.append(indices[-resto:],indices[:minibatch_size-resto])
+            last_w = w
+            for i in range(0,w.size):
+                sum = 0
+                suma = (np.sum(x[indices[j*minibatch_size:(j+1)*minibatch_size:1],i] * (x[indices[j*minibatch_size:(j+1)*minibatch_size:1]].dot(last_w)-y[indices[j*minibatch_size:(j+1)*minibatch_size:1]])))
+                w[i] = w[i] - (2.0/minibatch_size) * learning_rate * suma
+        it = it+1
     return w
 
 
@@ -265,11 +274,11 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 # Miro entre 0.01 y 0.12 100 iteraciones
 # Miro entre 0.01 y 0.04 --> Mejores resultados con error 0.081...
 # Miro entre 0.55 y 0.65 200 iters
-
+"""
 rates = np.linspace(0.01,1,num=200)
 datos = []
 for i in rates:
-    w = sgd(x,y,i,500,64,10**(-3))
+    w = sgd(x,y,i,64,1000)
     e = Err(x,y,w)
     datos.append([i,e])
 
@@ -283,7 +292,7 @@ plt.show()
 rates = np.linspace(0.01,0.1,num=200)
 datos = []
 for i in rates:
-    w = sgd(x,y,i,500,64,10**(-3))
+    w = sgd(x,y,i,64,1000)
     e = Err(x,y,w)
     datos.append([i,e])
 
@@ -299,7 +308,7 @@ print("Calculando el mejor learning rate")
 rates = np.linspace(0.01,0.04,num=200)
 datos = []
 for i in rates:
-    w = sgd(x,y,i,500,64,10**(-3))
+    w = sgd(x,y,i,64,1000)
     e = Err(x,y,w)
     datos.append([i,e])
 
@@ -318,7 +327,7 @@ print("Calculando el mejor tamaño de minibatch")
 mb = [32,50,64,80,100,110,128]
 datos = []
 for i in mb:
-    w = sgd(x,y,0.01,500,i,10**(-3))
+    w = sgd(x,y,0.01,i,1000)
     e = Err(x,y,w)
     datos.append([i,e])
 
@@ -332,8 +341,8 @@ plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 # Utilización del Gradiente descendente estocástico para nuestro dataset
-
-w = sgd(x, y, 0.01, 500, 80,10**(-3))
+"""
+w = sgd(x, y, 0.01, 80,500)
 print("W",w)
 print("Resultados del error en el Gradiente Descendente Estocástico")
 print("W",w)
@@ -454,7 +463,7 @@ input("\n--- Pulsar tecla para continuar ---\n")
 # se define en teoría
 print("Aplicando SGD sobre el nuevo dataset")
 dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
-w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
+w = sgd(dataset, column, 0.01,64,1000)
 print("Resultados del error en el Gradiente Descendente Estocástico sobre el nuevo dataset")
 print("W",w)
 print("Ein: ", Err(dataset,column,w))
@@ -489,7 +498,7 @@ for i in range(0,1000):
     indices = np.random.choice(len(column),int(0.1*len(column)),replace=False)
     column[indices] = -column[indices]
     dataset = np.hstack((np.ones(shape=(muestra.shape[0],1)),muestra))
-    w = sgd(dataset, column, 0.01, 1000, 64,10**(-15))
+    w = sgd(dataset, column, 0.01, 64,1000)
     test = simula_unif(1000,2,1)
     col_test = []
     for i in range(0,len(test)):
