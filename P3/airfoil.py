@@ -19,67 +19,6 @@ from sklearn.svm import SVR
 
 
 
-#
-# plot_confusion_matrix
-# @brief: Función encargada de computar y preparar la impresión de la matriz de confusión. Se puede extraer los resultados normalizados o sin normalizar. Basada en un ejemplo de scikit-learn
-# @param: y_true. Etiquetas verdaderas
-# @param: y_pred. Etiquetas predichas
-# @param: classes. Distintas clases del problema (vector)
-# @param: normalize. Booleano que indica si se normalizan los resultados o no
-# @param: title. Título del gráfico
-# @param: cmap. Paleta de colores para el gráfico
-#
-
-def plot_confusion_matrix(y_true, y_pred, classes,normalize=False,title=None,cmap=plt.cm.Blues):
-    if not title:
-        if normalize:
-            title = 'Matriz de confusión normalizada'
-        else:
-            title = 'Matriz de confusión sin normalizar'
-
-    # Matriz de confusión
-    cm = confusion_matrix(y_true, y_pred)
-    # Clases
-    classes = [0,1,2,3,4,5,6,7,8,9]
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Matriz de confusión normalizada")
-    else:
-        print('Matriz de confusión sin normalizar')
-
-    print(cm)
-
-    fig, ax = plt.subplots()
-    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
-    ax.figure.colorbar(im, ax=ax)
-    # We want to show all ticks...
-    ax.set(xticks=np.arange(cm.shape[1]),
-           yticks=np.arange(cm.shape[0]),
-           xticklabels=classes, yticklabels=classes,
-           title=title,
-           ylabel='Etiquetas verdaderas',
-           xlabel='Etiquetas predecidas')
-
-    # Rotar las etiquetas para su posible lectura
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-             rotation_mode="anchor")
-
-    # Creación de anotaciones
-    fmt = '.2f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i in range(cm.shape[0]):
-        for j in range(cm.shape[1]):
-            ax.text(j, i, format(cm[i, j], fmt),
-                    ha="center", va="center",
-                    color="white" if cm[i, j] > thresh else "black")
-    fig.tight_layout()
-    return ax
-
-
-
-
-
-
 print("AIRFOIL SELF-NOISE")
 
 names = ['Frequency','Angle-Attack','Chord-Length','Free-stream-velocity','Suction-thickness','SSPresure-level']

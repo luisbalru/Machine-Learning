@@ -91,7 +91,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,normalize=False,title=None,cma
            xticklabels=classes, yticklabels=classes,
            title=title,
            ylabel='Etiquetas verdaderas',
-           xlabel='Etiquetas predecidas')
+           xlabel='Etiquetas predichas')
 
     # Rotar las etiquetas para su posible lectura
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
