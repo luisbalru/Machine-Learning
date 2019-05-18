@@ -172,12 +172,85 @@ dataset = data
 X = dataset[:,0:4]
 Y = dataset[:,5]
 
+# Regresión con los datos tal y como los tenemos
+
 X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state = 77145416)
 
 
-print("REGRESIÓN")
+print("REGRESIÓN SIN AÑADIR CARACTERÍSTICAS")
 
 
+print("Regresión lineal")
+clf = LinearRegression().fit(X_train,y_train)
+
+
+print("Coeficiente de R^2 asociado a la predicción dentro de la muestra")
+print(clf.score(X_train,y_train))
+input("\n--- Pulsa una tecla para continuar ---\n")
+# E_out
+
+prediccion = clf.predict(X_test)
+print("Accuracy fuera de la muestra", clf.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("ElasticNet")
+
+regr = ElasticNetCV(cv=10,random_state=77145416)
+regr.fit(X_train,y_train)
+print(regr.score(X_train,y_train))
+en_pred = regr.predict(X_test)
+
+print("Accuracy fuera de la muestra", regr.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("Redes neuronales")
+
+redes = MLPRegressor()
+redes.fit(X_train,y_train)
+print(redes.get_params())
+print("In R^2")
+print(redes.score(X_train,y_train))
+
+red_pred = redes.predict(X_test)
+print("Out R^2")
+print(redes.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+print("SVR")
+
+svr = SVR(C=1,epsilon=0.2)
+svr.fit(X_train,y_train)
+print("In R^2")
+print(svr.score(X_train,y_train))
+
+svr_pred = svr.predict(X_test)
+print("Out R^2")
+print(svr.score(X_test,y_test))
+
+input("\n--- Pulsa una tecla para continuar ---\n")
+
+#################################### PRUEBA ####################################
+# POLINOMIOS CON LAS CARACTERÍSTICAS
+
+from sklearn.preprocessing import PolynomialFeatures
+
+poly = PolynomialFeatures(3)
+X = poly.fit_transform(X)
+
+
+################################################################################
+
+
+X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state = 77145416)
+
+
+print("REGRESIÓN AÑADIENDO CARACTERÍSTICAS POLINÓMICAS HASTA GRADO 3")
+
+
+print("Regresión lineal")
 clf = LinearRegression().fit(X_train,y_train)
 
 

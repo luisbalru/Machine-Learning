@@ -11,7 +11,7 @@ from matplotlib import cm as cm
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn import linear_model
-from sklearn.cross_validation import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 from scipy import stats
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
@@ -202,10 +202,10 @@ print("Caso 1: SGDClassifier")
 
 print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
 # Validación cruzada
-skf = StratifiedKFold(Y_train_pca, n_folds = 10,shuffle = True)
+skf = StratifiedKFold(n_splits = 10,shuffle = True)
 
 scores = []
-for train_index, test_index in skf:
+for train_index, test_index in skf.split(X_train_pca1,Y_train_pca):
     clf = linear_model.SGDClassifier(max_iter=10000, tol = 1e-6)
     X_train = X_train_pca1[train_index]
     Y_train = Y_train_pca[train_index]
@@ -254,7 +254,7 @@ print("Regresión logística")
 print("Validación cruzada estratificada con 10 particiones para garantizar los resultados")
 # Validación cruzada
 
-logisticRegr = LogisticRegressionCV(cv=10, random_state = 77145416, multi_class = 'multinomial')
+logisticRegr = LogisticRegressionCV(cv=10, random_state = 77145416, multi_class = 'multinomial', max_iter=2500)
 logisticRegr.fit(X_train_pca1,Y_train_pca)
 
 input("\n--- Pulsa una tecla para continuar ---\n")
@@ -296,19 +296,20 @@ resultados = []
 for c in C_range:
     for g in gamma_range:
         for k in kernel:
-            skf = StratifiedKFold(Y_train_pca, n_folds = 10)
+            skf = StratifiedKFold(n_splits = 10,shuffle = True)
             scores = []
-            for train_index, test_index in skf:
+            for train_index, test_index in skf.split(X_train_pca1,Y_train_pca):
                 svmp = SVC(C=c, gamma = g, kernel= k)
                 X_train = X_train_pca1[train_index]
                 Y_train = Y_train_pca[train_index]
                 X_test1 = X_train_pca1[test_index]
                 Y_test1 = Y_train_pca[test_index]
                 svmp.fit(X_train,Y_train)
-                scores.append(clf.score(X_test1,Y_test1))
+                scores.append(svmp.score(X_test1,Y_test1))
             configuraciones.append([c,g,k])
             resultados.append(scores)
 
+print(resultados)
 mean_results = []
 
 for i in range(len(resultados)):
@@ -335,7 +336,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 print("Matriz de confusión")
 
 np.set_printoptions(precision=2)
-plot_confusion_matrix(Y_test, prediccion, classes=nombres,normalize = True,title='Matriz de confusión para SVM')
+plot_confusion_matrix(Y_test, y_pred, classes=nombres,normalize = True,title='Matriz de confusión para SVM')
 plt.show()
 
 input("\n--- Pulsa una tecla para continuar ---\n")

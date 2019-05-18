@@ -169,21 +169,21 @@ Todas ellas generan una visión más precisa de cómo ha sido nuestra clasificac
 
 Esta práctica está centrada en la utilización de modelos lineales. Por tanto, el primer clasificador que voy a utilizar es SGDClassifier de SKLearn (\cite{SGD-C}), esto  es, un modelo lineal basado en gradiente descendente estocástico. Para garantizar una generalización correcta por parte del modelo, utilizo validación cruzada estratificada con 10 particiones(\cite{stk}). Los resultados de los 10 entrenamientos con las distintas particiones son los siguientes: \\
 
-[(1):0.96623376623376622, (2):0.96103896103896103, (3):0.94791666666666663, (4):0.96354166666666663, (5):0.9453125, (6):0.953125, (7):0.93455497382198949, (8):0.9683377308707124, (9):0.9683377308707124, (10):0.95490716180371349] \\
+[0.9584415584415584, 0.948051948051948, 0.9505208333333334, 0.953125, 0.9401041666666666, 0.9348958333333334, 0.9345549738219895, 0.9366754617414248, 0.9472295514511874, 0.9575596816976127] \\
 
 
 con los siguientes resultados estadísticos:
 
 \begin{itemize}
-	\item Media: 0.95633061579731893
-	\item Varianza: 0.00012658399732657117
-	\item Mínimo: 0.93455497382198949
-	\item Máximo: 0.9683377308707124
+	\item Media: 0.9461159008539054
+	\item Varianza: 8.235657110431097e-05
+	\item Mínimo: 0.9345549738219895
+	\item Máximo: 0.9584415584415584
 \end{itemize}
 
 Por tanto, se puede comprobar que se está generalizando bien por la varianza tan pequeña generada y los resultados adquieren mayor credibilidad. Queda tan solo evaluarla en el conjunto de test: \\
 
-\textbf{Accuracy fuera de la muestra:} 0.927657206455.
+\textbf{Accuracy fuera de la muestra:} 0.9170840289371174.
 
 A continuación, muestro la matriz de confusión:
 
@@ -201,17 +201,17 @@ Para acompañar estas medidas, muestro el resumen completo:
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		& Precision & Recall & F1-Score & Support \\ \hline
-		0         & 0.99      & 0.98   & 0.99     & 178     \\ \hline
-		1         & 0.86      & 0.91   & 0.88     & 182     \\ \hline
+		0         & 1.00      & 0.93   & 0.97     & 178     \\ \hline
+		1         & 0.88      & 0.94   & 0.91     & 182     \\ \hline
 		2         & 0.99      & 0.93   & 0.96     & 177     \\ \hline
-		3         & 0.98      & 0.89   & 0.93     & 183     \\ \hline
-		4         & 0.93      & 0.96   & 0.95     & 181     \\ \hline
-		5         & 0.92      & 0.98   & 0.95     & 182     \\ \hline
-		6         & 0.99      & 0.98   & 0.99     & 181     \\ \hline
-		7         & 0.98      & 0.88   & 0.93     & 179     \\ \hline
-		8         & 0.81      & 0.89   & 0.85     & 174     \\ \hline
-		9         & 0.85      & 0.88   & 0.86     & 180     \\ \hline
-		avg/total & 0.93      & 0.93   & 0.93     & 1797    \\ \hline
+		3         & 0.99      & 0.83   & 0.90     & 183     \\ \hline
+		4         & 0.94      & 0.97   & 0.95     & 181     \\ \hline
+		5         & 0.95      & 0.96   & 0.96     & 182     \\ \hline
+		6         & 1.00      & 0.96   & 0.98     & 181     \\ \hline
+		7         & 0.99      & 0.86   & 0.92     & 179     \\ \hline
+		8         & 0.69      & 0.90   & 0.78     & 174     \\ \hline
+		9         & 0.85      & 0.89   & 0.87     & 180     \\ \hline
+		avg/total & 0.93      & 0.92   & 0.92     & 1797    \\ \hline
 	\end{tabular}
 	\caption{Resultados finales de la clasificación con modelo lineal SGD}
 \end{table}
@@ -255,15 +255,15 @@ Finalmente, muestro un resumen de la clasificación por cada una de las clases:
 
 \newpage
 
-Por último, evalúo el algoritmo SVM (\cite{svc}). Lo primero que hay que hacer es elegir los parámetros con los que se ejecutará el algoritmo. Es necesario elegir $C$ (parámetro de penalización para el término del error), $kernel$ y $gamma$ (coeficiente para el núcleo). Para elegir el mejor conjunto de coeficientes, llevo a cabo un GridSearch con validación cruzada de 10 particiones, asegurando así que elijo los mejores parámetros independientemente de la partición que se haga en los datos. Dicho proceso es costoso computacionalmente y requiere un tiempo (alrededor de un minuto, dependiendo del ordenador donde se ejecute). Los mejores resultados son los siguientes:
+Por último, evalúo el algoritmo SVM (\cite{svc}). Lo primero que hay que hacer es elegir los parámetros con los que se ejecutará el algoritmo. Es necesario elegir $C$ (parámetro de penalización para el término del error), $kernel$ y $gamma$ (coeficiente para el núcleo). Para elegir el mejor conjunto de coeficientes, llevo a cabo un GridSearch con validación cruzada de 10 particiones, asegurando así que elijo los mejores parámetros independientemente de la partición que se haga en los datos. Dicho proceso es costoso computacionalmente y requiere un tiempo (alrededor de unos minutos, dependiendo del ordenador donde se ejecute). Los mejores resultados son los siguientes:
 
-$$ C = 0.01$$
-$$ \gamma = 1^{-9} $$
-$$ kernel = linear $$
+$$ C = 1000000$$
+$$ \gamma = 1^{-5} $$
+$$ kernel = rbf $$
 
 Con dichos parámetros, se obtienen los siguientes resultados: \\
 
-\textbf{Accuracy fuera de la muestra:} 0.956594323873 \\
+\textbf{Accuracy fuera de la muestra:}  0.9577072899276572\\
 
 Matriz de confusión:
 
@@ -283,16 +283,16 @@ Resumen de la clasificación:
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		& Precision & Recall & F1-Score & Support \\ \hline
-		0         & 0.99      & 0.99   & 0.99     & 178     \\ \hline
-		1         & 0.90      & 0.97   & 0.94     & 182     \\ \hline
-		2         & 0.96      & 0.97   & 0.96     & 177     \\ \hline
-		3         & 0.99      & 0.93   & 0.96     & 183     \\ \hline
-		4         & 0.97      & 0.98   & 0.98     & 181     \\ \hline
-		5         & 0.95      & 0.98   & 0.97     & 182     \\ \hline
+		0         & 0.99      & 1.00   & 0.99     & 178     \\ \hline
+		1         & 0.91      & 0.99   & 0.95     & 182     \\ \hline
+		2         & 0.98      & 0.96   & 0.97     & 177     \\ \hline
+		3         & 0.96      & 0.95   & 0.96     & 183     \\ \hline
+		4         & 0.95      & 0.99   & 0.97     & 181     \\ \hline
+		5         & 0.93      & 0.99   & 0.96     & 182     \\ \hline
 		6         & 1.00      & 0.98   & 0.99     & 181     \\ \hline
-		7         & 0.99      & 0.91   & 0.95     & 179     \\ \hline
-		8         & 0.96      & 0.89   & 0.92     & 174     \\ \hline
-		9         & 0.87      & 0.95   & 0.91     & 180     \\ \hline
+		7         & 1.00      & 0.91   & 0.95     & 179     \\ \hline
+		8         & 0.96      & 0.90   & 0.93     & 174     \\ \hline
+		9         & 0.92      & 0.89   & 0.91     & 180     \\ \hline
 		avg/total & 0.96      & 0.96   & 0.96     & 1797    \\ \hline
 	\end{tabular}
 	\caption{Resultados finales de la clasificación con SVM}
@@ -300,7 +300,7 @@ Resumen de la clasificación:
 
 \subsection{Conclusiones}
 
-A la vista de los resultados, podemos asegurar que el conjunto de datos se presta bien a ser separado de forma lineal, ya que las cotas de error (no mayores al 5\% de accuracy, pero también precision, recall o medida F1) son muy leves. Si estudiamos de forma más detenida las matrices de confusión, podemos encontrar el patrón de que la peor clasificación se produce entorno al número 8 (para regresión logística y SVM). En SGD, el peor resultado se encuentra en el número 3, muy confundido en el clasificador con el 8. En general, parece que la selección de características y la normalización han conseguido moldear un conjunto para dar lugar a una buena clasificación.
+A la vista de los resultados, podemos asegurar que el conjunto de datos se presta bien a ser separado de forma lineal, ya que las cotas de error (no mayores al 5\% de accuracy, pero también precision, recall o medida F1) son muy leves. Si estudiamos de forma más detenida las matrices de confusión, podemos ver que en SGD el número 3 es el que peores resultados arroja. La confusión viene con el número 8. Parece lógico pensar que, dadas las características del trazo de ambos números, se puedan confundir. Regresión logística mejora el rendimiento para el 3 y obtiene su peor resultado en el 8. Por último, SVM obtiene su peor resultado para el 9. A nivel general, podemos decir que la normalización y la selección de características vía PCA han conseguido generar unos datos susceptibles de ser separados por modelos lineales con grandes resultados.
 
 \newpage 
 \section{Airfoil self noise}
