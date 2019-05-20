@@ -19,6 +19,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 
+
 #
 # correlation_matrix
 # @brief: Función para ver gráficamente la matriz de correlación. Los colores implican

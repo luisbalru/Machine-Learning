@@ -495,25 +495,37 @@ $$R^2 = \frac{\sigma^2_{XY}}{\sigma^2_X \sigma^2_Y}$$
 
 donde $\sigma_{XY}$ es la covarianza de (X,Y), $\sigma^2_X$ es la varianza de la variable X y $\sigma^2_Y$ es la varianza de la variable Y.
 
+\subsubsection{Medida del error: Error absoluto medio}
+
+Para medir el error cometido en el modelo, elijo la métrica Error Absoluto Medio (MAE) debido a su fácil interpretabilidad (se define como la medida de la diferencia entre dos variables continuas. En nuestro caso, esas dos variable son la predicción que hacemos y los valores reales del target). El error absoluto medio viene dado por la siguiente expresión:
+
+$$MAE = \frac{\sum_{i=1}^{n}|y_i-x_i|}{n}$$
+
+Toma valores entre 0 y $\infty$, siendo 0 el mejor valor.
+
 \subsubsection{Regresión lineal}
 
 Utilizo en primer lugar el algoritmo básico de regresión lineal implementado en SKLearn (\cite{reg-l}). Tras hacer el ajuste en el conjunto de entrenamiento, evalúo el test obteniendo unos resultados muy pobres fuera de la muestra:
 
 $$R^2 = 0.4003157970532767$$
-
+$$MAE = 0.5970386315572326$$
 \subsubsection{ElasticNet}
 
 ElasticNet (\cite{elastic}) es un regresor lineal que combina la regularización de Lasso y de Ridge. En este caso, utilizo validación cruzada de 10 particiones para elegir el mejor modelo y evitar el sobreajuste. Sin embargo, los resultados siguen siendo muy pobres:
 
 $$R^2 = 0.40021812841638726$$
+$$MAE = 0.5972005818175051$$
 
-Todo parece indicar que los regresores lineales no están sabiendo generalizar el conjunto de datos.
+Todo parece indicar que los regresores lineales no están sabiendo generalizar el conjunto de datos. Además, producen los mismos errores
 
 \subsubsection{Perceptron multicapa (redes neuronales)}
 
 En un intento de reconducir los malos resultados recibidos por parte de los regresores lineales, utilizo el perceptron multicapa (\cite{mlp}) como aproximador universal para encontrar mejor rendimiento. Los parámetros utilizados son los que vienen por defecto (impresos en la ejecución). Una alternativa sería hacer un gridsearch para buscar los más convenientes. El coeficiente de determinación devuelto por la red neuronal es mucho más halagüeño:
 
 $$R^2 = 0.9091615231543956$$
+$$MAE = 0.22627734611443473$$
+
+EL coeficiente de determinación es muy alto y el error se reduce a la mitad que en los modelos lineales.
 
 Como se ve en la ejecución, no encontramos problemas de sobreaprendizaje en ningún caso ya que las medidas en training y test son muy parecidas.
 
@@ -522,7 +534,7 @@ Como se ve en la ejecución, no encontramos problemas de sobreaprendizaje en nin
 Por último, utilizo la modalidad de SVM para regresión, SVR (\cite{svr}) con parámetros $C=1, \epsilon = 0.2$. De nuevo, un gridsearch nos ayudaría en la elección de los mejores hiperparámetros. Los resultados también son positivos:
 
 $$R^2 = 0.8535264640850369$$
-
+$$MAE = 0.27968782470229836$$
 
 
 \subsection{Mejora: Modificación del dataset}
@@ -532,14 +544,14 @@ Como se puede ver, los regresores lineales han tenido muy malos resultados. Los 
 
 \begin{itemize}
 	\centering
-	\item[\textbf{Regresor Lineal:}] $R^2 = 0.8020312507944377$
-	\item[\textbf{ElasticNet:}] $R^2 = 0.8027327562232623$
-	\item[\textbf{Red Neuronal:}] $R^2 = 0.9505089732627274$
-	\item[\textbf{SVR:}] $R^2 = 0.8844166670604567$
+	\item[\textbf{Regresor Lineal:}] $R^2 = 0.8020312507944377, MAE = 0.33250852908432094$
+	\item[\textbf{ElasticNet:}] $R^2 = 0.8027327562232623, MAE = 0.332467604747769$
+	\item[\textbf{Red Neuronal:}] $R^2 = 0.9505089732627274, MAE = 0.15475588581572994$
+	\item[\textbf{SVR:}] $R^2 = 0.8844166670604567, MAE = 0.2449328853236184$
 \end{itemize}
 \end{center}
 
-Como se puede apreciar, en todos los casos mejora, por lo que el nuevo dataset sí que se presta a la regresión lineal.
+Como se puede apreciar, en todos los casos mejora, por lo que el nuevo dataset sí que se presta a la regresión lineal, encontrándose una reducción del error muy sustancial y un crecimiento de $R^2$ notable.
 \newpage
 \section{Bibliografía}
 

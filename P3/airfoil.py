@@ -17,6 +17,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import ElasticNetCV
 from sklearn.neural_network import MLPRegressor
 from sklearn.svm import SVR
+from sklearn.metrics import mean_absolute_error
 
 
 
@@ -193,6 +194,7 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 
 prediccion = clf.predict(X_test)
 print("R^2 para el conjunto de test", clf.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,prediccion))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -206,6 +208,7 @@ print(regr.score(X_train,y_train))
 en_pred = regr.predict(X_test)
 
 print("R^2 para el conjunto de test", regr.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,en_pred))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -224,6 +227,7 @@ red_pred = redes.predict(X_test)
 # R^2 para el conjunto de test
 print("Out R^2")
 print(redes.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,red_pred))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -238,6 +242,7 @@ print(svr.score(X_train,y_train))
 svr_pred = svr.predict(X_test)
 print("Out R^2")
 print(svr.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,svr_pred))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -270,7 +275,8 @@ input("\n--- Pulsa una tecla para continuar ---\n")
 # E_out
 
 prediccion = clf.predict(X_test)
-print("Accuracy fuera de la muestra", clf.score(X_test,y_test))
+print("R^2 fuera de la muestra", clf.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,prediccion))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -281,7 +287,8 @@ regr.fit(X_train,y_train)
 print(regr.score(X_train,y_train))
 en_pred = regr.predict(X_test)
 
-print("Accuracy fuera de la muestra", regr.score(X_test,y_test))
+print("R^2 fuera de la muestra", regr.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,en_pred))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -297,6 +304,7 @@ print(redes.score(X_train,y_train))
 red_pred = redes.predict(X_test)
 print("Out R^2")
 print(redes.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,red_pred))
 
 input("\n--- Pulsa una tecla para continuar ---\n")
 
@@ -310,3 +318,4 @@ print(svr.score(X_train,y_train))
 svr_pred = svr.predict(X_test)
 print("Out R^2")
 print(svr.score(X_test,y_test))
+print("Error absoluto medio", mean_absolute_error(y_test,svr_pred))
